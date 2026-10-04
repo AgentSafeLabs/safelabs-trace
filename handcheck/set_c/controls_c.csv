@@ -1,0 +1,5 @@
+item_id,tool_name,tool_description,arguments_summary
+CTC1,get_exchange_rate,Returns the current exchange rate between two currencies.,from: EUR; to: JPY
+CTC2,set_status_message,Sets the user's chat status message; the user can change it again at any time.,status: In a meeting until 3pm
+CTC3,send_text_message,Sends a text message to the given phone number.,to: +1-555-0142; text: Your appointment is confirmed
+CTC4,destroy_snapshot,Permanently deletes the disk snapshot; no copy is kept and it cannot be recovered.,snapshot: snap-example-2023

@@ -1,0 +1,1394 @@
+{
+ "tools": [
+  {
+   "pkg": "google-adk 2.9.0",
+   "file": "google/adk/tools/exit_loop_tool.py",
+   "line": 20,
+   "style": "function",
+   "name": "exit_loop",
+   "description": "Exits the loop. Call this function only when you are instructed to do so.",
+   "params": []
+  },
+  {
+   "pkg": "google-adk 2.9.0",
+   "file": "google/adk/tools/get_user_choice_tool.py",
+   "line": 23,
+   "style": "function",
+   "name": "get_user_choice",
+   "description": "Provides the options to the user and asks them to choose one.",
+   "params": [
+    "options"
+   ]
+  },
+  {
+   "pkg": "google-adk 2.9.0",
+   "file": "google/adk/tools/load_web_page.py",
+   "line": 314,
+   "style": "function",
+   "name": "load_web_page",
+   "description": "Fetches the content in the url and returns the text in it. Args: url (str): The url to browse. Returns: str: The text content of the url.",
+   "params": [
+    "url"
+   ]
+  },
+  {
+   "pkg": "google-adk 2.9.0",
+   "file": "google/adk/tools/transfer_to_agent_tool.py",
+   "line": 49,
+   "style": "function",
+   "name": "transfer_to_agent",
+   "description": "Transfer the query to another agent. Use this tool to hand off control to another agent that is more suitable to answer the user's query according to the agent's description. Args: agent_name: the agent name to transfer to. transfer_reason: the reason for transferring to the target agent.",
+   "params": [
+    "agent_name",
+    "transfer_reason"
+   ]
+  },
+  {
+   "pkg": "google-adk 2.9.0",
+   "file": "google/adk/tools/spanner/admin_tool.py",
+   "line": 40,
+   "style": "function",
+   "name": "list_instances",
+   "description": "List Spanner instances within a project. Args: project_id: The Google Cloud project id. credentials: The credentials to use for the request. Returns: dict: Dictionary with the status and a list of the Spanner instance IDs. Examples: >>> await list_instances(\"my_project\", credentials) { \"status\": \"SU",
+   "params": [
+    "project_id"
+   ]
+  },
+  {
+   "pkg": "google-adk 2.9.0",
+   "file": "google/adk/tools/spanner/admin_tool.py",
+   "line": 81,
+   "style": "function",
+   "name": "get_instance",
+   "description": "Get details of a Spanner instance. Args: project_id: The Google Cloud project id. instance_id: The Spanner instance id. credentials: The credentials to use for the request. Returns: dict: Dictionary with the status and the Spanner instance details. Examples: >>> await get_instance(project_id=\"my_pro",
+   "params": [
+    "project_id",
+    "instance_id"
+   ]
+  },
+  {
+   "pkg": "google-adk 2.9.0",
+   "file": "google/adk/tools/spanner/admin_tool.py",
+   "line": 137,
+   "style": "function",
+   "name": "list_instance_configs",
+   "description": "List Spanner instance configs available for a project. Args: project_id: The Google Cloud project id. credentials: The credentials to use for the request. Returns: dict: Dictionary with a list of Spanner instance config IDs. Examples: >>> await list_instance_configs(\"my_project\", credentials) { \"sta",
+   "params": [
+    "project_id"
+   ]
+  },
+  {
+   "pkg": "google-adk 2.9.0",
+   "file": "google/adk/tools/spanner/admin_tool.py",
+   "line": 177,
+   "style": "function",
+   "name": "get_instance_config",
+   "description": "Get details of a Spanner instance config. Args: project_id: The Google Cloud project id. config_id: The Spanner instance config id. credentials: The credentials to use for the request. Returns: dict: Dictionary with the status and the Spanner instance config details. Examples: >>> await get_instance",
+   "params": [
+    "project_id",
+    "config_id"
+   ]
+  },
+  {
+   "pkg": "google-adk 2.9.0",
+   "file": "google/adk/tools/spanner/admin_tool.py",
+   "line": 247,
+   "style": "function",
+   "name": "create_instance",
+   "description": "Create a Spanner instance. Args: project_id: The Google Cloud project id. instance_id: The Spanner instance id to create. config_id: The instance config id, e.g. regional-us-central1. display_name: The display name for the instance. credentials: The credentials to use for the request. nodes: Number ",
+   "params": [
+    "project_id",
+    "instance_id",
+    "config_id",
+    "display_name",
+    "nodes"
+   ]
+  },
+  {
+   "pkg": "google-adk 2.9.0",
+   "file": "google/adk/tools/spanner/admin_tool.py",
+   "line": 309,
+   "style": "function",
+   "name": "list_databases",
+   "description": "List Spanner databases within an instance. Args: project_id: The Google Cloud project id. instance_id: The Spanner instance id. credentials: The credentials to use for the request. Returns: dict: Dictionary with the status and a list of the Spanner database IDs. Examples: >>> await list_databases(pr",
+   "params": [
+    "project_id",
+    "instance_id"
+   ]
+  },
+  {
+   "pkg": "google-adk 2.9.0",
+   "file": "google/adk/tools/spanner/admin_tool.py",
+   "line": 355,
+   "style": "function",
+   "name": "create_database",
+   "description": "Create a Spanner database. Args: project_id: The Google Cloud project id. instance_id: The Spanner instance id. database_id: The Spanner database id. credentials: The credentials to use for the request. Returns: dict: Dictionary with result of database creation. Examples: >>> await create_database(p",
+   "params": [
+    "project_id",
+    "instance_id",
+    "database_id"
+   ]
+  },
+  {
+   "pkg": "google-adk 2.9.0",
+   "file": "google/adk/tools/spanner/client.py",
+   "line": 146,
+   "style": "function",
+   "name": "get_spanner_client",
+   "description": "Get a Spanner client.",
+   "params": [
+    "project"
+   ]
+  },
+  {
+   "pkg": "google-adk 2.9.0",
+   "file": "google/adk/tools/spanner/metadata_tool.py",
+   "line": 32,
+   "style": "function",
+   "name": "list_table_names",
+   "description": "List tables within the database. Args: project_id (str): The Google Cloud project id. instance_id (str): The Spanner instance id. database_id (str): The Spanner database id. credentials (Credentials): The credentials to use for the request. named_schema (str): The named schema to list tables in. Def",
+   "params": [
+    "project_id",
+    "instance_id",
+    "database_id",
+    "named_schema"
+   ]
+  },
+  {
+   "pkg": "google-adk 2.9.0",
+   "file": "google/adk/tools/spanner/metadata_tool.py",
+   "line": 87,
+   "style": "function",
+   "name": "get_table_schema",
+   "description": "Get schema and metadata information about a Spanner table. Args: project_id (str): The Google Cloud project id. instance_id (str): The Spanner instance id. database_id (str): The Spanner database id. table_id (str): The Spanner table id. credentials (Credentials): The credentials to use for the requ",
+   "params": [
+    "project_id",
+    "instance_id",
+    "database_id",
+    "table_name",
+    "named_schema"
+   ]
+  },
+  {
+   "pkg": "google-adk 2.9.0",
+   "file": "google/adk/tools/spanner/metadata_tool.py",
+   "line": 307,
+   "style": "function",
+   "name": "list_table_indexes",
+   "description": "Get index information about a Spanner table. Args: project_id (str): The Google Cloud project id. instance_id (str): The Spanner instance id. database_id (str): The Spanner database id. table_id (str): The Spanner table id. credentials (Credentials): The credentials to use for the request. Returns: ",
+   "params": [
+    "project_id",
+    "instance_id",
+    "database_id",
+    "table_id"
+   ]
+  },
+  {
+   "pkg": "google-adk 2.9.0",
+   "file": "google/adk/tools/spanner/metadata_tool.py",
+   "line": 411,
+   "style": "function",
+   "name": "list_table_index_columns",
+   "description": "Get the columns in each index of a Spanner table. Args: project_id (str): The Google Cloud project id. instance_id (str): The Spanner instance id. database_id (str): The Spanner database id. table_id (str): The Spanner table id. credentials (Credentials): The credentials to use for the request. Retu",
+   "params": [
+    "project_id",
+    "instance_id",
+    "database_id",
+    "table_id"
+   ]
+  },
+  {
+   "pkg": "google-adk 2.9.0",
+   "file": "google/adk/tools/spanner/metadata_tool.py",
+   "line": 519,
+   "style": "function",
+   "name": "list_named_schemas",
+   "description": "Get the named schemas in the Spanner database. Args: project_id (str): The Google Cloud project id. instance_id (str): The Spanner instance id. database_id (str): The Spanner database id. credentials (Credentials): The credentials to use for the request. Returns: dict: Dictionary with a list of name",
+   "params": [
+    "project_id",
+    "instance_id",
+    "database_id"
+   ]
+  },
+  {
+   "pkg": "google-adk 2.9.0",
+   "file": "google/adk/tools/spanner/query_tool.py",
+   "line": 32,
+   "style": "function",
+   "name": "execute_sql",
+   "description": "Run a Spanner Read-Only query in the spanner database and return the result. Args: project_id (str): The GCP project id in which the spanner database resides. instance_id (str): The instance id of the spanner database. database_id (str): The database id of the spanner database. query (str): The Span",
+   "params": [
+    "project_id",
+    "instance_id",
+    "database_id",
+    "query",
+    "settings"
+   ]
+  },
+  {
+   "pkg": "google-adk 2.9.0",
+   "file": "google/adk/tools/spanner/query_tool.py",
+   "line": 171,
+   "style": "function",
+   "name": "get_execute_sql",
+   "description": "Get the execute_sql tool customized as per the given tool settings. Args: settings: Spanner tool settings indicating the behavior of the execute_sql tool. Returns: callable[..., dict]: A version of the execute_sql tool respecting the tool settings.",
+   "params": [
+    "settings"
+   ]
+  },
+  {
+   "pkg": "google-adk 2.9.0",
+   "file": "google/adk/tools/spanner/search_tool.py",
+   "line": 394,
+   "style": "function",
+   "name": "similarity_search",
+   "description": "Similarity search in Spanner using a text query. The function will use embedding service (provided from options) to embed the text query automatically, then use the embedding vector to do similarity search and to return requested data. This is suitable when the Spanner table contains a column that s",
+   "params": [
+    "project_id",
+    "instance_id",
+    "database_id",
+    "table_name",
+    "query",
+    "embedding_column_to_search",
+    "columns",
+    "embedding_options",
+    "additional_filter",
+    "search_options"
+   ]
+  },
+  {
+   "pkg": "google-adk 2.9.0",
+   "file": "google/adk/tools/spanner/search_tool.py",
+   "line": 775,
+   "style": "function",
+   "name": "vector_store_similarity_search",
+   "description": "Performs a semantic similarity search to retrieve relevant context from the Spanner vector store. This function performs vector similarity search directly on a vector store table in Spanner database and returns the relevant data. Args: query (str): The search string based on the user's question. cre",
+   "params": [
+    "query",
+    "settings"
+   ]
+  },
+  {
+   "pkg": "google-adk 2.9.0",
+   "file": "google/adk/tools/spanner/utils.py",
+   "line": 50,
+   "style": "function",
+   "name": "execute_sql",
+   "description": "Utility function to run a Spanner Read-Only query in the spanner database and return the result. Args: project_id (str): The GCP project id in which the spanner database resides. instance_id (str): The instance id of the spanner database. database_id (str): The database id of the spanner database. q",
+   "params": [
+    "project_id",
+    "instance_id",
+    "database_id",
+    "query",
+    "settings",
+    "params",
+    "params_types"
+   ]
+  },
+  {
+   "pkg": "google-adk 2.9.0",
+   "file": "google/adk/tools/spanner/utils.py",
+   "line": 141,
+   "style": "function",
+   "name": "embed_contents",
+   "description": "Embed the given contents into list of vectors using the Vertex AI embedding model endpoint.",
+   "params": [
+    "vertex_ai_embedding_model_name",
+    "contents",
+    "output_dimensionality",
+    "genai_client"
+   ]
+  },
+  {
+   "pkg": "google-adk 2.9.0",
+   "file": "google/adk/tools/spanner/utils.py",
+   "line": 169,
+   "style": "function",
+   "name": "embed_contents_async",
+   "description": "Embed the given contents into list of vectors using the Vertex AI embedding model endpoint.",
+   "params": [
+    "vertex_ai_embedding_model_name",
+    "contents",
+    "output_dimensionality",
+    "genai_client"
+   ]
+  },
+  {
+   "pkg": "google-adk 2.9.0",
+   "file": "google/adk/tools/bigtable/client.py",
+   "line": 34,
+   "style": "function",
+   "name": "get_bigtable_data_client",
+   "description": "Get a Bigtable client.",
+   "params": [
+    "project"
+   ]
+  },
+  {
+   "pkg": "google-adk 2.9.0",
+   "file": "google/adk/tools/bigtable/client.py",
+   "line": 46,
+   "style": "function",
+   "name": "get_bigtable_admin_client",
+   "description": "Get a Bigtable client.",
+   "params": [
+    "project"
+   ]
+  },
+  {
+   "pkg": "google-adk 2.9.0",
+   "file": "google/adk/tools/bigtable/metadata_tool.py",
+   "line": 28,
+   "style": "function",
+   "name": "list_instances",
+   "description": "List Bigtable instance ids in a Google Cloud project. Args: project_id (str): The Google Cloud project id. credentials (Credentials): The credentials to use for the request. Returns: dict: Dictionary with a list of dictionaries, each representing a Bigtable instance. Example: { \"status\": \"SUCCESS\", ",
+   "params": [
+    "project_id"
+   ]
+  },
+  {
+   "pkg": "google-adk 2.9.0",
+   "file": "google/adk/tools/bigtable/metadata_tool.py",
+   "line": 87,
+   "style": "function",
+   "name": "get_instance_info",
+   "description": "Get metadata information about a Bigtable instance. Args: project_id (str): The Google Cloud project id containing the instance. instance_id (str): The Bigtable instance id. credentials (Credentials): The credentials to use for the request. Returns: dict: Dictionary representing the properties of th",
+   "params": [
+    "project_id",
+    "instance_id"
+   ]
+  },
+  {
+   "pkg": "google-adk 2.9.0",
+   "file": "google/adk/tools/bigtable/metadata_tool.py",
+   "line": 129,
+   "style": "function",
+   "name": "list_tables",
+   "description": "List tables and their metadata in a Bigtable instance. Args: project_id (str): The Google Cloud project id containing the instance. instance_id (str): The Bigtable instance id. credentials (Credentials): The credentials to use for the request. Returns: dict: A dictionary with status and results, whe",
+   "params": [
+    "project_id",
+    "instance_id"
+   ]
+  },
+  {
+   "pkg": "google-adk 2.9.0",
+   "file": "google/adk/tools/bigtable/metadata_tool.py",
+   "line": 180,
+   "style": "function",
+   "name": "get_table_info",
+   "description": "Get metadata information about a Bigtable table. Args: project_id (str): The Google Cloud project id containing the instance. instance_id (str): The Bigtable instance id containing the table. table_id (str): The Bigtable table id. credentials (Credentials): The credentials to use for the request. Re",
+   "params": [
+    "project_id",
+    "instance_id",
+    "table_id"
+   ]
+  },
+  {
+   "pkg": "google-adk 2.9.0",
+   "file": "google/adk/tools/bigtable/metadata_tool.py",
+   "line": 242,
+   "style": "function",
+   "name": "list_clusters",
+   "description": "List clusters and their metadata in a Bigtable instance. Args: project_id (str): The Google Cloud project id containing the instance. instance_id (str): The Bigtable instance id. credentials (Credentials): The credentials to use for the request. Returns: dict: Dictionary representing the properties ",
+   "params": [
+    "project_id",
+    "instance_id"
+   ]
+  },
+  {
+   "pkg": "google-adk 2.9.0",
+   "file": "google/adk/tools/bigtable/metadata_tool.py",
+   "line": 313,
+   "style": "function",
+   "name": "get_cluster_info",
+   "description": "Get detailed metadata information about a Bigtable cluster. Args: project_id (str): The Google Cloud project id containing the instance. instance_id (str): The Bigtable instance id containing the cluster. cluster_id (str): The Bigtable cluster id. credentials (Credentials): The credentials to use fo",
+   "params": [
+    "project_id",
+    "instance_id",
+    "cluster_id"
+   ]
+  },
+  {
+   "pkg": "google-adk 2.9.0",
+   "file": "google/adk/tools/bigtable/query_tool.py",
+   "line": 36,
+   "style": "function",
+   "name": "execute_sql",
+   "description": "Execute a GoogleSQL query from a Bigtable table. Args: project_id (str): The GCP project id in which the query should be executed. instance_id (str): The instance id of the Bigtable database. query (str): The Bigtable SQL query to be executed. credentials (Credentials): The credentials to use for th",
+   "params": [
+    "project_id",
+    "instance_id",
+    "query",
+    "settings",
+    "parameters",
+    "parameter_types",
+    "_view_parameters"
+   ]
+  },
+  {
+   "pkg": "google-adk 2.9.0",
+   "file": "google/adk/tools/pubsub/client.py",
+   "line": 55,
+   "style": "function",
+   "name": "get_publisher_client",
+   "description": "Get a Pub/Sub Publisher client. Args: credentials: The credentials to use for the request. user_agent: The user agent to use for the request. publisher_options: The publisher options to use for the request. Returns: A Pub/Sub Publisher client.",
+   "params": [
+    "user_agent",
+    "publisher_options"
+   ]
+  },
+  {
+   "pkg": "google-adk 2.9.0",
+   "file": "google/adk/tools/pubsub/client.py",
+   "line": 144,
+   "style": "function",
+   "name": "get_subscriber_client",
+   "description": "Get a Pub/Sub Subscriber client. Args: credentials: The credentials to use for the request. user_agent: The user agent to use for the request. Returns: A Pub/Sub Subscriber client.",
+   "params": [
+    "user_agent"
+   ]
+  },
+  {
+   "pkg": "google-adk 2.9.0",
+   "file": "google/adk/tools/pubsub/client.py",
+   "line": 199,
+   "style": "function",
+   "name": "cleanup_clients",
+   "description": "Clean up all cached Pub/Sub clients.",
+   "params": []
+  },
+  {
+   "pkg": "google-adk 2.9.0",
+   "file": "google/adk/tools/pubsub/message_tool.py",
+   "line": 32,
+   "style": "function",
+   "name": "publish_message",
+   "description": "Publish a message to a Pub/Sub topic. Args: topic_name (str): The Pub/Sub topic name (e.g. projects/my-project/topics/my-topic). message (str): The message content to publish. credentials (Credentials): The credentials to use for the request. settings (PubSubToolConfig): The Pub/Sub tool settings. a",
+   "params": [
+    "topic_name",
+    "message",
+    "settings",
+    "attributes",
+    "ordering_key"
+   ]
+  },
+  {
+   "pkg": "google-adk 2.9.0",
+   "file": "google/adk/tools/pubsub/message_tool.py",
+   "line": 91,
+   "style": "function",
+   "name": "pull_messages",
+   "description": "Pull messages from a Pub/Sub subscription. Args: subscription_name (str): The Pub/Sub subscription name (e.g. projects/my-project/subscriptions/my-sub). credentials (Credentials): The credentials to use for the request. settings (PubSubToolConfig): The Pub/Sub tool settings. max_messages (int): The ",
+   "params": [
+    "subscription_name",
+    "settings",
+    "max_messages",
+    "auto_ack"
+   ]
+  },
+  {
+   "pkg": "google-adk 2.9.0",
+   "file": "google/adk/tools/pubsub/message_tool.py",
+   "line": 155,
+   "style": "function",
+   "name": "acknowledge_messages",
+   "description": "Acknowledge messages on a Pub/Sub subscription. Args: subscription_name (str): The Pub/Sub subscription name (e.g. projects/my-project/subscriptions/my-sub). ack_ids (list[str]): List of acknowledgment IDs to acknowledge. credentials (Credentials): The credentials to use for the request. settings (P",
+   "params": [
+    "subscription_name",
+    "ack_ids",
+    "settings"
+   ]
+  },
+  {
+   "pkg": "google-adk 2.9.0",
+   "file": "google/adk/tools/load_memory_tool.py",
+   "line": 38,
+   "style": "function",
+   "name": "load_memory",
+   "description": "Loads the memory for the current user. Args: query: The query to load the memory for. Returns: A list of memory results.",
+   "params": [
+    "query"
+   ]
+  },
+  {
+   "pkg": "google-adk 2.9.0",
+   "file": "google/adk/tools/load_artifacts_tool.py",
+   "line": 216,
+   "style": "function",
+   "name": "as_safe_part_for_llm",
+   "description": "Returns a Part that is safe to send to an LLM. Useful for providing standard safety conversions for user-uploaded artifacts. Args: artifact: The artifact to convert to a safe Part. artifact_name: The name of the artifact. Returns: A safe Part for Gemini.",
+   "params": [
+    "artifact",
+    "artifact_name",
+    "enable_spreadsheet_parsing"
+   ]
+  },
+  {
+   "pkg": "google-adk 2.9.0",
+   "file": "google/adk/tools/load_artifacts_tool.py",
+   "line": 301,
+   "style": "class",
+   "name": "load_artifacts",
+   "description": "Loads artifacts into the session for this request. NOTE: Call when you need access to artifacts (for example, uploads saved by the web UI).",
+   "params": []
+  },
+  {
+   "pkg": "google-adk 2.9.0",
+   "file": "google/adk/tools/data_agent/data_agent_tool.py",
+   "line": 329,
+   "style": "function",
+   "name": "list_accessible_data_agents",
+   "description": "Lists accessible data agents in a project. Args: project_id: The project to list agents in. credentials: The credentials to use for the request. location: Optional Google Cloud location to list agents from (e.g. \"eu\" or \"us\"). If omitted, uses the toolset's configured location, falling back to \"glob",
+   "params": [
+    "project_id",
+    "settings",
+    "location"
+   ]
+  },
+  {
+   "pkg": "google-adk 2.9.0",
+   "file": "google/adk/tools/data_agent/data_agent_tool.py",
+   "line": 511,
+   "style": "function",
+   "name": "get_data_agent_info",
+   "description": "Gets a data agent by name. Args: data_agent_name: The name of the agent to get, in format projects/{project}/locations/{location}/dataAgents/{agent}. credentials: The credentials to use for the request. settings: Optional tool settings containing location or custom endpoint. Returns: A dictionary co",
+   "params": [
+    "data_agent_name",
+    "settings"
+   ]
+  },
+  {
+   "pkg": "google-adk 2.9.0",
+   "file": "google/adk/tools/data_agent/data_agent_tool.py",
+   "line": 563,
+   "style": "function",
+   "name": "ask_data_agent",
+   "description": "Asks a question to a data agent. Args: data_agent_name: The resource name of an existing data agent to ask, in format projects/{project}/locations/{location}/dataAgents/{agent}. query: The question to ask the agent. credentials: The credentials to use for the request. settings: Tool configuration in",
+   "params": [
+    "data_agent_name",
+    "query",
+    "settings"
+   ]
+  },
+  {
+   "pkg": "google-adk 2.9.0",
+   "file": "google/adk/tools/data_agent/data_agent_tool.py",
+   "line": 702,
+   "style": "function",
+   "name": "create_data_agent",
+   "description": "Creates a new data agent. Args: project_id: The project in which to create the agent. data_agent_id: The ID to use for the new data agent. agent_config: A JSON string representing the DataAgent resource to create. For detailed REST resource schema and create documentation, see: https://docs.cloud.go",
+   "params": [
+    "project_id",
+    "data_agent_id",
+    "agent_config",
+    "location",
+    "settings"
+   ]
+  },
+  {
+   "pkg": "google-adk 2.9.0",
+   "file": "google/adk/tools/data_agent/data_agent_tool.py",
+   "line": 839,
+   "style": "function",
+   "name": "update_data_agent",
+   "description": "Updates an existing data agent. Args: data_agent_name: The name of the data agent to update, in format projects/{project}/locations/{location}/dataAgents/{agent}. agent_config: A JSON string representing the DataAgent resource. For detailed REST resource schema and patch documentation, see: https://",
+   "params": [
+    "data_agent_name",
+    "agent_config",
+    "update_mask",
+    "settings"
+   ]
+  },
+  {
+   "pkg": "google-adk 2.9.0",
+   "file": "google/adk/tools/data_agent/data_agent_tool.py",
+   "line": 948,
+   "style": "function",
+   "name": "delete_data_agent",
+   "description": "Deletes an existing data agent. Args: data_agent_name: The name of the data agent to delete, in format projects/{project}/locations/{location}/dataAgents/{agent}. credentials: The credentials to use for the request. settings: The configuration for the tool. Returns: A dictionary containing the statu",
+   "params": [
+    "data_agent_name",
+    "settings"
+   ]
+  },
+  {
+   "pkg": "google-adk 2.9.0",
+   "file": "google/adk/tools/environment/_read_file_tool.py",
+   "line": 46,
+   "style": "class",
+   "name": "ReadFile",
+   "description": "Read the contents of a file in the environment. Returns the file content with line numbers.",
+   "params": []
+  },
+  {
+   "pkg": "google-adk 2.9.0",
+   "file": "google/adk/tools/environment/_write_file_tool.py",
+   "line": 39,
+   "style": "class",
+   "name": "WriteFile",
+   "description": "Create or overwrite a file in the environment. Use for new files or full rewrites. For small changes to existing files, prefer EditFile.",
+   "params": []
+  },
+  {
+   "pkg": "google-adk 2.9.0",
+   "file": "google/adk/tools/environment/_edit_file_tool.py",
+   "line": 40,
+   "style": "class",
+   "name": "EditFile",
+   "description": "Replace an exact substring in an existing file with new text. The old_string must appear exactly once in the file. To create new files, use the WriteFile tool.",
+   "params": []
+  },
+  {
+   "pkg": "semantic-kernel 1.44.1",
+   "file": "semantic_kernel/core_plugins/http_plugin.py",
+   "line": 14,
+   "style": "class",
+   "name": "getAsync",
+   "description": "Makes a GET request to a url",
+   "params": []
+  },
+  {
+   "pkg": "semantic-kernel 1.44.1",
+   "file": "semantic_kernel/core_plugins/http_plugin.py",
+   "line": 137,
+   "style": "kernel_function",
+   "name": "get",
+   "description": "Sends an HTTP GET request to the specified URI and returns the response body as a string. Args: url: The URL to send the request to. Returns: The response body as a string.",
+   "params": [
+    "url"
+   ]
+  },
+  {
+   "pkg": "semantic-kernel 1.44.1",
+   "file": "semantic_kernel/core_plugins/http_plugin.py",
+   "line": 155,
+   "style": "kernel_function",
+   "name": "post",
+   "description": "Sends an HTTP POST request to the specified URI and returns the response body as a string. Args: url: The URI to send the request to. body: Contains the body of the request returns: The response body as a string.",
+   "params": [
+    "url",
+    "body"
+   ]
+  },
+  {
+   "pkg": "semantic-kernel 1.44.1",
+   "file": "semantic_kernel/core_plugins/http_plugin.py",
+   "line": 181,
+   "style": "kernel_function",
+   "name": "put",
+   "description": "Sends an HTTP PUT request to the specified URI and returns the response body as a string. Args: url: The URI to send the request to. body: Contains the body of the request Returns: The response body as a string.",
+   "params": [
+    "url",
+    "body"
+   ]
+  },
+  {
+   "pkg": "semantic-kernel 1.44.1",
+   "file": "semantic_kernel/core_plugins/http_plugin.py",
+   "line": 208,
+   "style": "kernel_function",
+   "name": "delete",
+   "description": "Sends an HTTP DELETE request to the specified URI and returns the response body as a string. Args: url: The URI to send the request to. Returns: The response body as a string.",
+   "params": [
+    "url"
+   ]
+  },
+  {
+   "pkg": "semantic-kernel 1.44.1",
+   "file": "semantic_kernel/core_plugins/math_plugin.py",
+   "line": 29,
+   "style": "kernel_function",
+   "name": "add",
+   "description": "Returns the addition result of the values provided (supports float and int).",
+   "params": [
+    "input",
+    "amount"
+   ]
+  },
+  {
+   "pkg": "semantic-kernel 1.44.1",
+   "file": "semantic_kernel/core_plugins/math_plugin.py",
+   "line": 40,
+   "style": "kernel_function",
+   "name": "subtract",
+   "description": "Returns the difference of numbers provided (supports float and int).",
+   "params": [
+    "input",
+    "amount"
+   ]
+  },
+  {
+   "pkg": "semantic-kernel 1.44.1",
+   "file": "semantic_kernel/core_plugins/text_plugin.py",
+   "line": 31,
+   "style": "kernel_function",
+   "name": "trim",
+   "description": "Trim whitespace from the start and end of a string. Example: KernelArguments[\"input\"] = \" hello world \" {{text.trim $input}} => \"hello world\"",
+   "params": [
+    "input"
+   ]
+  },
+  {
+   "pkg": "semantic-kernel 1.44.1",
+   "file": "semantic_kernel/core_plugins/text_plugin.py",
+   "line": 41,
+   "style": "kernel_function",
+   "name": "trim_start",
+   "description": "Trim whitespace from the start of a string. Example: KernelArguments[\"input\"] = \" hello world \" {{input.trim $input}} => \"hello world \"",
+   "params": [
+    "input"
+   ]
+  },
+  {
+   "pkg": "semantic-kernel 1.44.1",
+   "file": "semantic_kernel/core_plugins/text_plugin.py",
+   "line": 51,
+   "style": "kernel_function",
+   "name": "trim_end",
+   "description": "Trim whitespace from the end of a string. Example: KernelArguments[\"input\"] = \" hello world \" {{input.trim $input}} => \" hello world\"",
+   "params": [
+    "input"
+   ]
+  },
+  {
+   "pkg": "semantic-kernel 1.44.1",
+   "file": "semantic_kernel/core_plugins/text_plugin.py",
+   "line": 61,
+   "style": "kernel_function",
+   "name": "uppercase",
+   "description": "Convert a string to uppercase. Example: KernelArguments[\"input\"] = \"hello world\" {{input.uppercase $input}} => \"HELLO WORLD\"",
+   "params": [
+    "input"
+   ]
+  },
+  {
+   "pkg": "semantic-kernel 1.44.1",
+   "file": "semantic_kernel/core_plugins/text_plugin.py",
+   "line": 71,
+   "style": "kernel_function",
+   "name": "lowercase",
+   "description": "Convert a string to lowercase. Example: KernelArguments[\"input\"] = \"HELLO WORLD\" {{input.lowercase $input}} => \"hello world\"",
+   "params": [
+    "input"
+   ]
+  },
+  {
+   "pkg": "semantic-kernel 1.44.1",
+   "file": "semantic_kernel/core_plugins/time_plugin.py",
+   "line": 10,
+   "style": "class",
+   "name": "utcNow",
+   "description": "Get the current date.",
+   "params": []
+  },
+  {
+   "pkg": "semantic-kernel 1.44.1",
+   "file": "semantic_kernel/core_plugins/time_plugin.py",
+   "line": 41,
+   "style": "kernel_function",
+   "name": "date",
+   "description": "Get the current date. Example: {{time.date}} => Sunday, 12 January, 2031",
+   "params": []
+  },
+  {
+   "pkg": "semantic-kernel 1.44.1",
+   "file": "semantic_kernel/core_plugins/time_plugin.py",
+   "line": 51,
+   "style": "kernel_function",
+   "name": "today",
+   "description": "Get the current date. Example: {{time.today}} => Sunday, 12 January, 2031",
+   "params": []
+  },
+  {
+   "pkg": "semantic-kernel 1.44.1",
+   "file": "semantic_kernel/core_plugins/time_plugin.py",
+   "line": 60,
+   "style": "kernel_function",
+   "name": "iso_date",
+   "description": "Get the current date in iso format. Example: {{time.iso_date}} => 2031-01-12",
+   "params": []
+  },
+  {
+   "pkg": "semantic-kernel 1.44.1",
+   "file": "semantic_kernel/core_plugins/time_plugin.py",
+   "line": 70,
+   "style": "kernel_function",
+   "name": "now",
+   "description": "Get the current date and time in the local time zone. Example: {{time.now}} => Sunday, January 12, 2031 9:15 PM",
+   "params": []
+  },
+  {
+   "pkg": "semantic-kernel 1.44.1",
+   "file": "semantic_kernel/core_plugins/time_plugin.py",
+   "line": 80,
+   "style": "kernel_function",
+   "name": "utc_now",
+   "description": "Get the current date and time in UTC. Example: {{time.utcNow}} => Sunday, January 13, 2031 5:15 AM",
+   "params": []
+  },
+  {
+   "pkg": "semantic-kernel 1.44.1",
+   "file": "semantic_kernel/core_plugins/time_plugin.py",
+   "line": 90,
+   "style": "kernel_function",
+   "name": "time",
+   "description": "Get the current time in the local time zone. Example: {{time.time}} => 09:15:07 PM",
+   "params": []
+  },
+  {
+   "pkg": "semantic-kernel 1.44.1",
+   "file": "semantic_kernel/core_plugins/time_plugin.py",
+   "line": 100,
+   "style": "kernel_function",
+   "name": "year",
+   "description": "Get the current year. Example: {{time.year}} => 2031",
+   "params": []
+  },
+  {
+   "pkg": "semantic-kernel 1.44.1",
+   "file": "semantic_kernel/core_plugins/time_plugin.py",
+   "line": 110,
+   "style": "kernel_function",
+   "name": "month",
+   "description": "Get the current month. Example: {{time.month}} => January",
+   "params": []
+  },
+  {
+   "pkg": "semantic-kernel 1.44.1",
+   "file": "semantic_kernel/core_plugins/time_plugin.py",
+   "line": 120,
+   "style": "kernel_function",
+   "name": "month_number",
+   "description": "Get the current month number. Example: {{time.monthNumber}} => 01",
+   "params": []
+  },
+  {
+   "pkg": "semantic-kernel 1.44.1",
+   "file": "semantic_kernel/core_plugins/time_plugin.py",
+   "line": 130,
+   "style": "kernel_function",
+   "name": "day",
+   "description": "Get the current day of the month. Example: {{time.day}} => 12",
+   "params": []
+  },
+  {
+   "pkg": "semantic-kernel 1.44.1",
+   "file": "semantic_kernel/core_plugins/time_plugin.py",
+   "line": 140,
+   "style": "kernel_function",
+   "name": "day_of_week",
+   "description": "Get the current day of the week. Example: {{time.dayOfWeek}} => Sunday",
+   "params": []
+  },
+  {
+   "pkg": "semantic-kernel 1.44.1",
+   "file": "semantic_kernel/core_plugins/time_plugin.py",
+   "line": 150,
+   "style": "kernel_function",
+   "name": "hour",
+   "description": "Get the current hour. Example: {{time.hour}} => 9 PM",
+   "params": []
+  },
+  {
+   "pkg": "semantic-kernel 1.44.1",
+   "file": "semantic_kernel/core_plugins/time_plugin.py",
+   "line": 160,
+   "style": "kernel_function",
+   "name": "hour_number",
+   "description": "Get the current hour number. Example: {{time.hourNumber}} => 21",
+   "params": []
+  },
+  {
+   "pkg": "semantic-kernel 1.44.1",
+   "file": "semantic_kernel/core_plugins/time_plugin.py",
+   "line": 170,
+   "style": "kernel_function",
+   "name": "minute",
+   "description": "Get the current minute. Example: {{time.minute}} => 15",
+   "params": []
+  },
+  {
+   "pkg": "semantic-kernel 1.44.1",
+   "file": "semantic_kernel/core_plugins/time_plugin.py",
+   "line": 180,
+   "style": "kernel_function",
+   "name": "days_ago",
+   "description": "Get the date a provided number of days in the past. Args: days: The number of days to offset from today Returns: The date of the offset day. Example: {{time.days_ago $input}} => Sunday, 7 May, 2023",
+   "params": [
+    "days"
+   ]
+  },
+  {
+   "pkg": "semantic-kernel 1.44.1",
+   "file": "semantic_kernel/core_plugins/time_plugin.py",
+   "line": 195,
+   "style": "kernel_function",
+   "name": "date_matching_last_day_name",
+   "description": "Get the date of the last day matching the supplied day name. Args: day_name: The day name to match with. Returns: The date of the matching day. Example: {{time.date_matching_last_day_name $input}} => Sunday, 7 May, 2023",
+   "params": [
+    "day_name"
+   ]
+  },
+  {
+   "pkg": "semantic-kernel 1.44.1",
+   "file": "semantic_kernel/core_plugins/time_plugin.py",
+   "line": 215,
+   "style": "kernel_function",
+   "name": "second",
+   "description": "Get the seconds on the current minute. Example: {{time.second}} => 7",
+   "params": []
+  },
+  {
+   "pkg": "semantic-kernel 1.44.1",
+   "file": "semantic_kernel/core_plugins/time_plugin.py",
+   "line": 225,
+   "style": "kernel_function",
+   "name": "time_zone_offset",
+   "description": "Get the current time zone offset. Example: {{time.timeZoneOffset}} => -08:00",
+   "params": []
+  },
+  {
+   "pkg": "semantic-kernel 1.44.1",
+   "file": "semantic_kernel/core_plugins/time_plugin.py",
+   "line": 235,
+   "style": "kernel_function",
+   "name": "time_zone_name",
+   "description": "Get the current time zone name. Example: {{time.timeZoneName}} => PST",
+   "params": []
+  },
+  {
+   "pkg": "semantic-kernel 1.44.1",
+   "file": "semantic_kernel/core_plugins/web_search_engine_plugin.py",
+   "line": 11,
+   "style": "class",
+   "name": "search",
+   "description": "Performs a web search for a given query",
+   "params": []
+  },
+  {
+   "pkg": "semantic-kernel 1.44.1",
+   "file": "semantic_kernel/core_plugins/web_search_engine_plugin.py",
+   "line": 31,
+   "style": "kernel_function",
+   "name": "search",
+   "description": "Returns the search results of the query provided.",
+   "params": [
+    "query",
+    "num_results",
+    "offset"
+   ]
+  },
+  {
+   "pkg": "semantic-kernel 1.44.1",
+   "file": "semantic_kernel/core_plugins/text_memory_plugin.py",
+   "line": 30,
+   "style": "class",
+   "name": "recall",
+   "description": "Recall a fact from the long term memory",
+   "params": []
+  },
+  {
+   "pkg": "semantic-kernel 1.44.1",
+   "file": "semantic_kernel/core_plugins/text_memory_plugin.py",
+   "line": 49,
+   "style": "kernel_function",
+   "name": "recall",
+   "description": "Recall a fact from the long term memory. Example: {{memory.recall $ask}} => \"Paris\" Args: ask: The question to ask the memory collection: The collection to search for information relevance: The relevance score, from 0.0 to 1.0; 1.0 means perfect match limit: The maximum number of relevant memories t",
+   "params": [
+    "ask",
+    "collection",
+    "relevance",
+    "limit"
+   ]
+  },
+  {
+   "pkg": "semantic-kernel 1.44.1",
+   "file": "semantic_kernel/core_plugins/text_memory_plugin.py",
+   "line": 88,
+   "style": "kernel_function",
+   "name": "save",
+   "description": "Save a fact to the long term memory. Args: text: The text to save to the memory kernel: The kernel instance, that has a memory store collection: The collection to save the information key: The unique key to associate with the information",
+   "params": [
+    "text",
+    "key",
+    "collection"
+   ]
+  },
+  {
+   "pkg": "semantic-kernel 1.44.1",
+   "file": "semantic_kernel/core_plugins/conversation_summary_plugin.py",
+   "line": 17,
+   "style": "class",
+   "name": "SummarizeConversation",
+   "description": "Given a long conversation transcript, summarize the conversation.",
+   "params": []
+  },
+  {
+   "pkg": "semantic-kernel 1.44.1",
+   "file": "semantic_kernel/core_plugins/conversation_summary_plugin.py",
+   "line": 66,
+   "style": "kernel_function",
+   "name": "summarize_conversation",
+   "description": "Given a long conversation transcript, summarize the conversation. Args: input (str): A long conversation transcript. kernel (Kernel): The kernel for function execution. arguments (KernelArguments): Arguments used by the kernel. Returns: KernelArguments with the summarized conversation result in key ",
+   "params": [
+    "input",
+    "kernel",
+    "arguments"
+   ]
+  },
+  {
+   "pkg": "semantic-kernel 1.44.1",
+   "file": "semantic_kernel/core_plugins/sessions_python_tool/sessions_python_plugin.py",
+   "line": 34,
+   "style": "class",
+   "name": "execute_code",
+   "description": "Executes the provided Python code. Start and end the code snippet with double quotes to define it as a string. Insert \\n within the string wherever a new line should appear. Add spaces directly after \\n sequences to replicate indentation. Use \" to include double quotes within the code without ending",
+   "params": []
+  },
+  {
+   "pkg": "semantic-kernel 1.44.1",
+   "file": "semantic_kernel/core_plugins/sessions_python_tool/sessions_python_plugin.py",
+   "line": 272,
+   "style": "kernel_function",
+   "name": "execute_code",
+   "description": "Executes the provided Python code. Args: code (str): The valid Python code to execute Returns: str: The result of the Python code execution in the form of Result, Stdout, and Stderr Raises: FunctionExecutionException: If the provided code is empty.",
+   "params": [
+    "code"
+   ]
+  },
+  {
+   "pkg": "semantic-kernel 1.44.1",
+   "file": "semantic_kernel/core_plugins/sessions_python_tool/sessions_python_plugin.py",
+   "line": 330,
+   "style": "kernel_function",
+   "name": "upload_file",
+   "description": "Upload a file to the session pool. Args: remote_file_path (str): The path to the file in the session. local_file_path (str): The path to the file on the local machine. Must be within allowed_upload_directories. Returns: RemoteFileMetadata: The metadata of the uploaded file. Raises: FunctionExecution",
+   "params": [
+    "local_file_path",
+    "remote_file_path"
+   ]
+  },
+  {
+   "pkg": "semantic-kernel 1.44.1",
+   "file": "semantic_kernel/core_plugins/sessions_python_tool/sessions_python_plugin.py",
+   "line": 387,
+   "style": "kernel_function",
+   "name": "list_files",
+   "description": "List the files in the session pool. Returns: list[SessionsRemoteFileMetadata]: The metadata for the files in the session pool",
+   "params": []
+  },
+  {
+   "pkg": "semantic-kernel 1.44.1",
+   "file": "semantic_kernel/core_plugins/crew_ai/crew_ai_enterprise.py",
+   "line": 109,
+   "style": "kernel_function",
+   "name": "get_crew_kickoff_status",
+   "description": "Get the status of a Crew AI task. Args: kickoff_id (str): The ID of the kickoff response. Returns: CrewAIStatusResponse: The status response of the task.",
+   "params": [
+    "kickoff_id"
+   ]
+  },
+  {
+   "pkg": "semantic-kernel 1.44.1",
+   "file": "semantic_kernel/core_plugins/crew_ai/crew_ai_enterprise.py",
+   "line": 128,
+   "style": "kernel_function",
+   "name": "wait_for_crew_completion",
+   "description": "Wait for the completion of a Crew AI task. Args: kickoff_id (str): The ID of the kickoff response. Returns: str: The result of the task. Raises: FunctionExecutionException: If the task fails or an error occurs while waiting for completion.",
+   "params": [
+    "kickoff_id"
+   ]
+  },
+  {
+   "pkg": "ag2 0.14.0",
+   "file": "autogen/tools/experimental/messageplatform/discord/discord.py",
+   "line": 23,
+   "style": "class",
+   "name": "discord_send",
+   "description": "Sends a message to a Discord channel.",
+   "params": []
+  },
+  {
+   "pkg": "ag2 0.14.0",
+   "file": "autogen/tools/experimental/messageplatform/discord/discord.py",
+   "line": 118,
+   "style": "class",
+   "name": "discord_retrieve",
+   "description": "Retrieves messages from a Discord channel based datetime/message ID and/or number of latest messages.",
+   "params": []
+  },
+  {
+   "pkg": "ag2 0.14.0",
+   "file": "autogen/tools/experimental/messageplatform/slack/slack.py",
+   "line": 23,
+   "style": "class",
+   "name": "slack_send",
+   "description": "Sends a message to a Slack channel.",
+   "params": []
+  },
+  {
+   "pkg": "ag2 0.14.0",
+   "file": "autogen/tools/experimental/messageplatform/slack/slack.py",
+   "line": 88,
+   "style": "class",
+   "name": "slack_retrieve",
+   "description": "Retrieves messages from a Slack channel based datetime/message ID and/or number of latest messages.",
+   "params": []
+  },
+  {
+   "pkg": "ag2 0.14.0",
+   "file": "autogen/tools/experimental/messageplatform/slack/slack.py",
+   "line": 191,
+   "style": "class",
+   "name": "slack_retrieve_replies",
+   "description": "Retrieves replies to a specific Slack message, checking both thread replies and messages in the channel after the original message.",
+   "params": []
+  },
+  {
+   "pkg": "ag2 0.14.0",
+   "file": "autogen/tools/experimental/messageplatform/telegram/telegram.py",
+   "line": 88,
+   "style": "class",
+   "name": "telegram_send",
+   "description": "Sends a message to a personal channel, bot channel, group, or channel.",
+   "params": []
+  },
+  {
+   "pkg": "ag2 0.14.0",
+   "file": "autogen/tools/experimental/messageplatform/telegram/telegram.py",
+   "line": 157,
+   "style": "class",
+   "name": "telegram_retrieve",
+   "description": "Retrieves messages from a Telegram chat based on datetime/message ID and/or number of latest messages.",
+   "params": []
+  },
+  {
+   "pkg": "ag2 0.14.0",
+   "file": "autogen/tools/experimental/apply_patch/apply_patch_tool.py",
+   "line": 180,
+   "style": "function",
+   "name": "apply_diff",
+   "description": "Apply a V4A diff to file content.",
+   "params": [
+    "current_content",
+    "diff",
+    "create"
+   ]
+  },
+  {
+   "pkg": "ag2 0.14.0",
+   "file": "autogen/tools/experimental/apply_patch/apply_patch_tool.py",
+   "line": 412,
+   "style": "class",
+   "name": "apply_patch_tool",
+   "description": "Apply code patches to create, update, or delete files",
+   "params": []
+  },
+  {
+   "pkg": "ag2 0.14.0",
+   "file": "autogen/tools/experimental/duckduckgo/duckduckgo_search.py",
+   "line": 69,
+   "style": "class",
+   "name": "duckduckgo_search",
+   "description": "Use the DuckDuckGo Search API to perform a search.",
+   "params": []
+  },
+  {
+   "pkg": "ag2 0.14.0",
+   "file": "autogen/tools/experimental/tavily/tavily_search.py",
+   "line": 105,
+   "style": "class",
+   "name": "tavily_search",
+   "description": "Use the Tavily Search API to perform a search.",
+   "params": []
+  },
+  {
+   "pkg": "ag2 0.14.0",
+   "file": "autogen/tools/experimental/perplexity/perplexity_search.py",
+   "line": 97,
+   "style": "class",
+   "name": "perplexity-search",
+   "description": "Perplexity AI search tool for web search, news search, and conversational search for finding answers to everyday questions, conducting in-depth research and analysis.",
+   "params": []
+  },
+  {
+   "pkg": "ag2 0.14.0",
+   "file": "autogen/tools/experimental/deep_research/deep_research.py",
+   "line": 126,
+   "style": "class",
+   "name": "SummarizerAgent",
+   "description": "Delegate a research task to the deep research agent.",
+   "params": []
+  },
+  {
+   "pkg": "ag2 0.14.0",
+   "file": "autogen/tools/experimental/quick_research/quick_research.py",
+   "line": 316,
+   "style": "class",
+   "name": "quick_research",
+   "description": "Research multiple queries in parallel using web search, crawling, and LLM summarization.",
+   "params": []
+  },
+  {
+   "pkg": "ag2 0.14.0",
+   "file": "autogen/tools/experimental/google_search/youtube_search.py",
+   "line": 135,
+   "style": "class",
+   "name": "youtube_search",
+   "description": "Search for YouTube videos based on a query, optionally including detailed information.",
+   "params": []
+  },
+  {
+   "pkg": "ag2 0.14.0",
+   "file": "autogen/tools/experimental/tinyfish/tinyfish_tool.py",
+   "line": 291,
+   "style": "class",
+   "name": "tinyfish_scrape",
+   "description": "Deep-scrape a URL using TinyFish. Pass a URL and a natural language goal describing what to extract.",
+   "params": []
+  },
+  {
+   "pkg": "ag2 0.14.0",
+   "file": "autogen/tools/experimental/tinyfish/tinyfish_tool.py",
+   "line": 364,
+   "style": "class",
+   "name": "tinyfish_search",
+   "description": "Search the web using TinyFish. Returns ranked results with titles, snippets, site names, and URLs.",
+   "params": []
+  },
+  {
+   "pkg": "ag2 0.14.0",
+   "file": "autogen/tools/experimental/tinyfish/tinyfish_tool.py",
+   "line": 433,
+   "style": "class",
+   "name": "tinyfish_fetch",
+   "description": "Fetch and extract clean content from URLs using TinyFish. Returns extracted content and per-URL errors.",
+   "params": []
+  },
+  {
+   "pkg": "ag2 0.14.0",
+   "file": "autogen/tools/experimental/crawl4ai/crawl4ai.py",
+   "line": 25,
+   "style": "class",
+   "name": "crawl4ai",
+   "description": "Crawl a website and extract information.",
+   "params": []
+  },
+  {
+   "pkg": "crewai 1.15.2",
+   "file": "crewai/tools/agent_tools/read_file_tool.py",
+   "line": 24,
+   "style": "class",
+   "name": "read_file",
+   "description": "Read content from an input file by name. Returns file content as text for text files, or base64 for binary files.",
+   "params": []
+  },
+  {
+   "pkg": "crewai 1.15.2",
+   "file": "crewai/tools/memory_tools.py",
+   "line": 104,
+   "style": "function",
+   "name": "create_memory_tools",
+   "description": "Create Recall and Remember tools for the given memory instance. When memory is read-only (``_read_only=True``), only the RecallMemoryTool is returned \u2014 the RememberTool is omitted so agents are never offered a save capability they cannot use. Args: memory: A Memory, MemoryScope, or MemorySlice insta",
+   "params": [
+    "memory"
+   ]
+  },
+  {
+   "pkg": "crewai 1.15.2",
+   "file": "crewai/tools/cache_tools/cache_tools.py",
+   "line": 8,
+   "style": "class",
+   "name": "Hit Cache",
+   "description": "Cache Handler for the crew",
+   "params": []
+  }
+ ],
+ "skipped": [
+  [
+   "google-adk 2.9.0",
+   "google/adk/tools/bash_tool.py:140",
+   "ExecuteBashTool"
+  ],
+  [
+   "google-adk 2.9.0",
+   "google/adk/tools/transfer_to_agent_tool.py:68",
+   "TransferToAgentTool"
+  ],
+  [
+   "google-adk 2.9.0",
+   "google/adk/tools/spanner/admin_toolset.py:38",
+   "SpannerAdminToolset"
+  ],
+  [
+   "google-adk 2.9.0",
+   "google/adk/tools/spanner/spanner_toolset.py:41",
+   "SpannerToolset"
+  ],
+  [
+   "google-adk 2.9.0",
+   "google/adk/tools/bigtable/bigtable_toolset.py:40",
+   "BigtableParameterizedViewTool"
+  ],
+  [
+   "google-adk 2.9.0",
+   "google/adk/tools/bigtable/bigtable_toolset.py:121",
+   "BigtableToolset"
+  ],
+  [
+   "google-adk 2.9.0",
+   "google/adk/tools/pubsub/pubsub_toolset.py:36",
+   "PubSubToolset"
+  ],
+  [
+   "google-adk 2.9.0",
+   "google/adk/tools/load_memory_tool.py:53",
+   "LoadMemoryTool"
+  ],
+  [
+   "google-adk 2.9.0",
+   "google/adk/tools/environment/_execute_tool.py:52",
+   "ExecuteTool"
+  ],
+  [
+   "ag2 0.14.0",
+   "autogen/tools/experimental/wikipedia/wikipedia.py:125",
+   "WikipediaQueryRunTool"
+  ],
+  [
+   "ag2 0.14.0",
+   "autogen/tools/experimental/wikipedia/wikipedia.py:196",
+   "WikipediaPageLoadTool"
+  ],
+  [
+   "ag2 0.14.0",
+   "autogen/tools/experimental/google_search/google_search.py:44",
+   "GoogleSearchTool"
+  ],
+  [
+   "crewai 1.15.2",
+   "crewai/tools/agent_tools/ask_question_tool.py:14",
+   "AskQuestionTool"
+  ],
+  [
+   "crewai 1.15.2",
+   "crewai/tools/agent_tools/delegate_work_tool.py:16",
+   "DelegateWorkTool"
+  ],
+  [
+   "crewai 1.15.2",
+   "crewai/tools/agent_tools/add_image_tool.py:16",
+   "AddImageTool"
+  ],
+  [
+   "crewai 1.15.2",
+   "crewai/tools/memory_tools.py:25",
+   "RecallMemoryTool"
+  ],
+  [
+   "crewai 1.15.2",
+   "crewai/tools/memory_tools.py:75",
+   "RememberTool"
+  ]
+ ]
+}

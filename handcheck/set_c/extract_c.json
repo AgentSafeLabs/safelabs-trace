@@ -1,0 +1,188 @@
+{
+ "tools": [
+  {
+   "pkg": "ag2 0.14.0",
+   "file": "autogen/tools/experimental/google/drive/drive_functions.py",
+   "line": 87,
+   "style": "function",
+   "name": "download_file",
+   "description": "Download or export file based on its MIME type, optionally saving to a subfolder.",
+   "params": [
+    "service",
+    "file_id",
+    "file_name",
+    "mime_type",
+    "download_folder",
+    "subfolder_path"
+   ]
+  },
+  {
+   "pkg": "ag2 0.14.0",
+   "file": "autogen/tools/experimental/browser_use/browser_use.py",
+   "line": 70,
+   "style": "class",
+   "name": "browser_use",
+   "description": "Use the browser to perform a task.",
+   "params": []
+  },
+  {
+   "pkg": "google-adk 2.9.0",
+   "file": "google/adk/tools/url_context_tool.py",
+   "line": 32,
+   "style": "class",
+   "name": "url_context",
+   "description": "url_context",
+   "params": []
+  },
+  {
+   "pkg": "google-adk 2.9.0",
+   "file": "google/adk/tools/google_maps_grounding_tool.py",
+   "line": 31,
+   "style": "class",
+   "name": "google_maps",
+   "description": "google_maps",
+   "params": []
+  },
+  {
+   "pkg": "google-adk 2.9.0",
+   "file": "google/adk/tools/example_tool.py",
+   "line": 37,
+   "style": "class",
+   "name": "example_tool",
+   "description": "example tool",
+   "params": []
+  },
+  {
+   "pkg": "google-adk 2.9.0",
+   "file": "google/adk/tools/preload_memory_tool.py",
+   "line": 33,
+   "style": "class",
+   "name": "preload_memory",
+   "description": "preload_memory",
+   "params": []
+  },
+  {
+   "pkg": "semantic-kernel 1.44.1",
+   "file": "semantic_kernel/core_plugins/wait_plugin.py",
+   "line": 22,
+   "style": "kernel_function",
+   "name": "wait",
+   "description": "Wait for a certain number of seconds.",
+   "params": [
+    "input"
+   ]
+  }
+ ],
+ "skipped": [
+  [
+   "ag2 0.14.0",
+   "autogen/tools/experimental/google/drive/toolkit.py:23",
+   "GoogleDriveToolkit"
+  ],
+  [
+   "ag2 0.14.0",
+   "autogen/tools/experimental/reliable/reliable.py:523",
+   "ReliableTool"
+  ],
+  [
+   "openai-agents 0.18.0",
+   "agents/sandbox/capabilities/tools/apply_patch_tool.py:153",
+   "SandboxApplyPatchTool"
+  ],
+  [
+   "openai-agents 0.18.0",
+   "agents/sandbox/capabilities/tools/shell_tool.py:152",
+   "ExecCommandTool"
+  ],
+  [
+   "openai-agents 0.18.0",
+   "agents/sandbox/capabilities/tools/shell_tool.py:253",
+   "WriteStdinTool"
+  ],
+  [
+   "openai-agents 0.18.0",
+   "agents/sandbox/capabilities/tools/view_image.py:72",
+   "ViewImageTool"
+  ],
+  [
+   "google-adk 2.9.0",
+   "google/adk/tools/skill_toolset.py:209",
+   "ListSkillsTool"
+  ],
+  [
+   "google-adk 2.9.0",
+   "google/adk/tools/skill_toolset.py:240",
+   "SearchSkillsTool"
+  ],
+  [
+   "google-adk 2.9.0",
+   "google/adk/tools/skill_toolset.py:304",
+   "LoadSkillTool"
+  ],
+  [
+   "google-adk 2.9.0",
+   "google/adk/tools/skill_toolset.py:398",
+   "LoadSkillResourceTool"
+  ],
+  [
+   "google-adk 2.9.0",
+   "google/adk/tools/skill_toolset.py:960",
+   "RunSkillScriptTool"
+  ],
+  [
+   "google-adk 2.9.0",
+   "google/adk/tools/skill_toolset.py:1319",
+   "SkillToolset"
+  ],
+  [
+   "google-adk 2.9.0",
+   "google/adk/tools/vertex_ai_load_profiles_tool.py:32",
+   "VertexAiLoadProfilesTool"
+  ],
+  [
+   "google-adk 2.9.0",
+   "google/adk/tools/set_model_response_tool.py:115",
+   "SetModelResponseTool"
+  ],
+  [
+   "google-adk 2.9.0",
+   "google/adk/tools/example_tool.py:100",
+   "ExampleToolConfig"
+  ],
+  [
+   "google-adk 2.9.0",
+   "google/adk/tools/long_running_tool.py:27",
+   "LongRunningFunctionTool"
+  ],
+  [
+   "google-adk 2.9.0",
+   "google/adk/tools/retrieval/vertex_ai_rag_retrieval.py:40",
+   "VertexAiRagRetrieval"
+  ],
+  [
+   "google-adk 2.9.0",
+   "google/adk/tools/retrieval/llama_index_retrieval.py:31",
+   "LlamaIndexRetrieval"
+  ],
+  [
+   "llama-index-core",
+   "llama_index/core/tools/retriever_tool.py:26",
+   "RetrieverTool"
+  ],
+  [
+   "llama-index-core",
+   "llama_index/core/tools/query_engine.py:17",
+   "QueryEngineTool"
+  ],
+  [
+   "llama-index-core",
+   "llama_index/core/tools/query_plan.py:84",
+   "QueryPlanTool"
+  ],
+  [
+   "llama-index-core",
+   "llama_index/core/tools/ondemand_loader_tool.py:20",
+   "OnDemandLoaderTool"
+  ]
+ ]
+}
