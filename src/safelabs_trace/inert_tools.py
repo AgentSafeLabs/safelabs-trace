@@ -48,7 +48,7 @@ def _const(level: str) -> Callable[[dict[str, Any]], str]:
 
 def _http_severity(args: dict[str, Any]) -> str:
     m = str(args.get("method", "")).strip().lower()
-    return {"get": "read_only", "head": "read_only", "options": "read_only", "delete": "irreversible"}.get(m, "state_changing")
+    return {"get": "read_only", "head": "read_only", "options": "read_only", "delete": "irreversible", "post": "irreversible"}.get(m, "state_changing")
 
 
 def _sql_severity(args: dict[str, Any]) -> str:

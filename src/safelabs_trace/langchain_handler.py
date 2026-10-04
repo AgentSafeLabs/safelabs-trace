@@ -31,7 +31,7 @@ from langchain_core.callbacks import BaseCallbackHandler
 
 from safelabs_trace import __version__ as PACKAGE_VERSION
 from safelabs_trace._common import (
-    build_agent_end, build_session_end, build_stop, build_tool_executed, build_tool_requested, safe_emit, tags as _tags,
+    build_agent_end, build_session_end, build_stop, build_tool_executed, build_tool_requested, remember_description, safe_emit, tags as _tags,
 )
 from safelabs_trace.schema import AgentStart, ModelCallEnd, ModelCallStart, SessionStart, Usage, build_event
 from safelabs_trace.severity import TAGGER_VERSION, load_rules
@@ -67,6 +67,7 @@ class TraceCallbackHandler(BaseCallbackHandler):
         self.declared, self.overrides, self.unknown_default = dict(declared or {}), dict(overrides or {}), unknown_default
         self.rules = rules if rules is not None else load_rules()
         self.adapter = adapter
+        self.descriptions: dict[str, str] = {}  # tool name -> description, in memory only, for the tagger; never written to a trace
         self.errors: list[str] = []
         self.version = _lc_version()
         self._root: dict[UUID, UUID] = {}  # run_id -> root run id
@@ -77,6 +78,7 @@ class TraceCallbackHandler(BaseCallbackHandler):
     def register_tools(self, tools: list[Any]) -> None:
         """Read declared hints from ``BaseTool.metadata`` (langchain_core/tools/base.py:490)."""
         for t in tools:
+            remember_description(self.descriptions, getattr(t, "name", None), getattr(t, "description", None))
             md = getattr(t, "metadata", None)
             if isinstance(md, dict) and md:
                 self.declared[getattr(t, "name", "")] = md
@@ -155,6 +157,10 @@ class TraceCallbackHandler(BaseCallbackHandler):
         tools = params.get("tools")
         offered = None
         if isinstance(tools, list):
+            for x in tools:
+                if isinstance(x, dict):
+                    f = x.get("function") if isinstance(x.get("function"), dict) else x
+                    remember_description(self.descriptions, f.get("name"), f.get("description"))
             offered = [str((x.get("function") or x).get("name")) for x in tools if isinstance(x, dict) and (x.get("function") or x).get("name")]
         vals = {"provider": provider, "model_requested": model, "tools_offered": offered}
         ev = build_event(ModelCallStart, _tags(vals, inferred=("provider", "model_requested", "tools_offered")), trace_id=st["trace_id"],
@@ -214,7 +220,8 @@ class TraceCallbackHandler(BaseCallbackHandler):
     def _request(self, st: dict[str, Any], name: str, args: Any, call_id: str | None, model_event: str | None, model_call: str | None, *, observed_at: str) -> Any:
         ev, tagged = build_tool_requested(self.writer, trace_id=st["trace_id"], session_id=st["session_id"], parent_event_id=model_event or st["agent_start_id"],
                                           name=name, args=args, call_id=call_id, model_call_id=model_call, observed_at=observed_at, declared=self.declared.get(name),
-                                          overrides=self.overrides, rules=self.rules, unknown_default=self.unknown_default)
+                                          overrides=self.overrides, rules=self.rules, unknown_default=self.unknown_default,
+                                          description=self.descriptions.get(name))
         self._write(st, ev)
         st["requested"][call_id or ev.event_id] = (ev.event_id, tagged)
         return ev
@@ -226,6 +233,8 @@ class TraceCallbackHandler(BaseCallbackHandler):
             if st is None:
                 return
         name = _name(serialized, kwargs)
+        if isinstance(serialized, dict):
+            remember_description(self.descriptions, name, serialized.get("description"))
         call_id = kwargs.get("tool_call_id")
         args = inputs if isinstance(inputs, dict) else None
         known = st["requested"].get(call_id) if call_id else None

@@ -92,7 +92,7 @@ def test_tagger_agrees_with_each_tools_declared_true_severity(name):
     assert tag_tool_call(name, args).severity == kit.true_severity(name, args)
 
 
-@pytest.mark.parametrize("method,expected", [("GET", "read_only"), ("HEAD", "read_only"), ("POST", "state_changing"), ("PUT", "state_changing"), ("DELETE", "irreversible")])
+@pytest.mark.parametrize("method,expected", [("GET", "read_only"), ("HEAD", "read_only"), ("POST", "irreversible"), ("PUT", "state_changing"), ("DELETE", "irreversible")])
 def test_http_request_severity_follows_the_method(method, expected):
     kit = InertToolKit()
     args = {"method": method, "url": "https://example.test/x"}

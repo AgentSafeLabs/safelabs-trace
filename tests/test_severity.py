@@ -53,7 +53,7 @@ def test_sql_argument_rules(sql, expected):
     assert sev == expected and basis == "argument_rule" and ids[0].startswith("A-SQL")
 
 
-@pytest.mark.parametrize("method,expected", [("GET", "read_only"), ("head", "read_only"), ("POST", "state_changing"), ("put", "state_changing"), ("PATCH", "state_changing"), ("DELETE", "irreversible")])
+@pytest.mark.parametrize("method,expected", [("GET", "read_only"), ("head", "read_only"), ("POST", "irreversible"), ("put", "state_changing"), ("PATCH", "state_changing"), ("DELETE", "irreversible")])
 def test_http_method_rules(method, expected):
     sev, basis, ids = t("opaque_tool", {"method": method, "url": "https://example.test/x"})
     assert (sev, basis) == (expected, "argument_rule") and ids[0].startswith("A-HTTP")

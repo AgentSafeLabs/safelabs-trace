@@ -38,7 +38,7 @@ from typing import Any, Callable
 
 from safelabs_trace import __version__ as PACKAGE_VERSION
 from safelabs_trace._common import (
-    build_agent_end, build_session_end, build_stop, build_tool_executed, build_tool_requested, safe_emit, tags as _tags,
+    build_agent_end, build_session_end, build_stop, build_tool_executed, build_tool_requested, remember_description, safe_emit, tags as _tags,
 )
 from safelabs_trace.schema import AgentRef, AgentStart, ModelCallEnd, ModelCallStart, SessionStart, Usage, build_event
 from safelabs_trace.severity import TAGGER_VERSION, load_rules
@@ -79,6 +79,7 @@ class ADKTraceHandler:
         self.declared, self.overrides, self.unknown_default = dict(declared or {}), dict(overrides or {}), unknown_default
         self.rules = rules if rules is not None else load_rules()
         self.adapter = adapter
+        self.descriptions: dict[str, str] = {}  # tool name -> description, in memory only, for the tagger; never written to a trace
         self.errors: list[str] = []
         self.version = _adk_version()
         self._tr: dict[str, dict[str, Any]] = {}  # invocation id -> trace state
@@ -87,6 +88,7 @@ class ADKTraceHandler:
     def register_tools(self, tools: list[Any]) -> None:
         """Read declared hints from ``BaseTool.custom_metadata`` (``tools/base_tool.py:90``)."""
         for t in tools:
+            remember_description(self.descriptions, getattr(t, "name", None), getattr(t, "description", None))
             md = getattr(t, "custom_metadata", None)
             if isinstance(md, dict) and md:
                 self.declared[getattr(t, "name", "")] = md
@@ -208,6 +210,8 @@ class ADKTraceHandler:
         params = {k: v for k, v in (("temperature", getattr(cfg, "temperature", None)), ("max_tokens", getattr(cfg, "max_output_tokens", None))) if v is not None}
         tools = getattr(llm_request, "tools_dict", None)
         offered = sorted(tools) if isinstance(tools, dict) else None
+        for tname, tool in (tools.items() if isinstance(tools, dict) else ()):
+            remember_description(self.descriptions, tname, getattr(tool, "description", None))
         vals = {"model_requested": getattr(llm_request, "model", None), "params": params or None, "tools_offered": offered}
         parent = st["stack"][-1]["event_id"] if st["stack"] else st["root_start_id"]
         call_id = str(uuid.uuid4())  # ADK has no model-call id
@@ -252,7 +256,8 @@ class ADKTraceHandler:
         parent = model_event or (st["stack"][-1]["event_id"] if st["stack"] else st["root_start_id"])
         ev, tagged = build_tool_requested(self.writer, trace_id=st["trace_id"], session_id=st["session_id"], parent_event_id=parent, name=name, args=args,
                                           call_id=call_id, model_call_id=model_call, observed_at=observed_at, declared=self.declared.get(name),
-                                          overrides=self.overrides, rules=self.rules, unknown_default=self.unknown_default)
+                                          overrides=self.overrides, rules=self.rules, unknown_default=self.unknown_default,
+                                          description=self.descriptions.get(name))
         self._write(st, ev)
         st["pending"][name].append({"event_id": ev.event_id, "tool_call_id": call_id, "tagged": tagged, "args": _canon(args) if isinstance(args, dict) else None})
         return ev
@@ -277,6 +282,7 @@ class ADKTraceHandler:
 
     def _tool_start(self, st: dict[str, Any], tool: Any, args: Any, ctx: Any) -> None:
         name = getattr(tool, "name", None) or "unknown"
+        remember_description(self.descriptions, name, getattr(tool, "description", None))
         call_id = getattr(ctx, "function_call_id", None)
         req = self._match(st, name, call_id, args)
         if req is None:  # a tool ran with no request seen in a model response
