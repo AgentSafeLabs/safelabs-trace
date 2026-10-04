@@ -1,0 +1,394 @@
+"""Runs the trial matrix through safelabs-eval's own ``run_trial`` (retries, missing_infrastructure, scoring, AgentPort-Bench rows),
+writes digest-only traces, and keeps a manifest that links each trial to its trace and its result row.
+
+Files (all inside the run's output folder):
+  results.jsonl            one AgentPort-Bench row per trial (BenchTrialResult; no prompt or response text)
+  results.manifest.json    safelabs-eval's RunManifest (counts, retry profile, rerun_history)
+  trace_manifest.json      trial -> trace file -> result row, with sha256 of every trace and of the results file
+  traces/<trial>.jsonl     digest-only traces (git-ignored; a .gitignore with ``traces/`` is written next to them)
+  divergence_summary.json  text-vs-action summary per framework x model (+ divergence_summary.md)
+A trial that could not start because the budget would be crossed is recorded only in trace_manifest.json with status ``not_run_budget``
+(it has no result row, so the results file stays a valid AgentPort-Bench file); ``--resume`` runs exactly those.
+"""
+
+from __future__ import annotations
+
+import asyncio
+import hashlib
+import json
+import os
+from dataclasses import dataclass
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Any, Awaitable, Callable
+
+from agentport_bench import __version__ as HARNESS_VERSION
+from agentport_bench.harness import (
+    MISSING_EXCLUDED_NOTE, RerunCell, RerunSummary, RunManifest, _replace_file_atomically, existing_trial_keys, format_rerun_lines,
+    history_entry_from_rerun, history_entry_initial, run_trial, summarize_rows, write_manifest,
+)
+from agentport_bench.schema import BenchTrialResult
+from safelabs.agents.retry import resolve_retry_settings
+from safelabs.prompts import get_library
+from safelabs_trace.divergence import action_verdict, divergence_table, text_verdict
+from safelabs_trace.writer import _check_capture_dir, read_trace
+
+from trace_runner.agents import STOP_ERROR, TracedAdapter, TrialCtx, safe_name
+from trace_runner.config import ModelCfg, RunCfg
+from trace_runner.pricing import BudgetTracker, PriceTable
+
+SCHEMA = "1b-trace-manifest/1"
+
+
+@dataclass(frozen=True)
+class Trial:
+    framework: str
+    model: ModelCfg
+    item: Any
+    seed: int
+
+    @property
+    def trial_id(self) -> str:
+        return f"{self.framework}|{self.model.id}|{self.item.id}|{self.seed}"
+
+    @property
+    def key(self) -> tuple[str, str, str, int]:
+        return (self.model.id, self.framework, self.item.id, self.seed)
+
+
+def plan_trials(cfg: RunCfg, items: list[Any]) -> list[Trial]:
+    """seed -> item -> framework -> model, so a run that stops early (budget) has covered every cell about equally."""
+    return [Trial(fw, m, it, s) for s in range(cfg.trials) for it in items for fw in cfg.frameworks for m in cfg.models]
+
+
+@dataclass
+class Paths:
+    out: Path
+
+    @property
+    def traces(self) -> Path: return self.out / "traces"
+    @property
+    def results(self) -> Path: return self.out / "results.jsonl"
+    @property
+    def manifest(self) -> Path: return self.out / "results.manifest.json"
+    @property
+    def trace_manifest(self) -> Path: return self.out / "trace_manifest.json"
+    @property
+    def summary_json(self) -> Path: return self.out / "divergence_summary.json"
+    @property
+    def summary_md(self) -> Path: return self.out / "divergence_summary.md"
+
+
+def now() -> str:
+    return datetime.now(timezone.utc).isoformat()
+
+
+def sha256_file(p: Path) -> str:
+    return hashlib.sha256(p.read_bytes()).hexdigest()
+
+
+def write_json_atomic(path: Path, obj: Any) -> None:
+    tmp = path.with_name(f".{path.name}.{os.getpid()}.tmp")
+    tmp.write_text(json.dumps(obj, indent=2, sort_keys=True), encoding="utf-8")
+    os.replace(tmp, path)
+
+
+def read_rows(path: Path) -> list[BenchTrialResult]:
+    if not path.exists():
+        return []
+    return [BenchTrialResult(**json.loads(line)) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
+
+
+def trace_index(traces_dir: Path, trial_file: str) -> dict[str, Any]:
+    """ids, attempts and event counts of a trial's trace file (read back from disk, so the manifest describes what is really there)."""
+    p = traces_dir / trial_file
+    if not p.exists():
+        return {"trace_ids": [], "final_trace_id": None, "events": 0, "sha256": None}
+    by: dict[str, dict[str, Any]] = {}
+    for ev in read_trace(p):
+        d = by.setdefault(ev.trace_id, {"attempt": 0, "events": 0})
+        d["events"] += 1
+        if ev.type == "session.start" and getattr(ev, "trial", None):
+            d["attempt"] = int(ev.trial.get("attempt", 0))
+    order = sorted(by, key=lambda t: by[t]["attempt"])
+    return {"trace_ids": order, "final_trace_id": order[-1] if order else None, "events": sum(d["events"] for d in by.values()), "sha256": sha256_file(p)}
+
+
+class Runner:
+    def __init__(self, cfg: RunCfg, cfg_sha: str, items: list[Any], source: Any, scorer: Any, table: PriceTable, paths: Paths, salt: bytes, *,
+                 sleep: Callable[[float], Awaitable[None]] | None = None, jitter_fn: Callable[[], float] | None = None, mode: str = "real",
+                 salt_id: str | None = None) -> None:
+        self.cfg, self.cfg_sha, self.items, self.source, self.scorer, self.table = cfg, cfg_sha, items, source, scorer, table
+        self.paths, self.salt, self.sleep, self.jitter, self.mode = paths, salt, sleep, jitter_fn, mode
+        self.salt_id = salt_id
+        self.retry = resolve_retry_settings(cfg.retry_profile)
+        self.budget = BudgetTracker(cfg, table)
+        self._adapters: dict[tuple[str, str], TracedAdapter] = {}
+        self.item_by_id = {i.id: i for i in items}
+
+    # ---- setup ----------------------------------------------------------------------------------------------
+    def prepare(self) -> None:
+        self.paths.out.mkdir(parents=True, exist_ok=True)
+        gi = self.paths.out / ".gitignore"
+        if not gi.exists():
+            gi.write_text("traces/\n", encoding="utf-8")
+        self.paths.traces.mkdir(parents=True, exist_ok=True)
+        _check_capture_dir(self.paths.traces)  # refuses a traces folder inside a git tree that does not ignore it
+
+    def adapter(self, fw: str, model: ModelCfg) -> TracedAdapter:
+        k = (fw, model.id)
+        if k not in self._adapters:
+            self._adapters[k] = TracedAdapter(self.cfg, fw, model, self.source, self.salt, self.paths.traces)
+        return self._adapters[k]
+
+    # ---- one trial -------------------------------------------------------------------------------------------
+    async def _run_one(self, t: Trial, *, run_pass: int, attempt_base: int) -> tuple[BenchTrialResult, dict[str, Any]]:
+        ad = self.adapter(t.framework, t.model)
+        ad.set_context(TrialCtx(t.trial_id, t.item.id, t.seed, run_pass, attempt_base))
+        row = await run_trial(ad, t.item, self.scorer, model=t.model.id, framework=t.framework, trial_seed=t.seed, provider=t.model.provider,
+                              max_attempts=self.retry["max_attempts"], base_delay_s=self.retry["base_delay_s"], max_delay_s=self.retry["max_delay_s"],
+                              max_retry_after_s=self.retry["max_retry_after_s"], sleep=self.sleep, jitter_fn=self.jitter)
+        cost = 0.0 if row.is_missing else self.budget.record(t.model.id, row.usage)
+        return row, {"stop_status": ad.last.get("stop_status", STOP_ERROR) if not row.is_missing else STOP_ERROR,
+                     "model_calls": ad.last.get("model_calls"), "tools_called": ad.last.get("tools_called", []), "cost_usd": cost}
+
+    def _entry(self, t: Trial, row: BenchTrialResult | None, extra: dict[str, Any], status: str, prev: dict[str, Any] | None = None) -> dict[str, Any]:
+        tf = f"{safe_name(t.trial_id)}.jsonl"
+        idx = trace_index(self.paths.traces, tf) if row is not None else {"trace_ids": [], "final_trace_id": None, "events": 0, "sha256": None}
+        e = {"trial_id": t.trial_id, "framework": t.framework, "model": t.model.id, "prompt_id": t.item.id, "seed": t.seed, "status": status,
+             "result_key": {"model": t.model.id, "framework": t.framework, "prompt_id": t.item.id, "trial_seed": t.seed},
+             "trace_file": f"traces/{tf}" if idx["trace_ids"] else None, "trace_ids": idx["trace_ids"], "final_trace_id": idx["final_trace_id"],
+             "trace_events": idx["events"], "trace_sha256": idx["sha256"]}
+        if row is not None:
+            e.update(payload_hash=row.payload_hash, verdict=row.verdict.value if row.verdict else None, attempts=row.attempts, error_subclass=row.error_subclass,
+                     tool_call_only=row.tool_call_only, stop_status=extra.get("stop_status"), model_calls=extra.get("model_calls"),
+                     tools_called=extra.get("tools_called", []), cost_usd=round(extra.get("cost_usd", 0.0) + (prev or {}).get("cost_usd", 0.0), 8))
+        else:
+            e.update(payload_hash=None, verdict=None, attempts=0, error_subclass=None, tool_call_only=None, stop_status=None, model_calls=None, tools_called=[], cost_usd=0.0)
+        return e
+
+    # ---- manifests -------------------------------------------------------------------------------------------
+    def _load_tm(self) -> dict[str, Any]:
+        if self.paths.trace_manifest.exists():
+            return json.loads(self.paths.trace_manifest.read_text(encoding="utf-8"))
+        return {"schema": SCHEMA, "run_id": f"{self.cfg.run_name}-{datetime.now(timezone.utc):%Y%m%dT%H%M%SZ}", "created": now(), "trials": {}}
+
+    def _save(self, tm: dict[str, Any], started_at: str, kind: str, history_entry: Any = None, rerun: bool = False) -> None:
+        rows = read_rows(self.paths.results)
+        hist = tm.setdefault("config_sha256_history", [])
+        if not hist or hist[-1] != self.cfg_sha:
+            hist.append(self.cfg_sha)
+        tm.update(updated=now(), mode=self.mode, config_sha256=self.cfg_sha, salt_id=self.salt_id, item_ids=[i.id for i in self.items], capture="digest",
+                  results_file=self.paths.results.name, results_sha256=sha256_file(self.paths.results) if self.paths.results.exists() else None,
+                  budget={"cap_usd": self.cfg.budget.cap_usd, "spent_usd": round(self.budget.spent, 8), "stopped": self.budget.stopped,
+                          "unmetered_trials": self.budget.unmetered, "price_table_fake": self.table.fake},
+                  safety=getattr(self, "safety", None))
+        write_json_atomic(self.paths.trace_manifest, tm)
+        summary = summarize_rows(rows)
+        mf = self.paths.results.with_suffix(".manifest.json")
+        prior: RunManifest | None = None
+        if mf.exists():
+            try:
+                prior = RunManifest.model_validate_json(mf.read_text(encoding="utf-8"))
+            except ValueError:
+                prior = None
+        history = list(prior.rerun_history or []) if prior else []
+        if history_entry is not None:
+            history.append(history_entry)
+        m = RunManifest(
+            harness_version=HARNESS_VERSION, library_version=get_library().version, model=",".join(x.id for x in self.cfg.models),
+            framework=",".join(self.cfg.frameworks), started_at=prior.started_at if prior else started_at, finished_at=now(), trial_count=len(rows),
+            include_raw_output=False, scored_trials=summary.scored, missing_infrastructure=summary.missing_infrastructure,
+            missing_by_cell=summary.missing_by_cell, retries=summary.retries, tool_call_only=summary.tool_call_only, max_attempts=int(self.retry["max_attempts"]),
+            missing_trials_excluded=MISSING_EXCLUDED_NOTE, rerun_passes=max((r.rerun_passes for r in rows), default=0), retry_profile=self.cfg.retry_profile,
+            rerun_history=history)
+        write_manifest(self.paths.results, m)
+
+    # ---- the run ---------------------------------------------------------------------------------------------
+    async def run(self, *, resume: bool = True) -> dict[str, Any]:
+        self.prepare()
+        started = now()
+        tm = self._load_tm()
+        done = existing_trial_keys(self.paths.results) if resume else set()
+        plan = [t for t in plan_trials(self.cfg, self.items) if t.key not in done]
+        new_rows: list[BenchTrialResult] = []
+        stopped_at = None
+        self.budget.spent = sum(float(e.get("cost_usd") or 0.0) for e in tm["trials"].values())  # the cap covers the whole run folder, across --resume
+        try:
+            for i, t in enumerate(plan):
+                if not self.budget.can_start(t.model.id):
+                    self.budget.stopped, stopped_at = True, i
+                    break
+                row, extra = await self._run_one(t, run_pass=0, attempt_base=0)
+                with self.paths.results.open("a", encoding="utf-8") as f:
+                    f.write(row.model_dump_json() + "\n")
+                new_rows.append(row)
+                tm["trials"][t.trial_id] = self._entry(t, row, extra, "missing_infrastructure" if row.is_missing else "scored")
+            if stopped_at is not None:
+                for t in plan[stopped_at:]:
+                    tm["trials"][t.trial_id] = self._entry(t, None, {}, "not_run_budget")
+        finally:
+            self.paths.results.touch(exist_ok=True)
+            hist = history_entry_initial(new_rows, retry_profile=self.cfg.retry_profile, retry_settings=self.retry,
+                                         kind="run" if self.paths.results.with_suffix(".manifest.json").exists() else "initial")
+            self._save(tm, started, "run", hist)
+        summary = self.write_divergence()
+        return {"ran": len(new_rows), "not_run_budget": len(plan) - len(new_rows) if stopped_at is not None else 0, "spent_usd": self.budget.spent,
+                "stopped_for_budget": self.budget.stopped, "divergence": summary}
+
+    # ---- rerun only the missing rows ---------------------------------------------------------------------------
+    async def rerun_missing(self) -> RerunSummary:
+        self.prepare()
+        if not self.paths.results.exists():
+            raise FileNotFoundError(f"{self.paths.results} does not exist; nothing to rerun")
+        tm = self._load_tm()
+        lines = self.paths.results.read_text(encoding="utf-8").splitlines(keepends=True)
+        summary = RerunSummary()
+        by_key = {(t.model.id, t.framework, t.item.id, t.seed): t for t in plan_trials(self.cfg, self.items)}
+        targets: list[tuple[int, BenchTrialResult, Trial]] = []
+        for i, line in enumerate(lines):
+            if not line.strip():
+                continue
+            obj = json.loads(line)
+            if obj.get("status") != "missing_infrastructure":
+                continue
+            row = BenchTrialResult(**obj)
+            t = by_key.get((row.model, row.framework, row.prompt_id, row.trial_seed))
+            if t is None:
+                summary.skipped_not_selected += 1
+            else:
+                targets.append((i, row, t))
+        started = now()
+        for i, row, t in targets:
+            if not self.budget.can_start(t.model.id):
+                self.budget.stopped = True
+                summary.skipped_not_selected += 1  # left missing, to be reattempted later
+                continue
+            fresh, extra = await self._run_one(t, run_pass=row.rerun_passes + 1, attempt_base=row.attempts or 1)
+            merged = fresh.model_dump()
+            merged["attempts"] = (row.attempts or 1) + (fresh.attempts or 1)
+            merged["attempt_errors"] = list(row.attempt_errors or []) + list(fresh.attempt_errors or [])
+            merged["rerun_passes"] = row.rerun_passes + 1
+            new = type(fresh)(**merged)
+            lines[i] = new.model_dump_json() + ("\n" if lines[i].endswith("\n") else "")
+            summary.extra_attempts += fresh.attempts or 1
+            cell = summary.by_cell.setdefault(f"{row.framework}|{row.model}", RerunCell())
+            cell.reattempted += 1
+            summary.reattempted += 1
+            if new.is_missing:
+                cell.still_missing += 1
+                summary.still_missing += 1
+            else:
+                cell.recovered += 1
+                summary.recovered += 1
+            tm["trials"][t.trial_id] = self._entry(t, new, extra, "missing_infrastructure" if new.is_missing else "scored", prev=tm["trials"].get(t.trial_id))
+        if summary.reattempted:
+            _replace_file_atomically(self.paths.results, "".join(lines))
+            summary.rewrote_file = True
+        self._save(tm, started, "rerun", history_entry_from_rerun(summary, retry_profile=self.cfg.retry_profile, retry_settings=self.retry), rerun=True)
+        self.write_divergence()
+        return summary
+
+    # ---- divergence --------------------------------------------------------------------------------------------
+    def write_divergence(self) -> dict[str, Any]:
+        s = build_divergence(self.paths)
+        write_json_atomic(self.paths.summary_json, s)
+        self.paths.summary_md.write_text(format_divergence_md(s), encoding="utf-8")
+        return s
+
+
+def build_divergence(paths: Paths) -> dict[str, Any]:
+    rows = {(r.model, r.framework, r.prompt_id, r.trial_seed): r for r in read_rows(paths.results)}
+    tm = json.loads(paths.trace_manifest.read_text(encoding="utf-8"))
+    cells: dict[str, list[dict[str, Any]]] = {}
+    excluded = {"missing_infrastructure": 0, "not_run_budget": 0, "no_trace": 0}
+    cap_hit: dict[str, int] = {}
+    for e in tm["trials"].values():
+        cell = f"{e['framework']}|{e['model']}"
+        if e["status"] in ("not_run_budget", "missing_infrastructure"):
+            excluded[e["status"]] += 1
+            continue
+        r = rows[(e["model"], e["framework"], e["prompt_id"], e["seed"])]
+        events = []
+        if e["final_trace_id"]:
+            events = [ev for ev in read_trace(paths.out / e["trace_file"]) if ev.trace_id == e["final_trace_id"]]
+        else:
+            excluded["no_trace"] += 1
+        av = action_verdict(events) if events else None
+        cells.setdefault(cell, []).append({"text": text_verdict(r.verdict), "action": av.level if av else "unknown", "tool_call_only": bool(r.tool_call_only)})
+        if e.get("stop_status") == "cap_hit":
+            cap_hit[cell] = cap_hit.get(cell, 0) + 1
+    out_cells = {c: divergence_table(rs) for c, rs in sorted(cells.items())}
+    for c in out_cells:
+        out_cells[c]["cap_hit"] = cap_hit.get(c, 0)
+    allrows = [r for rs in cells.values() for r in rs]
+    total_cap = sum(cap_hit.values())
+    return {"basis": "text verdict from the scorer (PASS safe, FAIL/VULNERABLE unsafe, UNCERTAIN abstain, excluded from rates) against the highest tool-call severity in the final attempt's trace; "
+                     "counts are trials; missing_infrastructure and not_run_budget trials are excluded",
+            "excluded": excluded, "overall": {**divergence_table(allrows), "cap_hit": total_cap}, "by_cell": out_cells}
+
+
+def _pct(r: dict[str, Any]) -> str:
+    if r["value"] is None:
+        return "n/a (0)"
+    lo, hi = r["ci"]
+    return f"{100 * r['value']:.1f}% ({r['k']}/{r['n']}; 95% CI {100 * lo:.1f} to {100 * hi:.1f})"
+
+
+def format_divergence_md(s: dict[str, Any]) -> str:
+    lines = ["# Text-vs-action divergence", "", s["basis"], "",
+             f"Excluded trials: {s['excluded']}", "",
+             "| framework | model | trials | hidden-action rate | talk-only rate | ASR text-only | ASR action-aware | ASR lift (points) | cap hit |",
+             "|---|---|---|---|---|---|---|---|---|"]
+    for name, t in [*s["by_cell"].items(), ("ALL|ALL", s["overall"])]:
+        fw, m = name.split("|", 1)
+        lift = "n/a" if t["asr_lift"] is None else f"{100 * t['asr_lift']:.1f}"
+        lines.append(f"| {fw} | {m} | {t['n_known']} | {_pct(t['hidden_action_rate'])} | {_pct(t['talk_only_rate'])} | {_pct(t['asr_text_only'])} | "
+                     f"{_pct(t['asr_action_aware'])} | {lift} | {t.get('cap_hit', 0)} |")
+    lines += ["", "Hidden-action rate: share of text-safe trials with a state-changing or irreversible tool call. Talk-only rate: share of text-unsafe trials with no tool call. "
+              "ASR lift: action-aware minus text-only attack success rate."]
+    return "\n".join(lines) + "\n"
+
+
+def verify_manifest(paths: Paths) -> list[str]:
+    """Problems found (empty list = the trace manifest, the traces and the results file agree)."""
+    probs: list[str] = []
+    tm = json.loads(paths.trace_manifest.read_text(encoding="utf-8"))
+    if tm.get("schema") != SCHEMA:
+        probs.append("unknown schema")
+    if tm.get("results_sha256") != (sha256_file(paths.results) if paths.results.exists() else None):
+        probs.append("results file sha256 differs from the manifest")
+    rows = {(r.model, r.framework, r.prompt_id, r.trial_seed): r for r in read_rows(paths.results)}
+    seen: set[tuple] = set()
+    for tid, e in tm["trials"].items():
+        k = (e["result_key"]["model"], e["result_key"]["framework"], e["result_key"]["prompt_id"], e["result_key"]["trial_seed"])
+        if e["status"] == "not_run_budget":
+            if k in rows:
+                probs.append(f"{tid}: marked not_run_budget but has a result row")
+            continue
+        r = rows.get(k)
+        if r is None:
+            probs.append(f"{tid}: no result row")
+            continue
+        seen.add(k)
+        if r.payload_hash != e["payload_hash"]:
+            probs.append(f"{tid}: payload_hash differs")
+        if (r.status or "scored") != e["status"]:
+            probs.append(f"{tid}: status differs")
+        if e["trace_file"]:
+            p = paths.out / e["trace_file"]
+            if not p.exists():
+                probs.append(f"{tid}: trace file missing")
+                continue
+            if sha256_file(p) != e["trace_sha256"]:
+                probs.append(f"{tid}: trace sha256 differs")
+            ids = {ev.trace_id for ev in read_trace(p)}
+            for x in e["trace_ids"]:
+                if x not in ids:
+                    probs.append(f"{tid}: trace id {x} not in the file")
+        elif e["status"] == "scored":
+            probs.append(f"{tid}: scored trial without a trace")
+    for k in rows:
+        if k not in seen:
+            probs.append(f"result row {k} has no manifest entry")
+    return probs

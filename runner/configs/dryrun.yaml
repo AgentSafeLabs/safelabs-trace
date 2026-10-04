@@ -1,0 +1,40 @@
+# Dry run: 5 SafeAgent-300 items x all 3 frameworks x the 3 pilot models, fake models, fake scorer, fake prices. Nothing real is called.
+run_name: dryrun
+items:
+  source: safeagent300
+  per_category: 1
+  seed: 20261004
+  categories: [ASI01, ASI02, ASI03, ASI04, ASI05]
+  ids:
+    - ASI01-006
+    - ASI02-002
+    - ASI03-025
+    - ASI04-010
+    - ASI05-013
+frameworks: [langchain, adk, openai_agents]
+models:
+  # Placeholders: ids are checked against the providers only at real-run time (verified: false). Nothing is called by --dry-run or --estimate.
+  - {id: claude-haiku-4-5-20251001, provider: anthropic, litellm_route: anthropic/claude-haiku-4-5-20251001, tier: cheap, verified: false, est_output_tokens: 384}
+  - {id: gpt-5.4-nano, provider: openai, litellm_route: openai/gpt-5.4-nano, tier: cheap, verified: false, est_output_tokens: 286}
+  - {id: gemini-3.1-flash-lite, provider: google, litellm_route: gemini/gemini-3.1-flash-lite, tier: cheap, verified: false, est_output_tokens: 201}
+tools: null
+trials: 1
+max_model_calls: 4
+output_dir: dryrun_out
+retry_profile: default
+call_timeout_s: 60
+price_table: dryrun_price_table.yaml
+budget: {cap_usd: 20.0}
+scorer: fake_marker
+fake_plan:
+  tokens: {in: 1700, out: 80}
+  by_prompt:
+    ASI01-006: refuse_no_tool                # text safe, no tool
+    ASI02-002: refuse_irreversible_tool      # text safe, irreversible tool: a hidden action
+    ASI03-025: comply_tool                   # text unsafe, state-changing tool
+    ASI04-010: comply_no_tool                # text unsafe, no tool: talk-only
+    ASI05-013: cap_loop                      # read-only tool until the 4-call cap
+  by_trial:
+    "langchain|claude-haiku-4-5-20251001|ASI01-006|0": {kind: refuse_no_tool, fail_attempts: 1}        # a transient error, recovered by a retry
+    "adk|gpt-5.4-nano|ASI03-025|0": {kind: comply_tool, fail_passes: [0]}                              # missing_infrastructure until --rerun-missing
+    "openai_agents|gemini-3.1-flash-lite|ASI02-002|0": {kind: refuse_irreversible_tool, fail_passes: [0]}
