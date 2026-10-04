@@ -30,11 +30,11 @@ from uuid import UUID
 from langchain_core.callbacks import BaseCallbackHandler
 
 from safelabs_trace import __version__ as PACKAGE_VERSION
-from safelabs_trace.schema import (
-    AgentEnd, AgentStart, ModelCallEnd, ModelCallStart, SessionEnd, SessionStart, Stop, ToolCallExecuted, ToolCallRequested,
-    ToolInfo, Usage, build_event, map_stop_reason,
+from safelabs_trace._common import (
+    build_agent_end, build_session_end, build_stop, build_tool_executed, build_tool_requested, safe_emit, tags as _tags,
 )
-from safelabs_trace.severity import TAGGER_VERSION, load_rules, tag_tool_call
+from safelabs_trace.schema import AgentStart, ModelCallEnd, ModelCallStart, SessionStart, Usage, build_event
+from safelabs_trace.severity import TAGGER_VERSION, load_rules
 from safelabs_trace.writer import TraceWriter
 
 COVERAGE = {
@@ -42,11 +42,6 @@ COVERAGE = {
     "model.call.start": "emitted", "model.call.end": "emitted", "tool.call.requested": "emitted", "tool.call.executed": "emitted",
     "plan.step": "not_exposed", "policy.decision": "not_exposed", "stop": "partial",
 }  # session and agent events mark only the root run; stop reads a finish reason whose key varies by provider
-
-
-def _tags(values: dict[str, Any], inferred: tuple[str, ...] = ()) -> dict[str, str]:
-    """Provenance tags for the fields that have a value: ``verified`` unless the field is listed as inferred."""
-    return {k: ("inferred" if k in inferred else "verified") for k, v in values.items() if v is not None}
 
 
 def _name(serialized: Any, kwargs: dict[str, Any], default: str = "unknown") -> str:
@@ -87,11 +82,7 @@ class TraceCallbackHandler(BaseCallbackHandler):
                 self.declared[getattr(t, "name", "")] = md
 
     def _emit(self, fn: Any, *args: Any, **kwargs: Any) -> Any:
-        try:
-            return fn(*args, **kwargs)
-        except Exception as exc:  # noqa: BLE001 - tracing must never change the run
-            self.errors.append(f"{type(exc).__name__}: {str(exc)[:200]}")
-            return None
+        return safe_emit(self.errors, fn, *args, **kwargs)
 
     def _state(self, run_id: UUID, parent_run_id: UUID | None) -> tuple[UUID, dict[str, Any] | None]:
         root = self._root.get(parent_run_id) if parent_run_id is not None else None
@@ -122,17 +113,11 @@ class TraceCallbackHandler(BaseCallbackHandler):
 
     def _finish_root(self, st: dict[str, Any], *, ok: bool, error: BaseException | None) -> None:
         tid, sid = st["trace_id"], st["session_id"]
-        raw = st["last_finish"]
-        self._write(st, build_event(Stop, {"stop_raw": "inferred"} if raw else {}, trace_id=tid, session_id=sid, parent_event_id=st["agent_start_id"],
-                                    stop_raw=raw, stop_status=map_stop_reason(raw), source_event_id=st["last_model_call"]))
-        et = type(error).__name__ if error is not None else None
-        self._write(st, build_event(AgentEnd, {"error_type": "verified"} if et else {}, trace_id=tid, session_id=sid, parent_event_id=st["agent_start_id"],
-                                    outcome="completed" if ok else "error", error_type=et))
-        dur = int((time.monotonic() - st["t0"]) * 1000)
-        self._write(st, build_event(SessionEnd, {"error_type": "verified", "duration_ms": "inferred", "event_count": "inferred"} if et else
-                                    {"duration_ms": "inferred", "event_count": "inferred"}, trace_id=tid, session_id=sid,
-                                    parent_event_id=st["session_start_id"], reason="completed" if ok else "error", error_type=et, duration_ms=dur,
-                                    event_count=st["count"] + 1))
+        self._write(st, build_stop(trace_id=tid, session_id=sid, parent_event_id=st["agent_start_id"], raw=st["last_finish"], raw_tag="inferred",
+                                   source_event_id=st["last_model_call"]))
+        self._write(st, build_agent_end(trace_id=tid, session_id=sid, parent_event_id=st["agent_start_id"], outcome="completed" if ok else "error", error=error))
+        self._write(st, build_session_end(trace_id=tid, session_id=sid, parent_event_id=st["session_start_id"], ok=ok, error=error, t0=st["t0"],
+                                          event_count=st["count"] + 1))
         self.writer.close_trace(tid)
 
     # ---- chains (root run only) ----------------------------------------------------------------------------
@@ -227,19 +212,11 @@ class TraceCallbackHandler(BaseCallbackHandler):
 
     # ---- tools ---------------------------------------------------------------------------------------------
     def _request(self, st: dict[str, Any], name: str, args: Any, call_id: str | None, model_event: str | None, model_call: str | None, *, observed_at: str) -> Any:
-        tagged = tag_tool_call(name, args if isinstance(args, dict) else None, self.declared.get(name), overrides=self.overrides, rules=self.rules,
-                               unknown_default=self.unknown_default)
-        eid = str(uuid.uuid4())
-        cap = self.writer.capture_value(args, trace_id=st["trace_id"], event_id=eid, kind="args") if args is not None else None
-        tags = _tags({"tool_call_id": call_id, "model_call_id": model_call, "args": cap}, inferred=("tool_call_id",) if observed_at == "tool_start" else ())
-        if tagged.capability_hint is not None:
-            tags["capability_hint"] = "inferred"
-        ev = build_event(ToolCallRequested, tags, trace_id=st["trace_id"], event_id=eid, session_id=st["session_id"], parent_event_id=model_event or st["agent_start_id"],
-                         tool_call_id=call_id, model_call_id=model_call, observed_at=observed_at,
-                         tool=ToolInfo(name=name, declared=self.declared.get(name)), args=cap, severity=tagged.severity, severity_basis=tagged.basis,
-                         rule_ids=list(tagged.rule_ids), flags=tagged.flags, capability_hint=tagged.capability_hint)
+        ev, tagged = build_tool_requested(self.writer, trace_id=st["trace_id"], session_id=st["session_id"], parent_event_id=model_event or st["agent_start_id"],
+                                          name=name, args=args, call_id=call_id, model_call_id=model_call, observed_at=observed_at, declared=self.declared.get(name),
+                                          overrides=self.overrides, rules=self.rules, unknown_default=self.unknown_default)
         self._write(st, ev)
-        st["requested"][call_id or eid] = (ev.event_id, tagged)
+        st["requested"][call_id or ev.event_id] = (ev.event_id, tagged)
         return ev
 
     def on_tool_start(self, serialized, input_str, *, run_id, parent_run_id=None, tags=None, metadata=None, inputs=None, **kwargs):  # noqa: ANN001
@@ -264,17 +241,9 @@ class TraceCallbackHandler(BaseCallbackHandler):
         st = t["st"]
         req_id, tagged = t["requested"] if t["requested"] else (None, None)
         sev, basis = (tagged.severity, tagged.basis) if tagged else ("state_changing", "default_unknown")
-        eid = str(uuid.uuid4())
-        content = getattr(output, "content", output)
-        res = self.writer.capture_value(content, trace_id=st["trace_id"], event_id=eid, kind="result") if output is not None else None
-        et = type(error).__name__ if error is not None else None
-        if isinstance(error, TimeoutError):
-            status = "timeout"
-        dur = int((time.monotonic() - t["t0"]) * 1000)
-        vals = {"tool_call_id": t["call_id"], "error_type": et, "duration_ms": dur, "result": res}
-        tags = _tags(vals, inferred=("duration_ms",))
-        ev = build_event(ToolCallExecuted, tags, trace_id=st["trace_id"], event_id=eid, session_id=st["session_id"], parent_event_id=req_id or st["agent_start_id"],
-                         requested_event_id=req_id, tool_name=t["name"], status=status, severity=sev, severity_basis=basis, **vals)
+        ev = build_tool_executed(self.writer, trace_id=st["trace_id"], session_id=st["session_id"], parent_event_id=req_id or st["agent_start_id"],
+                                 requested_event_id=req_id, tool_name=t["name"], status=status, severity=sev, severity_basis=basis, tool_call_id=t["call_id"],
+                                 result=getattr(output, "content", output), capture_result=output is not None, error=error, t0=t["t0"])
         self._write(st, ev)
 
     def on_tool_end(self, output, *, run_id, parent_run_id=None, **kwargs):  # noqa: ANN001
