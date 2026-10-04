@@ -77,7 +77,9 @@ def test_same_severity_rule_digest_and_ids_on_the_tool_events(three):
     digests = set()
     for name, ev in three.items():
         req, ex = by(ev, "tool.call.requested")[0], by(ev, "tool.call.executed")[0]
-        assert (req.severity, req.severity_basis, tuple(req.rule_ids), req.capability_hint) == ("read_only", "name_rule", ("N-READ",), None), name
+        assert (req.severity, req.severity_basis, req.rule_ids[0], req.capability_hint) == ("read_only", "name_rule", "N-READ", None), name
+        # 2b: a framework that exposes the tool description (ADK, OpenAI Agents; LangChain only with bound or registered tools) adds D-DESC-READ
+        assert set(req.rule_ids) <= {"N-READ", "D-DESC-READ"}, name
         assert (ex.severity, ex.severity_basis, ex.status, ex.tool_name, ex.tool_call_id) == ("read_only", "name_rule", "success", "lookup_order", "call_1"), name
         assert req.tool_call_id == "call_1" and req.args.keys == ["order_id"] and req.args.mode == ex.result.mode == "digest" and req.observed_at == "model_output", name
         digests.add((req.args.digest, req.args.size))

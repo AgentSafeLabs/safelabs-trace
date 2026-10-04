@@ -97,7 +97,9 @@ def test_same_parent_structure(both):
 def test_same_severity_and_rule_on_the_tool_events(both):
     for ev in both:
         req, ex = by(ev, "tool.call.requested")[0], by(ev, "tool.call.executed")[0]
-        assert (req.severity, req.severity_basis, tuple(req.rule_ids), req.capability_hint) == ("read_only", "name_rule", ("N-READ",), None)
+        assert (req.severity, req.severity_basis, req.rule_ids[0], req.capability_hint) == ("read_only", "name_rule", "N-READ", None)
+        # 2b: a framework that exposes the tool description (ADK, OpenAI Agents; LangChain only with bound or registered tools) adds D-DESC-READ
+        assert set(req.rule_ids) <= {"N-READ", "D-DESC-READ"}
         assert (ex.severity, ex.severity_basis, ex.status, ex.tool_name) == ("read_only", "name_rule", "success", "lookup_order")
         assert req.args.keys == ["order_id"] and req.args.mode == ex.result.mode == "digest" and req.observed_at == "model_output"
     lc_req, ad_req = by(both[0], "tool.call.requested")[0], by(both[1], "tool.call.requested")[0]

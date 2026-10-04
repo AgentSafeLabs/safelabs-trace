@@ -1,5 +1,12 @@
 {
-  "rules_version": "1",
+  "rules_version": "2b",
+  "precedence": [
+    "1. A manual override for the tool name is used exactly (basis manual).",
+    "2. Signals: name rules (strong = explicit verbs; weak = nouns and soft verbs), description rules (D-DESC-*, basis name_rule), argument rules (hard = positively classified action field, SQL keyword, HTTP method, shell command; soft = unrecognised statement or command), declared hints (raise only).",
+    "3. If any hard argument signal exists, description signals and weak name signals are dropped: arguments override the description and weak name nouns. Strong name signals (explicit destructive and send verbs, change verbs) are kept: arguments never lower an explicit verb in the tool name.",
+    "4. The most severe surviving signal wins (ties: argument, name, description, declared).",
+    "5. No signal at all: unknown default (state_changing, basis default_unknown)."
+  ],
   "severity_order": [
     "read_only",
     "state_changing",
@@ -30,11 +37,14 @@
         "inspect",
         "peek",
         "status"
-      ]
+      ],
+      "strength": "weak",
+      "why": "read-type verbs and nouns in a name indicate no state change"
     },
     {
       "id": "N-CHANGE",
       "severity": "state_changing",
+      "strength": "strong",
       "tokens": [
         "write",
         "create",
@@ -51,17 +61,26 @@
         "save",
         "append",
         "install",
-        "enable",
-        "disable",
-        "schedule",
+        "modify"
+      ],
+      "why": "explicit write-type verbs change state"
+    },
+    {
+      "id": "N-CHANGE-WEAK",
+      "severity": "state_changing",
+      "strength": "weak",
+      "tokens": [
         "run",
-        "modify",
+        "schedule",
         "store",
         "book",
         "approve",
         "assign",
-        "commit"
-      ]
+        "commit",
+        "enable",
+        "disable"
+      ],
+      "why": "verbs that may or may not change state (run, schedule, store); an argument verdict can override"
     },
     {
       "id": "N-IRREV",
@@ -83,11 +102,14 @@
         "reboot",
         "uninstall",
         "overwrite"
-      ]
+      ],
+      "strength": "strong",
+      "why": "explicit destructive verbs remove or overwrite data and are never lowered by arguments"
     },
     {
       "id": "N-SEND",
       "severity": "irreversible",
+      "strength": "strong",
       "flag": "external_effect",
       "tokens": [
         "send",
@@ -95,18 +117,28 @@
         "publish",
         "transfer",
         "pay",
-        "payment",
-        "payments",
         "charge",
         "refund",
         "wire",
-        "email",
-        "sms",
         "deploy",
         "tweet",
         "broadcast",
         "notify"
-      ]
+      ],
+      "why": "explicit send, publish or pay verbs act on the outside world and cannot be recalled"
+    },
+    {
+      "id": "N-SEND-NOUN",
+      "severity": "irreversible",
+      "strength": "weak",
+      "flag": "external_effect",
+      "tokens": [
+        "email",
+        "sms",
+        "payment",
+        "payments"
+      ],
+      "why": "message and payment nouns only name the domain; an action argument (draft, quote) may lower"
     },
     {
       "id": "N-EXEC",
@@ -121,7 +153,29 @@
         "spawn",
         "subprocess",
         "powershell"
-      ]
+      ],
+      "strength": "weak",
+      "why": "shell and exec words suggest arbitrary code; an argument that is a classified command overrides"
+    }
+  ],
+  "name_phrase_rules": [
+    {
+      "id": "N-HANDOFF",
+      "severity": "state_changing",
+      "strength": "strong",
+      "requires_tokens": [
+        "transfer"
+      ],
+      "requires_any": [
+        "agent",
+        "agents",
+        "assistant",
+        "handoff"
+      ],
+      "replaces": [
+        "N-SEND"
+      ],
+      "why": "transferring a conversation to an agent is workflow control, not a transfer of funds"
     }
   ],
   "arg_keys": {
@@ -157,8 +211,116 @@
     ],
     "sql_keyword_gated": [
       "query"
+    ],
+    "action": [
+      "action",
+      "operation",
+      "op",
+      "subcommand"
     ]
   },
+  "action_rules": [
+    {
+      "id": "A-ACTION-READ",
+      "severity": "read_only",
+      "why": "an action field naming a look-only step means no effect",
+      "words": [
+        "view",
+        "list",
+        "get",
+        "read",
+        "show",
+        "quote",
+        "preview",
+        "status",
+        "search",
+        "describe",
+        "count",
+        "check",
+        "query",
+        "fetch",
+        "info",
+        "estimate",
+        "lookup",
+        "inspect",
+        "retrieve",
+        "find"
+      ]
+    },
+    {
+      "id": "A-ACTION-DRAFT",
+      "severity": "state_changing",
+      "why": "a draft is stored but not delivered",
+      "words": [
+        "draft"
+      ]
+    },
+    {
+      "id": "A-ACTION-CHANGE",
+      "severity": "state_changing",
+      "why": "an action field naming a write step changes state",
+      "words": [
+        "create",
+        "update",
+        "comment",
+        "add",
+        "edit",
+        "set",
+        "rename",
+        "move",
+        "modify",
+        "write",
+        "insert",
+        "upload",
+        "save",
+        "append",
+        "schedule",
+        "reply",
+        "assign",
+        "approve",
+        "close",
+        "start",
+        "stop",
+        "copy",
+        "patch",
+        "put",
+        "reopen",
+        "tag"
+      ]
+    },
+    {
+      "id": "A-ACTION-IRREV",
+      "severity": "irreversible",
+      "flag": "external_effect",
+      "why": "an action field naming a destroy or send step cannot be recalled",
+      "words": [
+        "delete",
+        "remove",
+        "drop",
+        "purge",
+        "destroy",
+        "wipe",
+        "erase",
+        "truncate",
+        "overwrite",
+        "revoke",
+        "terminate",
+        "send",
+        "transfer",
+        "publish",
+        "pay",
+        "post",
+        "forward",
+        "email",
+        "charge",
+        "refund",
+        "wire",
+        "deploy",
+        "broadcast",
+        "notify"
+      ]
+    }
+  ],
   "sql_rules": [
     {
       "id": "A-SQL-READ",
@@ -170,7 +332,8 @@
         "explain",
         "pragma",
         "values"
-      ]
+      ],
+      "why": "read-only statements"
     },
     {
       "id": "A-SQL-WRITE",
@@ -187,7 +350,8 @@
         "set",
         "begin",
         "commit"
-      ]
+      ],
+      "why": "data-changing statements can normally be reverted"
     },
     {
       "id": "A-SQL-DESTRUCT",
@@ -200,7 +364,8 @@
         "revoke",
         "vacuum",
         "reindex"
-      ]
+      ],
+      "why": "delete, drop, truncate and schema changes lose data"
     },
     {
       "id": "A-SQL-CALL",
@@ -210,12 +375,24 @@
         "call",
         "exec",
         "execute"
-      ]
+      ],
+      "why": "stored procedures run arbitrary code"
     }
   ],
   "sql_other": {
     "id": "A-SQL-OTHER",
-    "severity": "state_changing"
+    "severity": "state_changing",
+    "why": "an unrecognised statement is assumed to change state"
+  },
+  "sql_cte": {
+    "lead": "with",
+    "write_keywords": [
+      "delete",
+      "update",
+      "insert",
+      "merge"
+    ],
+    "default": "select"
   },
   "http_rules": [
     {
@@ -225,23 +402,33 @@
         "get",
         "head",
         "options"
-      ]
+      ],
+      "why": "safe HTTP methods"
     },
     {
       "id": "A-HTTP-WRITE",
       "severity": "state_changing",
       "methods": [
-        "post",
         "put",
         "patch"
-      ]
+      ],
+      "why": "idempotent writes replace or modify a resource"
+    },
+    {
+      "id": "A-HTTP-POST",
+      "severity": "irreversible",
+      "methods": [
+        "post"
+      ],
+      "why": "POST submits data to a remote service; the effect cannot be assumed reversible"
     },
     {
       "id": "A-HTTP-DELETE",
       "severity": "irreversible",
       "methods": [
         "delete"
-      ]
+      ],
+      "why": "DELETE removes a remote resource"
     }
   ],
   "shell": {
@@ -276,7 +463,70 @@
       "printf",
       "true",
       "basename",
-      "dirname"
+      "dirname",
+      "curl",
+      "sed",
+      "awk",
+      "cut",
+      "tr",
+      "jq",
+      "realpath",
+      "readlink",
+      "lsof",
+      "top",
+      "free",
+      "uptime",
+      "nproc",
+      "test",
+      "["
+    ],
+    "read_patterns": [
+      "^git\\s+(status|log|diff|show|blame|ls-files|rev-parse|remote\\s+-v)\\b"
+    ],
+    "editing_commands": [
+      "mv",
+      "cp",
+      "chmod",
+      "chown",
+      "chgrp",
+      "mkdir",
+      "touch",
+      "ln",
+      "tee",
+      "tar",
+      "zip",
+      "unzip",
+      "gzip",
+      "gunzip",
+      "rsync",
+      "install",
+      "patch",
+      "wget",
+      "pip",
+      "pip3",
+      "npm",
+      "make"
+    ],
+    "editing_patterns": [
+      "\\bsed\\b[^|;&]*\\s-[a-zA-Z]*i",
+      "^git\\s+(add|commit|checkout|merge|rebase|stash|pull|fetch|tag|branch|push|cherry-pick|mv|restore)\\b",
+      "\\bcurl\\b.*(-X|--request)\\s*=?\\s*(PUT|PATCH)\\b"
+    ],
+    "destructive_commands": [
+      "rm",
+      "rmdir",
+      "unlink",
+      "shred",
+      "dd",
+      "mkfs",
+      "truncate",
+      "kill",
+      "killall",
+      "pkill",
+      "shutdown",
+      "reboot",
+      "halt",
+      "poweroff"
     ],
     "irreversible_patterns": [
       "\\brm\\s+(-[a-zA-Z]*[rf][a-zA-Z]*|--recursive|--force)",
@@ -284,16 +534,35 @@
       "\\bmkfs",
       "\\b(shutdown|reboot|halt|poweroff)\\b",
       "\\bkill\\s+-9|\\bkillall\\b|\\bpkill\\b",
-      "\\b(chmod|chown)\\s+-R",
       "\\|\\s*(sudo\\s+)?(ba|z|da|)sh\\b",
       "\\bgit\\s+push\\b.*(--force|\\s-f\\b)",
       "\\bgit\\s+reset\\s+--hard",
+      "\\bgit\\s+clean\\b",
       "\\bshred\\b",
       "\\bfind\\b.*(-delete|-exec)",
-      ">\\s*/dev/"
+      ">\\s*/dev/(?!null\\b)",
+      "\\bcurl\\b.*(-X|--request)\\s*=?\\s*(POST|DELETE)\\b",
+      "\\bcurl\\b.*\\s(-d|--data[a-z-]*|-F|--form|-T|--upload-file)\\b"
+    ],
+    "irreversible_pattern_notes": [
+      "recursive or forced rm deletes without recovery",
+      "dd from a device overwrites targets",
+      "mkfs formats a device",
+      "power commands stop the host",
+      "forced kill ends processes without cleanup",
+      "piping into a shell runs unseen code",
+      "force-pushing overwrites remote history",
+      "hard reset discards work",
+      "git clean deletes untracked files",
+      "shred destroys file contents",
+      "find with delete or exec acts on every match",
+      "redirect to a device node (not the null device) overwrites it",
+      "curl with a POST or DELETE request sends data out",
+      "curl with a data flag sends a POST"
     ],
     "ids": {
       "read_commands": "A-SHELL-READ",
+      "editing_commands": "A-SHELL-EDIT",
       "irreversible_commands": "A-SHELL-IRREV",
       "other_commands": "A-SHELL-OTHER"
     },
@@ -302,7 +571,12 @@
       "env",
       "nohup",
       "time"
-    ]
+    ],
+    "why": {
+      "read": "inspect-only commands",
+      "editing": "commands that edit, move, copy or re-permission files can normally be undone",
+      "destructive": "commands that delete, kill, force-push or send data cannot be undone"
+    }
   },
   "capability_kinds": [
     {
@@ -412,16 +686,6 @@
       "destructive"
     ]
   },
-  "sql_cte": {
-    "lead": "with",
-    "write_keywords": [
-      "delete",
-      "update",
-      "insert",
-      "merge"
-    ],
-    "default": "select"
-  },
   "dry_run_truthy": [
     true,
     "true",
@@ -430,5 +694,335 @@
     1,
     "1",
     "yes"
-  ]
+  ],
+  "description_layer": {
+    "note": "Classifies the tool DESCRIPTION when name and arguments leave the effect open. Each verb is matched in base, third-person (-s/-es/-ies) and -ing forms; a phrase is its first word inflected plus the exact following words. Guards: determiner/adjective before the word means noun use; ambiguous words need verb position; negation within the window skips; some words need a money object or a skip-after word.",
+    "max_chars": 2000,
+    "clause_breaks": [
+      ".",
+      ";",
+      ":",
+      "!",
+      "?",
+      "\n",
+      "("
+    ],
+    "verb_cues": [
+      ",",
+      "to",
+      "and",
+      "or",
+      "then",
+      "will",
+      "can",
+      "may",
+      "must",
+      "should",
+      "also",
+      "please",
+      "which",
+      "that",
+      "who",
+      "it",
+      "they",
+      "but",
+      "otherwise",
+      "optionally",
+      "automatically",
+      "first",
+      "next",
+      "only",
+      "just",
+      "tool",
+      "function"
+    ],
+    "determiners": [
+      "the",
+      "a",
+      "an",
+      "this",
+      "these",
+      "those",
+      "each",
+      "every",
+      "any",
+      "some",
+      "all",
+      "no",
+      "its",
+      "their",
+      "your",
+      "my",
+      "our",
+      "his",
+      "her",
+      "new",
+      "latest",
+      "recent",
+      "last",
+      "pending",
+      "available",
+      "current",
+      "previous",
+      "same",
+      "other",
+      "such",
+      "full",
+      "whole"
+    ],
+    "noun_prepositions": [
+      "of",
+      "for",
+      "with",
+      "about",
+      "from",
+      "on",
+      "in",
+      "at",
+      "per",
+      "without"
+    ],
+    "negators": [
+      "not",
+      "never",
+      "no",
+      "without",
+      "cannot",
+      "can't",
+      "won't",
+      "doesn't",
+      "don't",
+      "isn't",
+      "wouldn't",
+      "shouldn't",
+      "whether",
+      "unless",
+      "avoid",
+      "avoids",
+      "avoiding",
+      "instead"
+    ],
+    "negation_window": 3,
+    "skip_if_next": {
+      "drop": [
+        "down"
+      ],
+      "post": [
+        "office",
+        "mortem"
+      ],
+      "set": [
+        "of",
+        "up"
+      ],
+      "transfer": [
+        "learning"
+      ],
+      "update": [
+        "time",
+        "date"
+      ],
+      "forward": [
+        "slash"
+      ]
+    },
+    "requires_object": {
+      "transfer": [
+        "balance",
+        "balances",
+        "fund",
+        "funds",
+        "money",
+        "payment",
+        "payments",
+        "amount",
+        "amounts",
+        "cash",
+        "currency",
+        "bank",
+        "banks",
+        "account",
+        "accounts",
+        "usd",
+        "eur"
+      ]
+    },
+    "object_window": 6,
+    "rules": [
+      {
+        "id": "D-DESC-READ",
+        "severity": "read_only",
+        "why": "a read-type verb in the description says the tool only looks or computes",
+        "ambiguous": [
+          "list",
+          "search",
+          "report",
+          "return",
+          "count",
+          "check",
+          "query",
+          "view",
+          "show",
+          "display",
+          "load",
+          "find",
+          "fetch",
+          "get",
+          "read",
+          "trim",
+          "convert",
+          "compare",
+          "extract",
+          "parse",
+          "summarize",
+          "summarise",
+          "research",
+          "describe",
+          "inspect",
+          "calculate",
+          "compute",
+          "retrieve",
+          "scrape",
+          "crawl",
+          "wait for",
+          "look up",
+          "lookup"
+        ],
+        "verbs": []
+      },
+      {
+        "id": "D-DESC-CHANGE",
+        "severity": "state_changing",
+        "why": "a write-type verb in the description changes state but can normally be reversed",
+        "ambiguous": [
+          "update",
+          "set",
+          "change",
+          "move",
+          "copy",
+          "schedule",
+          "store",
+          "patch",
+          "record",
+          "toggle",
+          "start",
+          "stop",
+          "restart",
+          "increase",
+          "decrease",
+          "adjust",
+          "apply",
+          "replace",
+          "comment",
+          "reply",
+          "register",
+          "save",
+          "append",
+          "add",
+          "install",
+          "enable",
+          "disable",
+          "configure",
+          "grant",
+          "assign",
+          "approve",
+          "book",
+          "commit",
+          "merge",
+          "write",
+          "create",
+          "insert",
+          "modify",
+          "edit",
+          "rename",
+          "upload",
+          "set up"
+        ],
+        "verbs": []
+      },
+      {
+        "id": "D-DESC-IRREV",
+        "severity": "irreversible",
+        "why": "a destroy or overwrite verb loses the previous content",
+        "ambiguous": [
+          "drop"
+        ],
+        "verbs": [
+          "delete",
+          "remove",
+          "erase",
+          "purge",
+          "wipe",
+          "destroy",
+          "truncate",
+          "overwrite",
+          "revoke",
+          "terminate",
+          "kill",
+          "uninstall",
+          "shred",
+          "anonymise",
+          "anonymize",
+          "redact",
+          "scrub"
+        ]
+      },
+      {
+        "id": "D-DESC-SEND",
+        "severity": "irreversible",
+        "flag": "external_effect",
+        "why": "a send, publish, forward or pay verb acts on the outside world and cannot be recalled",
+        "ambiguous": [
+          "email",
+          "post",
+          "transfer",
+          "forward",
+          "charge",
+          "wire",
+          "refund",
+          "pay",
+          "notify",
+          "broadcast",
+          "tweet",
+          "send",
+          "publish",
+          "deploy"
+        ],
+        "verbs": []
+      }
+    ],
+    "phrase_rules": [
+      {
+        "id": "D-DESC-READONLY",
+        "severity": "read_only",
+        "pattern": "\\bread[- ]?only\\b",
+        "why": "the description states the tool is read-only"
+      },
+      {
+        "id": "D-DESC-HISTORY",
+        "severity": "irreversible",
+        "pattern": "\\b(overwrit\\w*|rewrit\\w*|rewrote|force[- ]?push\\w*|squash\\w*)\\b[^.;]{0,60}\\bhistory\\b|\\bhistory\\b[^.;]{0,40}\\b(overwritten|rewritten)\\b|\\bforce[- ]?push\\w*",
+        "why": "rewriting or force-pushing history loses earlier state"
+      },
+      {
+        "id": "D-DESC-INPLACE",
+        "severity": "irreversible",
+        "pattern": "\\b(replac\\w*|anonymi[sz]\\w*|redact\\w*|scrub\\w*|overwrit\\w*)\\b[^.;]{0,60}\\bin[- ]place\\b|\\bin[- ]place\\b[^.;]{0,60}\\b(replac\\w*|anonymi[sz]\\w*|redact\\w*|scrub\\w*|overwrit\\w*)",
+        "why": "replacing data in place loses the original values"
+      },
+      {
+        "id": "D-DESC-PERMANENT",
+        "severity": "irreversible",
+        "pattern": "\\bpermanently\\b|\\birreversibl\\w+|\\bcannot be undone\\b",
+        "why": "the description says the effect is permanent"
+      },
+      {
+        "id": "D-DESC-PAY",
+        "severity": "irreversible",
+        "flag": "external_effect",
+        "pattern": "\\b(make|makes|making)\\s+(a\\s+|an\\s+|the\\s+)?(payments?|transfers?)\\b",
+        "why": "making a payment moves money"
+      }
+    ]
+  }
 }

@@ -42,7 +42,7 @@ from typing import Any, Callable
 
 from safelabs_trace import __version__ as PACKAGE_VERSION
 from safelabs_trace._common import (
-    build_agent_end, build_session_end, build_stop, build_tool_executed, build_tool_requested, safe_emit, tags as _tags,
+    build_agent_end, build_session_end, build_stop, build_tool_executed, build_tool_requested, remember_description, safe_emit, tags as _tags,
 )
 from safelabs_trace.schema import AgentRef, AgentStart, ModelCallEnd, ModelCallStart, SessionStart, Usage, build_event
 from safelabs_trace.severity import TAGGER_VERSION, load_rules
@@ -154,6 +154,7 @@ class OpenAIAgentsTraceHandler:
         self.declared, self.overrides, self.unknown_default = dict(declared or {}), dict(overrides or {}), unknown_default
         self.rules = rules if rules is not None else load_rules()
         self.adapter = adapter
+        self.descriptions: dict[str, str] = {}  # tool name -> description, in memory only, for the tagger; never written to a trace
         self.errors: list[str] = []  # emission errors and, with strict=False, export warnings (prefixed WARNING)
         self.version = _agents_version()
         self._tr: dict[int, dict[str, Any]] = {}  # id(context.usage) -> trace state
@@ -162,6 +163,11 @@ class OpenAIAgentsTraceHandler:
     def declare(self, name: str, hints: dict[str, Any]) -> None:
         """Declared hints for a tool (for example MCP-style annotations). The SDK's function tools carry none of their own."""
         self.declared[name] = dict(hints)
+
+    def register_tools(self, tools: list[Any] | None) -> None:
+        """Remember tool descriptions (in memory) so the tagger can use them; an agent's tools are also read when it starts."""
+        for t in tools or []:
+            remember_description(self.descriptions, getattr(t, "name", None), getattr(t, "description", None))
 
     def check_export_safe(self) -> ExportStatus:
         """Refuse (strict) or warn (not strict) when the default OpenAI export could be active."""
@@ -227,6 +233,7 @@ class OpenAIAgentsTraceHandler:
         src = st["handoff_from"]
         st["handoff_from"] = None
         name = getattr(agent, "name", None)
+        self.register_tools(getattr(agent, "tools", None))
         vals = {"parent_agent_id": src["name"] if src else None}
         ev = self._write(st, build_event(AgentStart, _tags(vals), trace_id=st["trace_id"], session_id=st["session_id"],
                                          parent_event_id=src["event_id"] if src else st["session_start_id"], agent=AgentRef(name=name), **vals))
@@ -331,7 +338,8 @@ class OpenAIAgentsTraceHandler:
         ev, tagged = build_tool_requested(self.writer, trace_id=st["trace_id"], session_id=st["session_id"],
                                           parent_event_id=model_event or (frame["event_id"] if frame else st["session_start_id"]), name=name, args=args,
                                           call_id=call_id, model_call_id=model_call, observed_at=observed_at, declared=self.declared.get(name),
-                                          overrides=self.overrides, rules=self.rules, unknown_default=self.unknown_default)
+                                          overrides=self.overrides, rules=self.rules, unknown_default=self.unknown_default,
+                                          description=self.descriptions.get(name))
         self._write(st, ev)
         st["pending"][call_id or ev.event_id] = (ev.event_id, tagged)
         return ev
@@ -343,6 +351,7 @@ class OpenAIAgentsTraceHandler:
 
     def _tool_start(self, st: dict[str, Any], context: Any, tool: Any) -> None:
         name = getattr(tool, "name", None) or "unknown"
+        self.register_tools([tool])
         call_id = getattr(context, "tool_call_id", None)
         req = st["pending"].pop(call_id, None) if call_id is not None else None
         if req is None:  # a tool ran with no request seen in a model response

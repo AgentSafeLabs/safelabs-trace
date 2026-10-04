@@ -20,6 +20,12 @@ def tags(values: dict[str, Any], inferred: tuple[str, ...] = ()) -> dict[str, st
     return {k: ("inferred" if k in inferred else "verified") for k, v in values.items() if v is not None}
 
 
+def remember_description(store: dict[str, str], name: Any, description: Any) -> None:
+    """Keep a tool description in memory (never written to a trace) for the tagger. Ignores non-strings and empty values."""
+    if isinstance(name, str) and name and isinstance(description, str) and description.strip():
+        store[name] = description[:2000]
+
+
 def safe_emit(errors: list[str], fn: Callable[..., Any], *args: Any, **kwargs: Any) -> Any:
     """Run ``fn``; on any exception record ``Type: message`` (200 characters) in ``errors`` and return None. Tracing never changes a run."""
     try:
@@ -31,10 +37,12 @@ def safe_emit(errors: list[str], fn: Callable[..., Any], *args: Any, **kwargs: A
 
 def build_tool_requested(writer: Any, *, trace_id: str, session_id: str | None, parent_event_id: str | None, name: str, args: Any, call_id: str | None,
                          model_call_id: str | None, observed_at: str, declared: dict[str, Any] | None, overrides: dict[str, str] | None,
-                         rules: dict[str, Any] | None, unknown_default: str) -> tuple[ToolCallRequested, Tagged]:
+                         rules: dict[str, Any] | None, unknown_default: str, description: str | None = None) -> tuple[ToolCallRequested, Tagged]:
     """Tag a tool call (on the in-memory arguments) and build its ``tool.call.requested`` event. The arguments are captured through the
-    writer (digest-only by default) and never stored. Returns (event, tagging result); the caller writes the event."""
-    tagged = tag_tool_call(name, args if isinstance(args, dict) else None, declared, overrides=overrides, rules=rules, unknown_default=unknown_default)
+    writer (digest-only by default) and never stored. Returns (event, tagging result); the caller writes the event.
+    ``description`` (the tool description, in memory) goes to the tagger only; it is never part of the event."""
+    tagged = tag_tool_call(name, args if isinstance(args, dict) else None, declared, overrides=overrides, rules=rules, unknown_default=unknown_default,
+                           description=description)
     eid = str(uuid.uuid4())
     cap = writer.capture_value(args, trace_id=trace_id, event_id=eid, kind="args") if args is not None else None
     prov = tags({"tool_call_id": call_id, "model_call_id": model_call_id, "args": cap}, inferred=("tool_call_id",) if observed_at == "tool_start" else ())
