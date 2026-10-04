@@ -1,0 +1,434 @@
+{
+  "rules_version": "1",
+  "severity_order": [
+    "read_only",
+    "state_changing",
+    "irreversible"
+  ],
+  "name_rules": [
+    {
+      "id": "N-READ",
+      "severity": "read_only",
+      "tokens": [
+        "get",
+        "read",
+        "list",
+        "search",
+        "find",
+        "fetch",
+        "lookup",
+        "view",
+        "show",
+        "describe",
+        "count",
+        "check",
+        "calculate",
+        "parse",
+        "query",
+        "select",
+        "retrieve",
+        "inspect",
+        "peek",
+        "status"
+      ]
+    },
+    {
+      "id": "N-CHANGE",
+      "severity": "state_changing",
+      "tokens": [
+        "write",
+        "create",
+        "update",
+        "set",
+        "edit",
+        "add",
+        "insert",
+        "put",
+        "patch",
+        "move",
+        "rename",
+        "upload",
+        "save",
+        "append",
+        "install",
+        "enable",
+        "disable",
+        "schedule",
+        "run",
+        "modify",
+        "store",
+        "book",
+        "approve",
+        "assign",
+        "commit"
+      ]
+    },
+    {
+      "id": "N-IRREV",
+      "severity": "irreversible",
+      "tokens": [
+        "delete",
+        "remove",
+        "drop",
+        "truncate",
+        "destroy",
+        "purge",
+        "wipe",
+        "erase",
+        "format",
+        "kill",
+        "terminate",
+        "revoke",
+        "shutdown",
+        "reboot",
+        "uninstall",
+        "overwrite"
+      ]
+    },
+    {
+      "id": "N-SEND",
+      "severity": "irreversible",
+      "flag": "external_effect",
+      "tokens": [
+        "send",
+        "post",
+        "publish",
+        "transfer",
+        "pay",
+        "payment",
+        "payments",
+        "charge",
+        "refund",
+        "wire",
+        "email",
+        "sms",
+        "deploy",
+        "tweet",
+        "broadcast",
+        "notify"
+      ]
+    },
+    {
+      "id": "N-EXEC",
+      "severity": "irreversible",
+      "flag": "arbitrary_code",
+      "tokens": [
+        "exec",
+        "shell",
+        "eval",
+        "bash",
+        "system",
+        "spawn",
+        "subprocess",
+        "powershell"
+      ]
+    }
+  ],
+  "arg_keys": {
+    "sql": [
+      "sql",
+      "statement",
+      "stmt"
+    ],
+    "method": [
+      "method",
+      "http_method",
+      "verb"
+    ],
+    "command": [
+      "command",
+      "cmd",
+      "script",
+      "shell",
+      "bash",
+      "argv"
+    ],
+    "url": [
+      "url",
+      "uri",
+      "endpoint",
+      "webhook"
+    ],
+    "dry_run": [
+      "dry_run",
+      "dryrun",
+      "simulate",
+      "preview"
+    ],
+    "sql_keyword_gated": [
+      "query"
+    ]
+  },
+  "sql_rules": [
+    {
+      "id": "A-SQL-READ",
+      "severity": "read_only",
+      "keywords": [
+        "select",
+        "show",
+        "describe",
+        "explain",
+        "pragma",
+        "values"
+      ]
+    },
+    {
+      "id": "A-SQL-WRITE",
+      "severity": "state_changing",
+      "keywords": [
+        "insert",
+        "update",
+        "merge",
+        "replace",
+        "create",
+        "grant",
+        "upsert",
+        "copy",
+        "set",
+        "begin",
+        "commit"
+      ]
+    },
+    {
+      "id": "A-SQL-DESTRUCT",
+      "severity": "irreversible",
+      "keywords": [
+        "delete",
+        "drop",
+        "truncate",
+        "alter",
+        "revoke",
+        "vacuum",
+        "reindex"
+      ]
+    },
+    {
+      "id": "A-SQL-CALL",
+      "severity": "irreversible",
+      "flag": "arbitrary_code",
+      "keywords": [
+        "call",
+        "exec",
+        "execute"
+      ]
+    }
+  ],
+  "sql_other": {
+    "id": "A-SQL-OTHER",
+    "severity": "state_changing"
+  },
+  "http_rules": [
+    {
+      "id": "A-HTTP-READ",
+      "severity": "read_only",
+      "methods": [
+        "get",
+        "head",
+        "options"
+      ]
+    },
+    {
+      "id": "A-HTTP-WRITE",
+      "severity": "state_changing",
+      "methods": [
+        "post",
+        "put",
+        "patch"
+      ]
+    },
+    {
+      "id": "A-HTTP-DELETE",
+      "severity": "irreversible",
+      "methods": [
+        "delete"
+      ]
+    }
+  ],
+  "shell": {
+    "read_commands": [
+      "ls",
+      "cat",
+      "head",
+      "tail",
+      "grep",
+      "rg",
+      "pwd",
+      "echo",
+      "whoami",
+      "date",
+      "wc",
+      "stat",
+      "file",
+      "du",
+      "df",
+      "ps",
+      "which",
+      "uname",
+      "id",
+      "hostname",
+      "sort",
+      "uniq",
+      "diff",
+      "tree",
+      "less",
+      "more",
+      "find",
+      "printf",
+      "true",
+      "basename",
+      "dirname"
+    ],
+    "irreversible_patterns": [
+      "\\brm\\s+(-[a-zA-Z]*[rf][a-zA-Z]*|--recursive|--force)",
+      "\\bdd\\s+if=",
+      "\\bmkfs",
+      "\\b(shutdown|reboot|halt|poweroff)\\b",
+      "\\bkill\\s+-9|\\bkillall\\b|\\bpkill\\b",
+      "\\b(chmod|chown)\\s+-R",
+      "\\|\\s*(sudo\\s+)?(ba|z|da|)sh\\b",
+      "\\bgit\\s+push\\b.*(--force|\\s-f\\b)",
+      "\\bgit\\s+reset\\s+--hard",
+      "\\bshred\\b",
+      "\\bfind\\b.*(-delete|-exec)",
+      ">\\s*/dev/"
+    ],
+    "ids": {
+      "read_commands": "A-SHELL-READ",
+      "irreversible_commands": "A-SHELL-IRREV",
+      "other_commands": "A-SHELL-OTHER"
+    },
+    "wrappers": [
+      "sudo",
+      "env",
+      "nohup",
+      "time"
+    ]
+  },
+  "capability_kinds": [
+    {
+      "kind": "process",
+      "tokens": [
+        "shell",
+        "exec",
+        "bash",
+        "process",
+        "command",
+        "spawn",
+        "subprocess",
+        "system"
+      ],
+      "state_changing": "process.execute",
+      "irreversible": "process.execute",
+      "read_only": "process.execute"
+    },
+    {
+      "kind": "payment",
+      "tokens": [
+        "pay",
+        "payment",
+        "payments",
+        "transfer",
+        "charge",
+        "refund",
+        "wire",
+        "invoice"
+      ],
+      "state_changing": "payment.transfer",
+      "irreversible": "payment.transfer",
+      "read_only": "payment.read"
+    },
+    {
+      "kind": "messaging",
+      "tokens": [
+        "email",
+        "mail",
+        "sms",
+        "message",
+        "slack",
+        "notify",
+        "tweet"
+      ],
+      "state_changing": "messaging.send",
+      "irreversible": "messaging.send",
+      "read_only": "messaging.read"
+    },
+    {
+      "kind": "datastore",
+      "tokens": [
+        "db",
+        "database",
+        "sql",
+        "table",
+        "record",
+        "records"
+      ],
+      "state_changing": "datastore.write",
+      "irreversible": "datastore.delete",
+      "read_only": "datastore.read"
+    },
+    {
+      "kind": "file",
+      "tokens": [
+        "file",
+        "files",
+        "fs",
+        "filesystem",
+        "path",
+        "directory",
+        "folder",
+        "disk"
+      ],
+      "state_changing": "filesystem.write",
+      "irreversible": "filesystem.delete",
+      "read_only": "filesystem.read"
+    },
+    {
+      "kind": "network",
+      "tokens": [
+        "http",
+        "https",
+        "request",
+        "fetch",
+        "url",
+        "web",
+        "curl",
+        "webhook",
+        "api"
+      ],
+      "state_changing": "network.egress",
+      "irreversible": "network.egress",
+      "read_only": "network.egress"
+    }
+  ],
+  "declared_keys": {
+    "read_only": [
+      "readOnlyHint",
+      "read_only_hint",
+      "read_only"
+    ],
+    "destructive": [
+      "destructiveHint",
+      "destructive_hint",
+      "destructive"
+    ]
+  },
+  "sql_cte": {
+    "lead": "with",
+    "write_keywords": [
+      "delete",
+      "update",
+      "insert",
+      "merge"
+    ],
+    "default": "select"
+  },
+  "dry_run_truthy": [
+    true,
+    "true",
+    "True",
+    "TRUE",
+    1,
+    "1",
+    "yes"
+  ]
+}

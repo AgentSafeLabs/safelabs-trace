@@ -1,0 +1,37 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "safelabs-trace"
+version = "0.1.0"
+description = "PRIVATE: trace event model, action-severity tagger and text-versus-action divergence metric for agent evaluation (core)"
+readme = "README.md"
+license = { text = "Proprietary — all rights reserved, Safe Labs AI Inc." }
+authors = [
+    { name = "Waqar Javed", email = "waqar@agentsafelabs.io" },
+]
+requires-python = ">=3.11"
+dependencies = [
+    "safelabs-eval>=0.11.2",
+    "pydantic>=2.0",
+]
+classifiers = [
+    "Private :: Do Not Upload",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+
+[project.optional-dependencies]
+langchain = ["langchain-core>=1.0"]
+dev = [
+    "pytest>=7.0",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/safelabs_trace"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

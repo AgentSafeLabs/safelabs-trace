@@ -1,0 +1,17 @@
+# Full-capture files hold tool arguments and results in clear text: never commit them.
+captures/
+*.full.jsonl
+# Salts and secrets
+*.salt
+.env
+Credential.txt
+# Python and build output
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+dist/
+build/
+*.egg-info/
+# Local traces
+traces/
