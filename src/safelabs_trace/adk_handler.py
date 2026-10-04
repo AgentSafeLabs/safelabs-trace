@@ -37,11 +37,11 @@ from importlib import metadata as _metadata
 from typing import Any, Callable
 
 from safelabs_trace import __version__ as PACKAGE_VERSION
-from safelabs_trace.schema import (
-    AgentEnd, AgentRef, AgentStart, ModelCallEnd, ModelCallStart, SessionEnd, SessionStart, Stop, ToolCallExecuted, ToolCallRequested,
-    ToolInfo, Usage, build_event, map_stop_reason,
+from safelabs_trace._common import (
+    build_agent_end, build_session_end, build_stop, build_tool_executed, build_tool_requested, safe_emit, tags as _tags,
 )
-from safelabs_trace.severity import TAGGER_VERSION, load_rules, tag_tool_call
+from safelabs_trace.schema import AgentRef, AgentStart, ModelCallEnd, ModelCallStart, SessionStart, Usage, build_event
+from safelabs_trace.severity import TAGGER_VERSION, load_rules
 from safelabs_trace.writer import TraceWriter
 
 COVERAGE = {  # plugin path
@@ -52,11 +52,6 @@ COVERAGE = {  # plugin path
 COVERAGE_AGENT_CALLBACKS = {**COVERAGE, "session.start": "partial", "session.end": "partial"}  # synthesized from the root agent
 
 _ERR_TIMEOUT = (TimeoutError,)
-
-
-def _tags(values: dict[str, Any], inferred: tuple[str, ...] = ()) -> dict[str, str]:
-    """Provenance tags for the fields that have a value: ``verified`` unless listed as inferred."""
-    return {k: ("inferred" if k in inferred else "verified") for k, v in values.items() if v is not None}
 
 
 def _canon(value: Any) -> str:
@@ -97,11 +92,7 @@ class ADKTraceHandler:
                 self.declared[getattr(t, "name", "")] = md
 
     def _emit(self, fn: Callable[..., Any], *args: Any, **kwargs: Any) -> Any:
-        try:
-            return fn(*args, **kwargs)
-        except Exception as exc:  # noqa: BLE001 - tracing must never change the run
-            self.errors.append(f"{type(exc).__name__}: {str(exc)[:200]}")
-            return None
+        return safe_emit(self.errors, fn, *args, **kwargs)
 
     def _write(self, st: dict[str, Any], event: Any) -> Any:
         self.writer.write(event)
@@ -130,11 +121,8 @@ class ADKTraceHandler:
         return st
 
     def _end_session(self, st: dict[str, Any], inv: str, *, ok: bool, error: BaseException | None) -> None:
-        et = type(error).__name__ if error is not None else None
-        dur = int((time.monotonic() - st["t0"]) * 1000)
-        vals = {"error_type": et, "duration_ms": dur, "event_count": st["count"] + 1}
-        self._write(st, build_event(SessionEnd, _tags(vals, inferred=("duration_ms", "event_count")), trace_id=st["trace_id"], session_id=st["session_id"],
-                                    parent_event_id=st["session_start_id"], reason="completed" if ok else "error", **vals))
+        self._write(st, build_session_end(trace_id=st["trace_id"], session_id=st["session_id"], parent_event_id=st["session_start_id"], ok=ok, error=error,
+                                          t0=st["t0"], event_count=st["count"] + 1))
         self.writer.close_trace(st["trace_id"])
         self._tr.pop(inv, None)
 
@@ -189,12 +177,10 @@ class ADKTraceHandler:
     def _agent_end(self, st: dict[str, Any], frame: dict[str, Any], *, ok: bool, error: BaseException | None) -> None:
         tid, sid = st["trace_id"], st["session_id"]
         if frame["root"]:
-            raw = st["last_finish"]
-            self._write(st, build_event(Stop, {"stop_raw": "verified"} if raw else {}, trace_id=tid, session_id=sid, parent_event_id=frame["event_id"],
-                                        stop_raw=raw, stop_status=map_stop_reason(raw), source_event_id=st["last_model_end"]))
-        et = type(error).__name__ if error is not None else None
-        self._write(st, build_event(AgentEnd, _tags({"error_type": et}), trace_id=tid, session_id=sid, parent_event_id=frame["event_id"],
-                                    agent=AgentRef(name=frame["name"]), outcome="completed" if ok else "error", error_type=et))
+            self._write(st, build_stop(trace_id=tid, session_id=sid, parent_event_id=frame["event_id"], raw=st["last_finish"], raw_tag="verified",
+                                       source_event_id=st["last_model_end"]))
+        self._write(st, build_agent_end(trace_id=tid, session_id=sid, parent_event_id=frame["event_id"], outcome="completed" if ok else "error", error=error,
+                                        agent_name=frame["name"]))
 
     async def after_agent_callback(self, *, agent: Any, callback_context: Any) -> None:
         inv = getattr(callback_context, "invocation_id", None)
@@ -263,18 +249,10 @@ class ADKTraceHandler:
 
     # ---- tools ---------------------------------------------------------------------------------------------
     def _request(self, st: dict[str, Any], name: str, args: Any, call_id: str | None, model_event: str | None, model_call: str | None, *, observed_at: str) -> Any:
-        tagged = tag_tool_call(name, args if isinstance(args, dict) else None, self.declared.get(name), overrides=self.overrides, rules=self.rules,
-                               unknown_default=self.unknown_default)
-        eid = str(uuid.uuid4())
-        cap = self.writer.capture_value(args, trace_id=st["trace_id"], event_id=eid, kind="args") if args is not None else None
-        tags = _tags({"tool_call_id": call_id, "model_call_id": model_call, "args": cap}, inferred=("tool_call_id",) if observed_at == "tool_start" else ())
-        if tagged.capability_hint is not None:
-            tags["capability_hint"] = "inferred"
         parent = model_event or (st["stack"][-1]["event_id"] if st["stack"] else st["root_start_id"])
-        ev = build_event(ToolCallRequested, tags, trace_id=st["trace_id"], event_id=eid, session_id=st["session_id"], parent_event_id=parent,
-                         tool_call_id=call_id, model_call_id=model_call, observed_at=observed_at,
-                         tool=ToolInfo(name=name, declared=self.declared.get(name)), args=cap, severity=tagged.severity, severity_basis=tagged.basis,
-                         rule_ids=list(tagged.rule_ids), flags=tagged.flags, capability_hint=tagged.capability_hint)
+        ev, tagged = build_tool_requested(self.writer, trace_id=st["trace_id"], session_id=st["session_id"], parent_event_id=parent, name=name, args=args,
+                                          call_id=call_id, model_call_id=model_call, observed_at=observed_at, declared=self.declared.get(name),
+                                          overrides=self.overrides, rules=self.rules, unknown_default=self.unknown_default)
         self._write(st, ev)
         st["pending"][name].append({"event_id": ev.event_id, "tool_call_id": call_id, "tagged": tagged, "args": _canon(args) if isinstance(args, dict) else None})
         return ev
@@ -326,15 +304,9 @@ class ADKTraceHandler:
             return
         req = t["req"]
         tagged = req["tagged"]
-        eid = str(uuid.uuid4())
-        res = self.writer.capture_value(result, trace_id=st["trace_id"], event_id=eid, kind="result") if result is not None else None
-        et = type(error).__name__ if error is not None else None
-        if isinstance(error, _ERR_TIMEOUT):
-            status = "timeout"
-        vals = {"tool_call_id": t["call_id"], "error_type": et, "duration_ms": int((time.monotonic() - t["t0"]) * 1000), "result": res}
-        ev = build_event(ToolCallExecuted, _tags(vals, inferred=("duration_ms",)), trace_id=st["trace_id"], event_id=eid, session_id=st["session_id"],
-                         parent_event_id=req["event_id"], requested_event_id=req["event_id"], tool_name=t["name"], status=status,
-                         severity=tagged.severity, severity_basis=tagged.basis, **vals)
+        ev = build_tool_executed(self.writer, trace_id=st["trace_id"], session_id=st["session_id"], parent_event_id=req["event_id"], requested_event_id=req["event_id"],
+                                 tool_name=t["name"], status=status, severity=tagged.severity, severity_basis=tagged.basis, tool_call_id=t["call_id"], result=result,
+                                 capture_result=result is not None, error=error, t0=t["t0"])
         self._write(st, ev)
 
 
