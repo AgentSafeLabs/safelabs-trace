@@ -1,0 +1,5 @@
+item_id,expected_label
+CTC1,read_only
+CTC2,state_changing
+CTC3,irreversible
+CTC4,irreversible
