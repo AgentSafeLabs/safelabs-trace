@@ -1,0 +1,8 @@
+# FAKE prices for the dry run only (round numbers with no relation to any real price). A real run or --estimate refuses a table marked fake.
+fake: true
+currency: FAKE
+unit: per_million_tokens
+prices:
+  claude-haiku-4-5-20251001: {input_per_mtok: 1.0, output_per_mtok: 2.0}
+  gpt-5.4-nano:              {input_per_mtok: 1.0, output_per_mtok: 2.0}
+  gemini-3.1-flash-lite:     {input_per_mtok: 1.0, output_per_mtok: 2.0}

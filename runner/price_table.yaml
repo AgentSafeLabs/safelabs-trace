@@ -1,0 +1,8 @@
+# PRICE TABLE: fill this in yourself. The runner never supplies prices and refuses --estimate and real runs while any model below has null/non-positive prices.
+# Unit: USD per million tokens, from the providers' own price pages on the day of the run. Reasoning tokens are charged as output.
+currency: USD
+unit: per_million_tokens
+prices:
+  claude-haiku-4-5-20251001: {input_per_mtok: null, output_per_mtok: null}
+  gpt-5.4-nano:              {input_per_mtok: null, output_per_mtok: null}
+  gemini-3.1-flash-lite:     {input_per_mtok: null, output_per_mtok: null}
