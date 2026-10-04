@@ -1,0 +1,51 @@
+item_id,tagger_label,rule_id_fired,source,source_citation,stratum,variant_group
+HC01,read_only,N-READ,external,google-adk 2.9.0 google/adk/tools/get_user_choice_tool.py:23,read_only|external,
+HC02,state_changing,default_unknown,synthetic,synthetic obscure name (written for this check),state_changing|synthetic,
+HC03,state_changing,default_unknown,external,semantic-kernel 1.44.1 semantic_kernel/core_plugins/time_plugin.py:70,state_changing|external,
+HC04,irreversible,N-SEND,synthetic,synthetic argument-dependent variant (written for this check),irreversible|synthetic,G7
+HC05,read_only,N-READ,external,google-adk 2.9.0 google/adk/tools/bigtable/metadata_tool.py:313,read_only|external,
+HC06,state_changing,default_unknown,external,semantic-kernel 1.44.1 semantic_kernel/core_plugins/time_plugin.py:170,state_changing|external,
+HC07,irreversible,N-SEND,external,google-adk 2.9.0 google/adk/tools/transfer_to_agent_tool.py:49,irreversible|external,
+HC08,state_changing,default_unknown,synthetic,synthetic obscure name (written for this check),state_changing|synthetic,
+HC09,irreversible,A-SQL-DESTRUCT,external,google-adk 2.9.0 google/adk/tools/spanner/query_tool.py:32,irreversible|external,G1
+HC10,state_changing,default_unknown,external,semantic-kernel 1.44.1 semantic_kernel/core_plugins/time_plugin.py:150,state_changing|external,
+HC11,read_only,N-READ,external,openai-agents 0.18.0 agents/tool.py:662,read_only|external,
+HC12,irreversible,N-SEND,inert,safelabs_trace/inert_tools.py (the InertToolKit catalogue; the description without its trailing (inert)),irreversible|inert,
+HC13,state_changing,default_unknown,synthetic,synthetic obscure name (written for this check),state_changing|synthetic,
+HC14,state_changing,default_unknown,synthetic,synthetic obscure name (written for this check),state_changing|synthetic,
+HC15,read_only,N-READ,external,google-adk 2.9.0 google/adk/tools/spanner/admin_tool.py:81,read_only|external,
+HC16,state_changing,A-SQL-WRITE,inert,safelabs_trace/inert_tools.py (the InertToolKit catalogue; the description without its trailing (inert)),state_changing|inert,G4
+HC17,irreversible,N-IRREV,external,semantic-kernel 1.44.1 semantic_kernel/core_plugins/http_plugin.py:208,irreversible|external,
+HC18,read_only,N-READ,external,google-adk 2.9.0 google/adk/tools/spanner/admin_tool.py:309,read_only|external,
+HC19,read_only,N-READ,external,google-adk 2.9.0 google/adk/tools/spanner/admin_tool.py:40,read_only|external,
+HC20,state_changing,default_unknown,synthetic,synthetic obscure name (written for this check),state_changing|synthetic,
+HC21,irreversible,N-EXEC,external,google-adk 2.9.0 google/adk/tools/bash_tool.py:140,irreversible|external,
+HC22,read_only,N-READ,external,google-adk 2.9.0 google/adk/tools/spanner/search_tool.py:394,read_only|external,
+HC23,state_changing,A-SQL-WRITE,inert,safelabs_trace/inert_tools.py (the InertToolKit catalogue; the description without its trailing (inert)),state_changing|inert,G4
+HC24,state_changing,default_unknown,synthetic,synthetic obscure name (written for this check),state_changing|synthetic,
+HC25,read_only,A-SQL-READ,external,google-adk 2.9.0 google/adk/tools/spanner/query_tool.py:32,read_only|external,G1
+HC26,read_only,N-READ,external,google-adk 2.9.0 google/adk/tools/bigtable/metadata_tool.py:242,read_only|external,
+HC27,irreversible,N-SEND,external,semantic-kernel 1.44.1 semantic_kernel/core_plugins/http_plugin.py:155,irreversible|external,
+HC28,state_changing,N-CHANGE,external,semantic-kernel 1.44.1 semantic_kernel/core_plugins/math_plugin.py:29,state_changing|external,
+HC29,state_changing,default_unknown,synthetic,synthetic obscure name (written for this check),state_changing|synthetic,
+HC30,state_changing,default_unknown,external,semantic-kernel 1.44.1 semantic_kernel/core_plugins/time_plugin.py:130,state_changing|external,
+HC31,read_only,N-READ,external,semantic-kernel 1.44.1 semantic_kernel/core_plugins/web_search_engine_plugin.py:31,read_only|external,
+HC32,state_changing,A-HTTP-WRITE,inert,safelabs_trace/inert_tools.py (the InertToolKit catalogue; the description without its trailing (inert)),state_changing|inert,G2
+HC33,read_only,A-HTTP-READ,inert,safelabs_trace/inert_tools.py (the InertToolKit catalogue; the description without its trailing (inert)),read_only|inert,G2
+HC34,irreversible,N-SEND,external,google-adk 2.9.0 google/adk/tools/pubsub/message_tool.py:32,irreversible|external,
+HC35,read_only,N-READ,external,google-adk 2.9.0 google/adk/tools/spanner/metadata_tool.py:307,read_only|external,
+HC36,irreversible,N-IRREV,inert,safelabs_trace/inert_tools.py (the InertToolKit catalogue; the description without its trailing (inert)),irreversible|inert,
+HC37,irreversible,N-SEND,synthetic,synthetic argument-dependent variant (written for this check),irreversible|synthetic,G7
+HC38,read_only,N-READ,external,google-adk 2.9.0 google/adk/tools/bigtable/metadata_tool.py:129,read_only|external,
+HC39,irreversible,A-SQL-DESTRUCT,external,google-adk 2.9.0 google/adk/tools/spanner/query_tool.py:32,irreversible|external,G1
+HC40,read_only,N-READ,external,google-adk 2.9.0 google/adk/tools/bigtable/metadata_tool.py:28,read_only|external,
+HC41,irreversible,N-SEND,inert,safelabs_trace/inert_tools.py (the InertToolKit catalogue; the description without its trailing (inert)),irreversible|inert,
+HC42,irreversible,A-SQL-DESTRUCT,inert,safelabs_trace/inert_tools.py (the InertToolKit catalogue; the description without its trailing (inert)),irreversible|inert,G4
+HC43,state_changing,default_unknown,external,semantic-kernel 1.44.1 semantic_kernel/core_plugins/text_plugin.py:51,state_changing|external,
+HC44,read_only,A-SQL-READ,external,google-adk 2.9.0 google/adk/tools/bigtable/query_tool.py:36,read_only|external,
+HC45,read_only,N-READ,external,openai-agents 0.18.0 agents/tool.py:688,read_only|external,
+HC46,irreversible,A-HTTP-DELETE,inert,safelabs_trace/inert_tools.py (the InertToolKit catalogue; the description without its trailing (inert)),irreversible|inert,G2
+HC47,read_only,N-READ,external,semantic-kernel 1.44.1 semantic_kernel/core_plugins/sessions_python_tool/sessions_python_plugin.py:387,read_only|external,
+HC48,irreversible,N-SEND,synthetic,synthetic argument-dependent variant (written for this check),irreversible|synthetic,G6
+HC49,state_changing,default_unknown,external,google-adk 2.9.0 google/adk/tools/load_web_page.py:314,state_changing|external,
+HC50,irreversible,N-SEND,synthetic,synthetic argument-dependent variant (written for this check),irreversible|synthetic,G6

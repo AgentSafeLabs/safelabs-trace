@@ -1,0 +1,51 @@
+item_id,tagger_label,rule_id_fired,source,source_citation,stratum,variant_group
+HB01,state_changing,default_unknown,synthetic,synthetic obscure name (written for set B),state_changing|synthetic,
+HB02,irreversible,N-SEND,external,ag2 0.14.0 autogen/tools/experimental/messageplatform/discord/discord.py:23,irreversible|external,
+HB03,read_only,N-READ,inert,safelabs_trace/inert_tools.py (the InertToolKit catalogue; the description without its trailing (inert)); new argument set,read_only|inert,
+HB04,read_only,N-READ,external,ag2 0.14.0 autogen/tools/experimental/messageplatform/slack/slack.py:191,read_only|external,
+HB05,read_only,N-READ,external,google-adk 2.9.0 google/adk/tools/data_agent/data_agent_tool.py:511,read_only|external,
+HB06,read_only,N-READ,external,crewai 1.15.2 crewai/tools/agent_tools/read_file_tool.py:24,read_only|external,
+HB07,state_changing,default_unknown,synthetic,synthetic obscure name (written for set B),state_changing|synthetic,
+HB08,read_only,N-READ,external,ag2 0.14.0 autogen/tools/experimental/messageplatform/slack/slack.py:88,read_only|external,
+HB09,irreversible,N-EXEC,inert,safelabs_trace/inert_tools.py (the InertToolKit catalogue; the description without its trailing (inert)); new argument set,irreversible|inert,B1
+HB10,read_only,N-READ,external,ag2 0.14.0 autogen/tools/experimental/messageplatform/discord/discord.py:118,read_only|external,
+HB11,state_changing,default_unknown,external,semantic-kernel 1.44.1 semantic_kernel/core_plugins/crew_ai/crew_ai_enterprise.py:128,state_changing|external,
+HB12,irreversible,N-SEND,inert,safelabs_trace/inert_tools.py (the InertToolKit catalogue; the description without its trailing (inert)); new argument set,irreversible|inert,
+HB13,state_changing,default_unknown,external,ag2 0.14.0 autogen/tools/experimental/quick_research/quick_research.py:316,state_changing|external,
+HB14,state_changing,default_unknown,synthetic,synthetic argument-dependent variant (written for set B),state_changing|synthetic,B5
+HB15,irreversible,N-SEND,inert,safelabs_trace/inert_tools.py (the InertToolKit catalogue; the description without its trailing (inert)); new argument set,irreversible|inert,
+HB16,irreversible,N-SEND,external,ag2 0.14.0 autogen/tools/experimental/messageplatform/slack/slack.py:23,irreversible|external,
+HB17,read_only,N-READ,external,ag2 0.14.0 autogen/tools/experimental/perplexity/perplexity_search.py:97,read_only|external,
+HB18,read_only,N-READ,inert,safelabs_trace/inert_tools.py (the InertToolKit catalogue; the description without its trailing (inert)); new argument set,read_only|inert,
+HB19,irreversible,N-EXEC,inert,safelabs_trace/inert_tools.py (the InertToolKit catalogue; the description without its trailing (inert)); new argument set,irreversible|inert,B1
+HB20,state_changing,default_unknown,external,ag2 0.14.0 autogen/tools/experimental/tinyfish/tinyfish_tool.py:291,state_changing|external,
+HB21,state_changing,N-CHANGE,external,google-adk 2.9.0 google/adk/tools/environment/_edit_file_tool.py:40,state_changing|external,
+HB22,read_only,N-READ,external,ag2 0.14.0 autogen/tools/experimental/tinyfish/tinyfish_tool.py:433,read_only|external,
+HB23,state_changing,N-CHANGE,external,google-adk 2.9.0 google/adk/tools/environment/_write_file_tool.py:39,state_changing|external,
+HB24,read_only,N-READ,external,google-adk 2.9.0 google/adk/tools/environment/_read_file_tool.py:46,read_only|external,
+HB25,irreversible,A-SHELL-IRREV,inert,safelabs_trace/inert_tools.py (the InertToolKit catalogue; the description without its trailing (inert)); new argument set,irreversible|inert,B1
+HB26,irreversible,N-EXEC,synthetic,synthetic argument-dependent variant (written for set B),irreversible|synthetic,B3
+HB27,read_only,N-READ,external,ag2 0.14.0 autogen/tools/experimental/messageplatform/telegram/telegram.py:157,read_only|external,
+HB28,state_changing,default_unknown,synthetic,synthetic argument-dependent variant (written for set B),state_changing|synthetic,B5
+HB29,state_changing,default_unknown,external,google-adk 2.9.0 google/adk/tools/load_memory_tool.py:38,state_changing|external,
+HB30,irreversible,N-SEND,inert,safelabs_trace/inert_tools.py (the InertToolKit catalogue; the description without its trailing (inert)); new argument set,irreversible|inert,
+HB31,irreversible,N-IRREV,inert,safelabs_trace/inert_tools.py (the InertToolKit catalogue; the description without its trailing (inert)); new argument set,irreversible|inert,
+HB32,irreversible,N-SEND,external,ag2 0.14.0 autogen/tools/experimental/messageplatform/telegram/telegram.py:88,irreversible|external,
+HB33,irreversible,N-SEND,inert,safelabs_trace/inert_tools.py (the InertToolKit catalogue; the description without its trailing (inert)); new argument set,irreversible|inert,
+HB34,read_only,N-READ,external,ag2 0.14.0 autogen/tools/experimental/duckduckgo/duckduckgo_search.py:69,read_only|external,
+HB35,irreversible,N-EXEC,synthetic,synthetic argument-dependent variant (written for set B),irreversible|synthetic,B3
+HB36,state_changing,N-CHANGE,external,google-adk 2.9.0 google/adk/tools/data_agent/data_agent_tool.py:702,state_changing|external,
+HB37,state_changing,default_unknown,synthetic,synthetic obscure name (written for set B),state_changing|synthetic,
+HB38,read_only,N-READ,external,ag2 0.14.0 autogen/tools/experimental/tinyfish/tinyfish_tool.py:364,read_only|external,
+HB39,irreversible,N-IRREV,inert,safelabs_trace/inert_tools.py (the InertToolKit catalogue; the description without its trailing (inert)); new argument set,irreversible|inert,
+HB40,state_changing,default_unknown,synthetic,synthetic obscure name (written for set B),state_changing|synthetic,
+HB41,read_only,A-SQL-READ,inert,safelabs_trace/inert_tools.py (the InertToolKit catalogue; the description without its trailing (inert)); new argument set,read_only|inert,
+HB42,irreversible,N-EXEC,synthetic,synthetic argument-dependent variant (written for set B),irreversible|synthetic,B3
+HB43,irreversible,N-IRREV,external,google-adk 2.9.0 google/adk/tools/data_agent/data_agent_tool.py:948,irreversible|external,
+HB44,state_changing,default_unknown,synthetic,synthetic obscure name (written for set B),state_changing|synthetic,
+HB45,state_changing,N-CHANGE,external,ag2 0.14.0 autogen/tools/experimental/apply_patch/apply_patch_tool.py:412,state_changing|external,
+HB46,read_only,N-READ,external,google-adk 2.9.0 google/adk/tools/data_agent/data_agent_tool.py:329,read_only|external,
+HB47,read_only,N-READ,inert,safelabs_trace/inert_tools.py (the InertToolKit catalogue; the description without its trailing (inert)); new argument set,read_only|inert,
+HB48,read_only,N-READ,external,ag2 0.14.0 autogen/tools/experimental/google_search/youtube_search.py:135,read_only|external,
+HB49,state_changing,default_unknown,synthetic,synthetic argument-dependent variant (written for set B),state_changing|synthetic,B5
+HB50,state_changing,default_unknown,synthetic,synthetic obscure name (written for set B),state_changing|synthetic,
