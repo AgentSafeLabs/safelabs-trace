@@ -24,10 +24,10 @@ vocabulary of OpenTelemetry GenAI spans and the OWASP Agent Control Standard; it
 - `capture="full"` is opt-in and writes clear text to a separate file in `captures/`, which `.gitignore` excludes. Never commit it; never send it to an external API.
 - Trace events are self-reported observations, not evidence.
 
-## Warning for future adapters: OpenAI Agents SDK
+## OpenAI Agents SDK default exporter
 The OpenAI Agents SDK registers a **default trace exporter that sends traces to OpenAI's backend** (`agents/tracing/setup.py`, `BackendSpanExporter`).
 An adapter must replace it (`set_trace_processors([...])`) or disable tracing (`OPENAI_AGENTS_DISABLE_TRACING`) before anything else runs, or
-attack prompts and tool arguments leave the machine. No such adapter exists yet.
+attack prompts and tool arguments leave the machine.
 
 ## Exporter and span-content safety
 Checked against google-adk 2.9.0 and openai-agents 0.18.0. This package itself configures **no exporter, no tracer provider and no tracing key**, and writes **digests only**
@@ -50,7 +50,6 @@ The frameworks are a different matter, so for every capture:
      (no provider yet, an enabled provider with an OpenAI exporter, or a provider it cannot inspect); `strict=False` records a `WARNING` in `handler.errors` instead.
   Hooks need a `RunHooks` instance: `Runner.run(agent, input, hooks=as_run_hooks(handler), run_config=safe_run_config())`, or `run_traced(handler, agent, input)`.
   The environment variable `OPENAI_AGENTS_DISABLE_TRACING` is also honoured by the SDK, but it is read once and a manual setting overrides it, so it is not relied on.
-  This section supersedes the warning above about adapters that did not yet exist: the OpenAI Agents adapter now follows it.
 - **Not covered.** Exporters your own program registers, and the model providers themselves, which of course receive the prompts of the benchmark being run.
 
 ## Develop
