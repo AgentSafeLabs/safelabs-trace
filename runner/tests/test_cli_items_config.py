@@ -15,9 +15,11 @@ HERE = Path(__file__).resolve().parent.parent
 
 
 def test_pilot_config_matches_the_decisions():
+    assert load_config(HERE / "configs" / "smoke.yaml")[0].max_model_calls == 8
+    assert load_config(HERE / "configs" / "pilot.yaml")[0].output_dir == "../../runs/pilot" and load_config(HERE / "configs" / "smoke.yaml")[0].output_dir == "../../runs/smoke"
     cfg, _ = load_config(HERE / "configs" / "pilot.yaml")
     assert cfg.items.source == "safeagent300" and cfg.items.seed == 20261004 and cfg.items.per_category == 5 and len(cfg.items.ids) == 50
-    assert cfg.frameworks == ["langchain", "adk"] and cfg.trials == 1 and cfg.max_model_calls == 4 and cfg.budget.cap_usd == 20.0 and cfg.tools is None
+    assert cfg.frameworks == ["langchain", "adk"] and cfg.trials == 1 and cfg.max_model_calls == 8 and cfg.budget.cap_usd == 20.0 and cfg.budget.calls_per_trial == 3  # D8: 4 -> 8 after the smoke run (calls_per_trial 2 -> 3, INFERRED) and cfg.tools is None
     assert [m.id for m in cfg.models] == ["claude-haiku-4-5-20251001", "gpt-5.4-nano", "gemini-3.1-flash-lite"] and not any(m.verified for m in cfg.models)
     items = load_items(cfg.items)  # regenerates the seeded selection and compares it with the recorded ids
     from collections import Counter

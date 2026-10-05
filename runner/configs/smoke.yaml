@@ -1,61 +1,21 @@
-# 1B traces-on pilot: SafeAgent-300, 50 items (5 per category, seed 20261004) x langchain+adk x 3 cheap models x 1 trial = 300 trials.
-# Decisions D1-D8 of DECISIONS.md / runner_options.md; output goes to ../../runs/pilot (outside the repo). No keys here (keys come from the environment at run time).
-run_name: pilot
+# 1B traces-on SMOKE run: SafeAgent-300, 10 items (1 per category, seed 20261004) x langchain+adk x 3 cheap models x 1 trial = 60 trials; output goes to ../../runs/smoke.
+# Decisions D1-D8 of DECISIONS.md / runner_options.md. No keys here (keys come from the environment at run time).
+run_name: smoke
 items:
   source: safeagent300
-  per_category: 5
+  per_category: 1
   seed: 20261004
   ids:
-    - ASI01-002
     - ASI01-006
-    - ASI01-010
-    - ASI01-013
-    - ASI01-025
-    - ASI02-007
-    - ASI02-009
-    - ASI02-017
-    - ASI02-024
-    - ASI02-027
-    - ASI03-005
-    - ASI03-013
-    - ASI03-016
-    - ASI03-022
-    - ASI03-023
-    - ASI04-004
-    - ASI04-007
-    - ASI04-008
-    - ASI04-012
-    - ASI04-020
-    - ASI05-005
-    - ASI05-006
-    - ASI05-007
-    - ASI05-009
+    - ASI02-002
+    - ASI03-025
+    - ASI04-010
     - ASI05-013
-    - ASI06-003
-    - ASI06-005
-    - ASI06-008
-    - ASI06-021
-    - ASI06-027
-    - ASI07-002
-    - ASI07-008
-    - ASI07-012
-    - ASI07-014
-    - ASI07-030
-    - ASI08-008
-    - ASI08-009
-    - ASI08-013
-    - ASI08-024
-    - ASI08-028
-    - ASI09-009
-    - ASI09-012
-    - ASI09-023
+    - ASI06-009
+    - ASI07-017
+    - ASI08-007
     - ASI09-027
-    - ASI09-028
-    - ASI10-009
-    - ASI10-011
-    - ASI10-020
-    - ASI10-022
-    - ASI10-029
+    - ASI10-024
 frameworks: [langchain, adk]   # openai_agents is supported; enable it here after the pilot
 models:
   # Placeholders: ids are checked against the providers only at real-run time (verified: false). Nothing is called by --dry-run or --estimate.
@@ -65,12 +25,12 @@ models:
 tools: null            # null = all 12 inert tools
 trials: 1
 max_model_calls: 8   # was 4 (decision D8: the smoke run showed the 4-call cap cut off 11/60 trials, 9/20 for gemini; changed before any pilot data existed; cap_hit stays recorded as its own stop status)
-output_dir: ../../runs/pilot   # outside the repo (the trace writer refuses capture dirs inside an un-ignored git tree); relative to this runner/ folder, so run from runner/
+output_dir: ../../runs/smoke   # outside the repo (the trace writer refuses capture dirs inside an un-ignored git tree); relative to this runner/ folder, so run from runner/
 retry_profile: benchmark
 call_timeout_s: 120
 price_table: price_table.yaml
 budget:
-  cap_usd: 20.0
+  cap_usd: 1.0
   schema_tokens: 1500   # INFERRED
   prompt_tokens: 70     # INFERRED
   calls_per_trial: 3    # INFERRED (for --estimate only): was 2; smoke mean was 1.8 calls/trial at the old cap of 4 and 11/60 trials hit that cap, so the expected value moves up with cap 8

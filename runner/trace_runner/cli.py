@@ -1,4 +1,4 @@
-"""python -m trace_runner --config configs/pilot.yaml [--estimate | --dry-run | --rerun-missing | --resume | --verify | --select-items] [--confirm-real] [--out DIR]"""
+"""python -m trace_runner --config configs/pilot.yaml [--estimate | --dry-run | --rerun-missing | --resume | --verify | --summarize --summary-out DIR | --select-items] [--confirm-real] [--out DIR]"""
 
 from __future__ import annotations
 
@@ -15,7 +15,7 @@ from trace_runner.config import ConfigError, RunCfg, load_config
 from trace_runner.fakes import FakeProvider, fake_marker_scorer
 from trace_runner.items import load_items, select_ids
 from trace_runner.models_real import RealModels, missing_key_names
-from trace_runner.orchestrator import Paths, Runner, verify_manifest
+from trace_runner.orchestrator import Paths, Runner, summarize_to, verify_manifest
 from trace_runner.pricing import PriceTableError, estimate, format_estimate, load_price_table, n_trials
 from trace_runner.safety import StartupRefusal, enforce_startup_safety
 
@@ -33,9 +33,11 @@ def build_parser() -> argparse.ArgumentParser:
     g.add_argument("--rerun-missing", action="store_true", help="re-run only the missing_infrastructure rows of an earlier run")
     g.add_argument("--resume", action="store_true", help="run only trials with no result row (after a budget stop or a crash)")
     g.add_argument("--verify", action="store_true", help="check that the trace manifest, the traces and the results file agree")
+    g.add_argument("--summarize", action="store_true", help="rebuild divergence_summary.json/.md from an existing run folder (--out or the config's output_dir) into --summary-out; calls no model, never modifies the run folder")
     g.add_argument("--select-items", action="store_true", help="print the seeded stratified item ids for the config's items section")
     ap.add_argument("--dry-run", action="store_true", help="fake models, fake scorer, fake prices; all three frameworks; no network, no keys (combine with --rerun-missing/--resume/--verify)")
     ap.add_argument("--out", help="output folder (default: output_dir from the config; dryrun_out for --dry-run)")
+    ap.add_argument("--summary-out", help="--summarize only: the folder to write the rebuilt summary into (must be outside the run folder)")
     ap.add_argument("--confirm-real", action="store_true", help="required for a run that calls real models")
     return ap
 
@@ -61,6 +63,17 @@ def main(argv: list[str] | None = None) -> int:
             probs = verify_manifest(paths)
             print("manifest OK" if not probs else "\n".join(probs))
             return 0 if not probs else 1
+        if a.summarize:
+            if not a.summary_out:
+                print("refusing: --summarize needs --summary-out DIR (the run folder is never modified)", file=sys.stderr)
+                return 2
+            try:
+                summarize_to(paths, Path(a.summary_out))
+            except (ValueError, FileNotFoundError) as exc:
+                print(f"refusing: {exc}", file=sys.stderr)
+                return 2
+            print(f"summary rebuilt from {out} into {a.summary_out}: divergence_summary.json, divergence_summary.md")
+            return 0
         items = load_items(cfg.items)
         ids = [m.id for m in cfg.models]
         if a.estimate:
