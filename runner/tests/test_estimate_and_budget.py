@@ -20,10 +20,20 @@ def test_estimate_refuses_when_the_price_table_is_missing(tmp_path):
         load_price_table(tmp_path / "nope.yaml", ["m1"])
 
 
-def test_estimate_refuses_the_shipped_placeholder_table():
-    ids = ["claude-haiku-4-5-20251001", "gpt-5.4-nano", "gemini-3.1-flash-lite"]
+IDS3 = ["claude-haiku-4-5-20251001", "gpt-5.4-nano", "gemini-3.1-flash-lite"]
+PLACEHOLDER = "prices:\n" + "".join(f"  {m}: {{input_per_mtok: null, output_per_mtok: null}}\n" for m in IDS3)  # what the repo shipped before the table was filled in (2026-10-05)
+
+
+def test_estimate_refuses_a_placeholder_table(tmp_path):
+    (tmp_path / "ph.yaml").write_text(PLACEHOLDER)
     with pytest.raises(PriceTableError, match="no usable price"):
-        load_price_table(HERE / "price_table.yaml", ids)
+        load_price_table(tmp_path / "ph.yaml", IDS3)
+
+
+def test_the_shipped_price_table_is_filled_for_the_pilot_models():
+    """Changed from 'refuses the shipped placeholder' when price_table.yaml was filled in (2026-10-05)."""
+    t = load_price_table(HERE / "price_table.yaml", IDS3)
+    assert not t.fake and all(t.prices[m].input_per_mtok > 0 and t.prices[m].output_per_mtok > 0 for m in IDS3)
 
 
 @pytest.mark.parametrize("row", ["{input_per_mtok: null, output_per_mtok: 1}", "{input_per_mtok: 0, output_per_mtok: 1}", "{input_per_mtok: '1', output_per_mtok: 1}",
@@ -42,9 +52,12 @@ def test_a_table_marked_fake_is_refused_unless_it_is_a_dry_run(tmp_path):
 
 
 def test_cli_estimate_and_real_run_refuse_without_a_filled_table(capsys, tmp_path):
-    assert main(["--config", str(HERE / "configs" / "pilot.yaml"), "--estimate"]) == 2
+    (tmp_path / "ph.yaml").write_text(PLACEHOLDER)
+    cfgtxt = (HERE / "configs" / "pilot.yaml").read_text().replace("price_table: price_table.yaml", f"price_table: {tmp_path / 'ph.yaml'}")
+    (tmp_path / "pilot_ph.yaml").write_text(cfgtxt)
+    assert main(["--config", str(tmp_path / "pilot_ph.yaml"), "--estimate"]) == 2
     assert "no usable price" in capsys.readouterr().err
-    assert main(["--config", str(HERE / "configs" / "pilot.yaml"), "--confirm-real", "--out", str(tmp_path / "o")]) == 2
+    assert main(["--config", str(tmp_path / "pilot_ph.yaml"), "--confirm-real", "--out", str(tmp_path / "o")]) == 2
     assert "no usable price" in capsys.readouterr().err
     assert not (tmp_path / "o").exists()  # nothing started
 
@@ -56,10 +69,10 @@ def test_cli_estimate_with_a_user_filled_table_prints_the_projection(tmp_path, c
                                         "  gpt-5.4-nano: {input_per_mtok: 1.0, output_per_mtok: 4.0}\n  gemini-3.1-flash-lite: {input_per_mtok: 0.5, output_per_mtok: 2.0}\n")
     assert main(["--config", str(tmp_path / "pilot.yaml"), "--estimate"]) == 0
     out = capsys.readouterr().out
-    # 50 items x 2 frameworks x 3 models x 1 trial = 300 trials; per trial in = 2 x (1500 + 70) = 3140 tokens
-    assert "TOTAL 300 trials  in 942,000" in out and "cap USD 20.00" in out
-    # expected: haiku 100 trials x (3140 x 2 + 384 x 10)/1e6 = 1.012; nano 100 x (3140 + 286 x 4)/1e6 = 0.4284; lite 100 x (1570 + 201 x 2)/1e6 = 0.1972
-    assert "expected USD 1.64" in out
+    # 50 items x 2 frameworks x 3 models x 1 trial = 300 trials; per trial in = 3 x (1500 + 70) = 4710 tokens (calls_per_trial 3 since D8; it was 2: 3140 tokens, 942,000, USD 1.64)
+    assert "TOTAL 300 trials  in 1,413,000" in out and "cap USD 20.00" in out
+    # expected: haiku 100 trials x (4710 x 2 + 384 x 10)/1e6 = 1.326; nano 100 x (4710 + 286 x 4)/1e6 = 0.5854; lite 100 x (2355 + 201 x 2)/1e6 = 0.2757; total 2.1871
+    assert "expected USD 2.19" in out
 
 
 def test_estimate_numbers(tmp_path):

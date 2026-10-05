@@ -149,7 +149,28 @@ async def run_adk(prompt: str, cfg: RunCfg, model: Any, kit: InertToolKit, write
     from safelabs_trace.adk_handler import ADKTraceHandler, adk_tools, as_plugin
 
     _quiet_adk_cap_logging()
-    handler = ADKTraceHandler(writer, trial=trial)
+
+    class ClosingHandler(ADKTraceHandler):
+        """Gap fix (smoke run, 2026-10-05): when ADK stops a run at the call cap it raises before the model is called, after the plugin has written the
+        ``model.call.start`` of the call that never happened; the handler's run-error hook and ``close_open_traces`` close agents and the session but not that
+        open model call. Close it here (in both places) with a ``model.call.end`` that carries the error type (``LlmCallsLimitExceededError``), through the handler's own model-error path, so every
+        start has an end. Uses the handler's private ``_tr``/``_emit``/``_model_end`` (safelabs-trace/src is not changed; a src-side fix is the cleaner one)."""
+
+        def _close_open_model(self, st: Any, error: BaseException | None) -> None:
+            if st is not None and st.get("open_model") is not None:
+                self._emit(self._model_end, st, None, error)
+
+        async def on_run_error_callback(self, *, invocation_context: Any, error: Exception) -> None:
+            # the plugin path: ADK reports the run error here, and the parent closes the agents and the session (dropping the open model call)
+            self._close_open_model(self._tr.get(getattr(invocation_context, "invocation_id", None)), error)
+            await super().on_run_error_callback(invocation_context=invocation_context, error=error)
+
+        def close_open_traces(self, error: BaseException | None = None) -> None:
+            for st in list(self._tr.values()):
+                self._close_open_model(st, error)
+            super().close_open_traces(error)
+
+    handler = ClosingHandler(writer, trial=trial)
     agent = Agent(name="bench_agent", model=model, instruction=cfg.system_prompt, tools=adk_tools(kit))
     runner = InMemoryRunner(app=App(name="trace_runner", root_agent=agent, plugins=[as_plugin(handler)]))
     session = await runner.session_service.create_session(app_name="trace_runner", user_id="u")
