@@ -12,6 +12,7 @@ from agentport_bench.harness import format_rerun_lines
 from safelabs_trace.writer import resolve_salt, salt_id
 
 from trace_runner.config import ConfigError, RunCfg, load_config
+from trace_runner.evidence import EvidenceRefusal, EvidenceWriter, check_evidence_dir
 from trace_runner.fakes import FakeProvider, fake_marker_scorer
 from trace_runner.items import load_items, select_ids
 from trace_runner.models_real import RealModels, missing_key_names
@@ -38,6 +39,8 @@ def build_parser() -> argparse.ArgumentParser:
     ap.add_argument("--dry-run", action="store_true", help="fake models, fake scorer, fake prices; all three frameworks; no network, no keys (combine with --rerun-missing/--resume/--verify)")
     ap.add_argument("--out", help="output folder (default: output_dir from the config; dryrun_out for --dry-run)")
     ap.add_argument("--summary-out", help="--summarize only: the folder to write the rebuilt summary into (must be outside the run folder)")
+    ap.add_argument("--evidence-dir", help="LOCAL-ONLY evidence sidecar (decision D10): write evidence.jsonl (final answer text, raw tool arguments, stub results) into this folder; refused inside any git working tree "
+                    "or the run's output folder; folder mode 700, file mode 600; key-like strings redacted. Public outputs stay digest-only.")
     ap.add_argument("--confirm-real", action="store_true", help="required for a run that calls real models")
     return ap
 
@@ -59,6 +62,9 @@ def main(argv: list[str] | None = None) -> int:
             cfg = cfg.model_copy(update={"frameworks": ["langchain", "adk", "openai_agents"], "scorer": "fake_marker"})
         out = Path(a.out or ("dryrun_out" if a.dry_run else cfg.output_dir))
         paths = Paths(out)
+        if a.evidence_dir and (a.estimate or a.verify or a.summarize or a.select_items):
+            print("refusing: --evidence-dir applies to a run (not to --estimate, --verify, --summarize or --select-items)", file=sys.stderr)
+            return 2
         if a.verify:
             probs = verify_manifest(paths)
             print("manifest OK" if not probs else "\n".join(probs))
@@ -81,6 +87,8 @@ def main(argv: list[str] | None = None) -> int:
             print(format_estimate(estimate(cfg, len(items), table)))
             return 0
         report = enforce_startup_safety(cfg)
+        if a.evidence_dir:
+            check_evidence_dir(a.evidence_dir, out)  # refuses before anything is created or any model is called
         if a.dry_run:
             table = load_price_table(_price_path(cfg_path, cfg), ids, allow_fake=True)
             salt = secrets.token_bytes(32)
@@ -101,8 +109,9 @@ def main(argv: list[str] | None = None) -> int:
             from safelabs.scoring.scorer import Scorer
 
             source, scorer, mode = RealModels(), Scorer(), "real"
+        evidence = EvidenceWriter(a.evidence_dir, out, salt) if a.evidence_dir else None
         runner = Runner(cfg, sha, items, source, scorer, table, paths, salt, mode=mode, salt_id=salt_id(salt),
-                        sleep=(_no_sleep if a.dry_run else None), jitter_fn=((lambda: 0.0) if a.dry_run else None))
+                        sleep=(_no_sleep if a.dry_run else None), jitter_fn=((lambda: 0.0) if a.dry_run else None), evidence=evidence)
         runner.safety = report.as_dict()
         if not (a.rerun_missing or a.resume) and paths.results.exists() and paths.results.stat().st_size:
             print(f"refusing: {paths.results} already has rows; use --resume or --rerun-missing, or choose a new --out", file=sys.stderr)
@@ -114,8 +123,10 @@ def main(argv: list[str] | None = None) -> int:
             res = asyncio.run(runner.run(resume=True))
             print(f"ran {res['ran']} trial(s); not_run_budget {res['not_run_budget']}; spent {res['spent_usd']:.4f} ({'fake units' if table.fake else 'USD'})")
         print(f"outputs in {out}: results.jsonl, results.manifest.json, trace_manifest.json, divergence_summary.json/.md, traces/")
+        if evidence is not None:
+            print(f"local-only evidence: {evidence.lines} line(s) in {evidence.file} (never commit, never upload)")
         return 0
-    except (ConfigError, StartupRefusal, PriceTableError) as exc:
+    except (ConfigError, StartupRefusal, PriceTableError, EvidenceRefusal) as exc:
         print(f"refusing: {exc}", file=sys.stderr)
         return 2
 

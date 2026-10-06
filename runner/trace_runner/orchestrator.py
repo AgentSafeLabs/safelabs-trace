@@ -35,6 +35,7 @@ from safelabs_trace.writer import _check_capture_dir, read_trace
 
 from trace_runner import metrics
 from trace_runner.agents import STOP_ERROR, TracedAdapter, TrialCtx, safe_name
+from trace_runner.evidence import build_record
 from trace_runner.config import ModelCfg, RunCfg
 from trace_runner.pricing import BudgetTracker, PriceTable
 
@@ -118,7 +119,8 @@ def trace_index(traces_dir: Path, trial_file: str) -> dict[str, Any]:
 class Runner:
     def __init__(self, cfg: RunCfg, cfg_sha: str, items: list[Any], source: Any, scorer: Any, table: PriceTable, paths: Paths, salt: bytes, *,
                  sleep: Callable[[float], Awaitable[None]] | None = None, jitter_fn: Callable[[], float] | None = None, mode: str = "real",
-                 salt_id: str | None = None) -> None:
+                 salt_id: str | None = None, evidence: Any = None) -> None:
+        self.evidence = evidence  # an EvidenceWriter or None (--evidence-dir); local-only, see trace_runner/evidence.py
         self.cfg, self.cfg_sha, self.items, self.source, self.scorer, self.table = cfg, cfg_sha, items, source, scorer, table
         self.paths, self.salt, self.sleep, self.jitter, self.mode = paths, salt, sleep, jitter_fn, mode
         self.salt_id = salt_id
@@ -140,6 +142,7 @@ class Runner:
         k = (fw, model.id)
         if k not in self._adapters:
             self._adapters[k] = TracedAdapter(self.cfg, fw, model, self.source, self.salt, self.paths.traces)
+            self._adapters[k].keep_evidence = self.evidence is not None
         return self._adapters[k]
 
     # ---- one trial -------------------------------------------------------------------------------------------
@@ -149,9 +152,14 @@ class Runner:
         row = await run_trial(ad, t.item, self.scorer, model=t.model.id, framework=t.framework, trial_seed=t.seed, provider=t.model.provider,
                               max_attempts=self.retry["max_attempts"], base_delay_s=self.retry["base_delay_s"], max_delay_s=self.retry["max_delay_s"],
                               max_retry_after_s=self.retry["max_retry_after_s"], sleep=self.sleep, jitter_fn=self.jitter)
+        n_text = None if row.is_missing else ad.last.get("final_text_len")  # goes to the trace manifest only: results.jsonl rows stay plain AgentPort-Bench rows
+        if self.evidence is not None:
+            ev = ad.last.get("_evidence") or {"text": "", "calls": []}
+            self.evidence.write(build_record(trial=t, row=row, attempt=ad.last.get("attempt", 0), run_pass=run_pass, trace_path=self.paths.traces / f"{safe_name(t.trial_id)}.jsonl",
+                                             final_text=ev["text"], kit_calls=ev["calls"], category=getattr(getattr(t.item, "category", None), "value", None)))
         cost = 0.0 if row.is_missing else self.budget.record(t.model.id, row.usage)
         return row, {"stop_status": ad.last.get("stop_status", STOP_ERROR) if not row.is_missing else STOP_ERROR,
-                     "model_calls": ad.last.get("model_calls"), "tools_called": ad.last.get("tools_called", []), "cost_usd": cost}
+                     "model_calls": ad.last.get("model_calls"), "tools_called": ad.last.get("tools_called", []), "cost_usd": cost, "final_text_len": n_text}
 
     def _entry(self, t: Trial, row: BenchTrialResult | None, extra: dict[str, Any], status: str, prev: dict[str, Any] | None = None) -> dict[str, Any]:
         tf = f"{safe_name(t.trial_id)}.jsonl"
@@ -162,10 +170,11 @@ class Runner:
              "trace_events": idx["events"], "trace_sha256": idx["sha256"]}
         if row is not None:
             e.update(payload_hash=row.payload_hash, verdict=row.verdict.value if row.verdict else None, attempts=row.attempts, error_subclass=row.error_subclass,
+                     final_text_len=extra.get("final_text_len"),
                      tool_call_only=row.tool_call_only, stop_status=extra.get("stop_status"), model_calls=extra.get("model_calls"),
                      tools_called=extra.get("tools_called", []), cost_usd=round(extra.get("cost_usd", 0.0) + (prev or {}).get("cost_usd", 0.0), 8))
         else:
-            e.update(payload_hash=None, verdict=None, attempts=0, error_subclass=None, tool_call_only=None, stop_status=None, model_calls=None, tools_called=[], cost_usd=0.0)
+            e.update(payload_hash=None, verdict=None, attempts=0, error_subclass=None, tool_call_only=None, stop_status=None, model_calls=None, tools_called=[], cost_usd=0.0, final_text_len=None)
         return e
 
     # ---- manifests -------------------------------------------------------------------------------------------
@@ -298,6 +307,31 @@ class Runner:
         return s
 
 
+def risky_call_counts(events: list[Any]) -> dict[str, int]:
+    """Counts of the risky calls that ``action_verdict`` counts (executed events that are not blocked, else requested events), and how many of them have a winning
+    rule id in the unclassified-shell bucket. The winning rule id is read from the call's ``tool.call.requested`` event (rule_ids[0])."""
+    header = next((e for e in events if e.type == "trace.header"), None)
+    cov = getattr(header, "coverage", None) or {}
+    req = {e.event_id: e for e in events if e.type == "tool.call.requested"}
+    if cov.get("tool.call.executed") in ("emitted", "partial"):
+        calls = [(e, req.get(getattr(e, "requested_event_id", None))) for e in events if e.type == "tool.call.executed" and e.status != "blocked"]
+    else:
+        calls = [(e, e) for e in req.values()]
+    out = {"risky_n": 0, "risky_unclass_n": 0, "irr_n": 0, "irr_unclass_n": 0}
+    for ev, rq in calls:
+        sev = ev.severity
+        if sev not in ("state_changing", "irreversible"):
+            continue
+        ids = list(getattr(rq, "rule_ids", None) or [])
+        un = bool(ids) and ids[0] in metrics.UNCLASSIFIED_SHELL_IDS
+        out["risky_n"] += 1
+        out["risky_unclass_n"] += un
+        if sev == "irreversible":
+            out["irr_n"] += 1
+            out["irr_unclass_n"] += un
+    return out
+
+
 def build_divergence(paths: Paths) -> dict[str, Any]:
     rows = {(r.model, r.framework, r.prompt_id, r.trial_seed): r for r in read_rows(paths.results)}
     tm = json.loads(paths.trace_manifest.read_text(encoding="utf-8"))
@@ -325,7 +359,7 @@ def build_divergence(paths: Paths) -> dict[str, Any]:
             gaps["model_call_start_without_end"] += len(starts - ends)
             gaps["model_call_end_without_start"] += len(ends - starts)
         ext.setdefault(cell, []).append({"verdict": str(getattr(r.verdict, "value", r.verdict)).lower(), "tool_call_only": bool(r.tool_call_only),
-                                         "action": av.level if av else "unknown", "stop_status": e.get("stop_status")})
+                                         "action": av.level if av else "unknown", "stop_status": e.get("stop_status"), **(risky_call_counts(events) if events else {})})
         cells.setdefault(cell, []).append({"text": text_verdict(r.verdict), "action": av.level if av else "unknown", "tool_call_only": bool(r.tool_call_only)})
         if e.get("stop_status") == "cap_hit":
             cap_hit[cell] = cap_hit.get(cell, 0) + 1
@@ -397,6 +431,17 @@ def format_divergence_md(s: dict[str, Any]) -> str:
             rb = t["risky_by_verdict"]
             lines.append(f"| {fw} | {m} | {t['n_known_action']} | {_pct(t['risky_action_rate']['state_or_irreversible'])} | {_pct(t['risky_action_rate']['irreversible'])} | "
                          f"{_pct(t['acted_without_answer_rate'])} | {_pct(t['acted_without_answer_or_cap_rate'])} | {rb['pass']}/{rb['fail']}/{rb['vulnerable']}/{rb['uncertain']} |")
+        u = x["overall"]["unclassified_shell"]
+        lines += ["", "### Unclassified-shell bucket", "",
+                  f"Rule ids in the bucket (read from severity_rules.json): {', '.join(u['rule_ids'])}. {x['definitions']['unclassified_shell']}", "",
+                  "| framework | model | risky trials | of which only in bucket | risky rate incl. | excl. as not risky | removed from sample | irreversible trials | only in bucket | irreversible rate incl. | excl. as not risky | removed from sample |",
+                  "|---|---|---|---|---|---|---|---|---|---|---|---|"]
+        for name, t in [*x["by_cell"].items(), ("ALL|ALL", x["overall"])]:
+            fw, m = name.split("|", 1)
+            b = t["unclassified_shell"]
+            lines.append(f"| {fw} | {m} | {b['risky_trials']} | {b['risky_trials_only_in_bucket']} | {_pct(b['risky_action_rate']['including'])} | {_pct(b['risky_action_rate']['excluding_as_not_risky'])} | "
+                         f"{_pct(b['risky_action_rate']['excluding_removed_from_sample'])} | {b['irreversible_trials']} | {b['irreversible_trials_only_in_bucket']} | {_pct(b['irreversible_rate']['including'])} | "
+                         f"{_pct(b['irreversible_rate']['excluding_as_not_risky'])} | {_pct(b['irreversible_rate']['excluding_removed_from_sample'])} |")
         g = x["trace_integrity"]
         lines += ["", f"Trace integrity: {g['traces_checked']} final-attempt traces checked; model.call.start without a matching end: {g['model_call_start_without_end']}; "
                       f"end without a start: {g['model_call_end_without_start']}."]
