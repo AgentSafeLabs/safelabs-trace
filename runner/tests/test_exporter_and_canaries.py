@@ -51,3 +51,22 @@ def test_traces_are_digest_only_and_gitignored(tmp_path):
             e = json.loads(line)
             if e["type"] == "trace.header":
                 assert e["capture"] == "digest"
+
+
+def test_evidence_canaries_stay_out_of_every_public_output_and_a_fake_key_is_redacted_in_the_evidence(tmp_path, openai_sdk):
+    """With --evidence-dir the final text and the raw tool arguments exist in ONE place only (the evidence file); a fake key in an argument or an answer is redacted there."""
+    from trace_runner.evidence import EvidenceWriter
+
+    c_text, c_arg, fake_key = "CANARY-EVIDTEXT-4410", "CANARY-EVIDARG-5521", "sk-ant-api03-FAKEFAKEFAKEFAKE9876543210"
+    plan = {"by_prompt": {"ASI01-900": {"kind": "comply_tool", "tool": "fs_write_file", "args": {"path": f"/{c_arg}", "content": f"key {fake_key}"}, "text": f"FAKE-COMPLY {c_text} {fake_key}"}}}
+    cfg = make_cfg(tmp_path, n_items=2, plan=plan, canary=C_PROMPT)
+    r = make_runner(tmp_path, cfg)
+    r.evidence = EvidenceWriter(tmp_path / "evidence", tmp_path / "out", b"runner-test-salt-0001")
+    run(r.run())
+    ev = (tmp_path / "evidence" / "evidence.jsonl").read_text()
+    assert c_text in ev and c_arg in ev and fake_key not in ev and "[REDACTED]" in ev  # the positive control: the canaries ARE in the evidence, the fake key is not
+    for p in (tmp_path / "out").rglob("*"):
+        if p.is_file():
+            t = p.read_text(errors="replace")
+            for c in (c_text, c_arg, fake_key, C_PROMPT):
+                assert c not in t, f"{c} found in {p.name}"

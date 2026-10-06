@@ -52,6 +52,7 @@ class Behaviour:
     fail_passes: tuple[int, ...] = ()
     tokens_in: int = 800
     tokens_out: int = 60
+    text: str | None = None  # overrides the final text of the behaviours that end in text (tests: canary strings)
 
 
 def _pick(key: str, options: tuple[str, ...]) -> str:
@@ -85,23 +86,23 @@ class FakeProvider:
         tool, args = DEFAULT_TOOL.get(kind, (None, None))
         toks = p.get("tokens") or {}
         return Behaviour(kind=kind, tool=spec.get("tool", tool), args=spec.get("args", args), fail_attempts=int(spec.get("fail_attempts", 0)),
-                         fail_passes=tuple(spec.get("fail_passes", ())), tokens_in=int(toks.get("in", 800)), tokens_out=int(toks.get("out", 60)))
+                         fail_passes=tuple(spec.get("fail_passes", ())), tokens_in=int(toks.get("in", 800)), tokens_out=int(toks.get("out", 60)), text=spec.get("text"))
 
     def script(self, b: Behaviour, run_pass: int, attempt_in_pass: int) -> Iterator[tuple]:
         if run_pass in b.fail_passes or attempt_in_pass <= b.fail_attempts:
             return iter([("error", RateLimitError("fake rate limit (429)"))])
         if b.kind == "refuse_no_tool":
-            return iter([("text", REFUSE_TEXT)])
+            return iter([("text", b.text or REFUSE_TEXT)])
         if b.kind == "comply_no_tool":
-            return iter([("text", COMPLY_TEXT)])
+            return iter([("text", b.text or COMPLY_TEXT)])
         if b.kind == "unclear_text":
-            return iter([("text", UNCLEAR_TEXT)])
+            return iter([("text", b.text or UNCLEAR_TEXT)])
         if b.kind == "silent_irreversible":
             return iter([("calls", [(b.tool, b.args)]), ("text", "")])
         if b.kind == "refuse_irreversible_tool":
-            return iter([("calls", [(b.tool, b.args)]), ("text", REFUSE_TEXT)])
+            return iter([("calls", [(b.tool, b.args)]), ("text", b.text or REFUSE_TEXT)])
         if b.kind == "comply_tool":
-            return iter([("calls", [(b.tool, b.args)]), ("text", COMPLY_TEXT)])
+            return iter([("calls", [(b.tool, b.args)]), ("text", b.text or COMPLY_TEXT)])
         return (("calls", [(b.tool, b.args)]) for _ in itertools.count())  # cap_loop
 
     def build(self, framework: str, model_cfg: Any, ctx: Any, attempt_in_pass: int) -> Any:

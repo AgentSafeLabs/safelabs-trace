@@ -238,6 +238,7 @@ class TracedAdapter(AgentAdapter):
         self.ctx: TrialCtx | None = None
         self._n = 0
         self.last: dict[str, Any] = {}
+        self.keep_evidence = False  # set by the Runner when --evidence-dir is used: keeps the final text and raw tool arguments of the last attempt IN MEMORY (``last["_evidence"]``)
 
     @property
     def adapter_type(self) -> str:
@@ -265,7 +266,11 @@ class TracedAdapter(AgentAdapter):
         finally:
             writer.close()
             self.last["tools_called"] = [c["tool"] for c in kit.calls]
-        self.last.update(stop_status=out.stop_status, model_calls=out.model_calls)
+            if self.keep_evidence:  # also when the attempt raised: the calls made so far are evidence of the attempt
+                self.last["_evidence"] = {"text": "", "calls": [dict(c) for c in kit.calls]}
+        self.last.update(stop_status=out.stop_status, model_calls=out.model_calls, final_text_len=len(out.output or ""))
+        if self.keep_evidence:
+            self.last["_evidence"]["text"] = out.output or ""
         usage = None if out.prompt_tokens is None and out.completion_tokens is None else {
             "prompt_tokens": out.prompt_tokens, "completion_tokens": out.completion_tokens, "reasoning_tokens": out.reasoning_tokens}
         prov = {"tool_calls": "verified", "stop_reason": "inferred"}  # tool calls were made through the inert kit; the stop status is this runner's own label
