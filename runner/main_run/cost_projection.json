@@ -1,0 +1,140 @@
+{
+ "pilot_v2_spend_usd": 0.4834755,
+ "recomputed_pilot_v2_usd": 0.4834755,
+ "per_trial": {
+  "claude-haiku-4-5-20251001|langchain": {
+   "n": 50,
+   "in": 1402.78,
+   "out": 287.92,
+   "cost": 0.0028423800000000003,
+   "p95": 0.003189,
+   "max": 0.006259
+  },
+  "claude-haiku-4-5-20251001|adk": {
+   "n": 50,
+   "in": 1721.06,
+   "out": 291.62,
+   "cost": 0.00317916,
+   "p95": 0.003452,
+   "max": 0.019561
+  },
+  "gpt-5.4-nano|langchain": {
+   "n": 50,
+   "in": 689.94,
+   "out": 210.4,
+   "cost": 0.00040098800000000007,
+   "p95": 0.00084395,
+   "max": 0.00092525
+  },
+  "gpt-5.4-nano|adk": {
+   "n": 50,
+   "in": 1010.36,
+   "out": 190.5,
+   "cost": 0.00044019700000000003,
+   "p95": 0.00084815,
+   "max": 0.00155455
+  },
+  "gemini-3.1-flash-lite|langchain": {
+   "n": 50,
+   "in": 3633.12,
+   "out": 200.12,
+   "cost": 0.00120846,
+   "p95": 0.002226,
+   "max": 0.00262125
+  },
+  "gemini-3.1-flash-lite|adk": {
+   "n": 50,
+   "in": 5015.1,
+   "out": 229.7,
+   "cost": 0.001598325,
+   "p95": 0.0031705,
+   "max": 0.003838
+  },
+  "claude-haiku-4-5-20251001|openai_agents": {
+   "in": 1561.92,
+   "out": 289.77,
+   "cost": 0.0030107700000000003,
+   "p95": 0.0033205,
+   "max": 0.01291,
+   "n": 0
+  },
+  "gpt-5.4-nano|openai_agents": {
+   "in": 850.1500000000001,
+   "out": 200.45,
+   "cost": 0.0004205925000000001,
+   "p95": 0.00084605,
+   "max": 0.0012399,
+   "n": 0
+  },
+  "gemini-3.1-flash-lite|openai_agents": {
+   "in": 4324.110000000001,
+   "out": 214.91,
+   "cost": 0.0014033925,
+   "p95": 0.00269825,
+   "max": 0.003229625,
+   "n": 0
+  }
+ },
+ "runs": {
+  "smoke_openai_agents": {
+   "trials": 60,
+   "cap": 2,
+   "usd": 0.0966951,
+   "per_model": {
+    "claude-haiku-4-5-20251001": 0.0602154,
+    "gpt-5.4-nano": 0.008411850000000002,
+    "gemini-3.1-flash-lite": 0.02806785
+   }
+  },
+  "smoke_frontier": {
+   "trials": 120,
+   "cap": 8,
+   "usd_indication": 1.3495382,
+   "per_model": {
+    "claude-opus-4-8": 0.602154,
+    "gpt-5.5": 0.41057,
+    "gemini-3.5-flash": 0.3368142
+   }
+  },
+  "main_cheap": {
+   "trials": 5400,
+   "cap": 30,
+   "usd": 8.702558999999999,
+   "per_model": {
+    "claude-haiku-4-5-20251001": 5.419385999999999,
+    "gpt-5.4-nano": 0.7570665000000001,
+    "gemini-3.1-flash-lite": 2.5261065
+   }
+  },
+  "main_cheap_with_oa": {
+   "trials": 8100,
+   "cap": 30,
+   "usd": 13.053838500000001,
+   "per_model": {
+    "claude-haiku-4-5-20251001": 8.129079,
+    "gpt-5.4-nano": 1.1355997500000001,
+    "gemini-3.1-flash-lite": 3.7891597499999996
+   }
+  },
+  "main_frontier": {
+   "trials": 1800,
+   "cap": 60,
+   "usd_indication": 20.243073,
+   "per_model": {
+    "claude-opus-4-8": 9.032309999999999,
+    "gpt-5.5": 6.15855,
+    "gemini-3.5-flash": 5.052213
+   }
+  },
+  "main_frontier_with_oa": {
+   "trials": 2700,
+   "cap": 60,
+   "usd_indication": 30.3646095,
+   "per_model": {
+    "claude-opus-4-8": 13.548465,
+    "gpt-5.5": 9.237825,
+    "gemini-3.5-flash": 7.578319500000001
+   }
+  }
+ }
+}

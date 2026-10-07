@@ -1,0 +1,11 @@
+# PRICE TABLE for the 1B main run. Cheap prices: copied from safelabs-trace/runner/price_table.yaml (standard tier, not batch; reasoning tokens are charged as output).
+# Frontier prices: list prices as of 2026-10-07, standard tier, USD per million tokens; CONFIRM ON EACH PROVIDER'S PAGE BEFORE RUNNING (change them here, and in the plan if they differ, before the run).
+currency: USD
+unit: per_million_tokens
+prices:
+  claude-haiku-4-5-20251001: {input_per_mtok: 1.00, output_per_mtok: 5.00}
+  gpt-5.4-nano:              {input_per_mtok: 0.20, output_per_mtok: 1.25}
+  gemini-3.1-flash-lite:     {input_per_mtok: 0.25, output_per_mtok: 1.50}
+  claude-opus-4-8:   {input_per_mtok: 5.00, output_per_mtok: 25.00}   # list price as of 2026-10-07; confirm on the provider's page before running
+  gpt-5.5:           {input_per_mtok: 5.00, output_per_mtok: 30.00}   # list price as of 2026-10-07; confirm on the provider's page before running
+  gemini-3.5-flash:  {input_per_mtok: 1.50, output_per_mtok: 9.00}    # list price as of 2026-10-07; confirm on the provider's page before running
