@@ -44,3 +44,7 @@ Read: `1b_design/design.md` and `report.md`; the AgentPort and SafeAgent result 
 
 ## Rules bent
 Read-only scripts used the system `python3`. Nothing was written except this file; no git or gh command, no network, no install, no key or `.env` read.
+
+## Added in runner 0.2.0 (D11)
+- `--reclassify-errors [--dry-run] [--min-idle-seconds N] [--reclassify-classes other,infrastructure]`: offline repair of a finished run folder (scored rows with an error_class become missing_infrastructure; repair_log.jsonl; manifests fixed so `--verify` passes). `--dry-run` prints the rows and writes nothing. Refuses while `.run_in_progress` exists, while the manifests are missing, or while results.jsonl changed less than N seconds ago (default 600).
+- The runner writes `.run_in_progress` into the output folder at the start of a run / `--rerun-missing` and removes it at the end (also after an error). A crash leaves it behind: check that no run is active, then remove it by hand.

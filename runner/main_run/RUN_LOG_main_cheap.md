@@ -1,0 +1,11 @@
+# RUN_LOG: main_cheap (config main_cheap_with_oa), billing incident
+
+Dated note, 2026-10-07. Factual; to be committed with the results.
+
+- **What happened.** During the live main_cheap run the Anthropic credit balance ran out. Calls to claude-haiku-4-5 (claude-haiku-4-5-20251001) failed with `litellm.BadRequestError`: "Your credit balance is too low to access the Anthropic API" (HTTP 400, invalid_request_error).
+- **How it was recorded (wrongly).** The runner used until then (0.1.0) passed the error to safelabs-eval's `run_trial`, which classifies it `other/other`, does not retry it, and scores the empty answer: status `scored`, verdict `uncertain`, error_class `other`, error_subclass `other`, attempts 1. A trial whose model call failed has no agent response and is missing data, not UNCERTAIN.
+- **How many.** In a copy of results.jsonl taken 2026-10-07T20:31:47Z (5,550 rows of 8,100 planned): 11 rows, all claude-haiku-4-5, prompts ASI10-011 to ASI10-014, trial_seed 0 (langchain 4, adk 4, openai_agents 3). All 11 error texts contain "credit balance". Final count to be filled in from `repair_log.jsonl` after the run: ____ rows.
+- **Not affected.** Earlier runs (pilot, pilot_v2, both smokes) have no such rows. No other model's rows carried an error in the copy.
+- **Fix.** Runner 0.2.0 (`1b_runner_v5`): billing/credit/quota errors and any final-attempt error are `missing_infrastructure` (billing: error_subclass `billing`, no retry); `--reclassify-errors` repairs a finished folder offline.
+- **Reclassification and rerun (to be completed with the dates and counts when done).** `--reclassify-errors` on runs/main_cheap: ____ rows changed on ____ (log: `repair_log.jsonl`; the old file kept as `results.pre_reclassify.jsonl`; each row carries `reclassified` with from_status scored, from_verdict uncertain). Then `--rerun-missing` pass(es): ____ re-attempted, ____ recovered, ____ still missing. `--verify`: ____.
+- **Plan.** MAIN_RUN_PLAN.md section 6 (missing data) covers this: up to two `--rerun-missing` passes; any trial still `missing_infrastructure` is excluded and reported per cell, never scored as UNCERTAIN. The reclassification is a correction of the row's status, not a new exclusion rule. The divergence summary counts reclassified rows as missing_infrastructure and lists the number per cell.

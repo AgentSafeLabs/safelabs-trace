@@ -25,6 +25,7 @@ from safelabs_trace.inert_tools import InertToolKit
 from safelabs_trace.writer import TraceWriter
 
 from trace_runner.config import ModelCfg, RunCfg
+from trace_runner.errors import exception_message, exception_meta, is_billing
 from trace_runner.safety import check_openai_tools
 
 STOP_COMPLETED, STOP_CAP, STOP_ERROR = "completed", "cap_hit", "error"
@@ -246,6 +247,7 @@ class TracedAdapter(AgentAdapter):
 
     def set_context(self, ctx: TrialCtx) -> None:
         self.ctx, self._n, self.last = ctx, 0, {}
+        self.billing_exc: BaseException | None = None  # set when an attempt fails with a billing, credit or quota error: later attempts of the trial are not tried
 
     def trace_path(self, trial_id: str) -> Path:
         return self.traces_dir / f"{safe_name(trial_id)}.jsonl"
@@ -253,6 +255,8 @@ class TracedAdapter(AgentAdapter):
     async def _execute(self, prompt: str) -> AgentResponse:
         ctx = self.ctx
         assert ctx is not None, "set_context() first"
+        if self.billing_exc is not None:  # a billing error cannot be fixed by trying again: answer from the first failure, no model call, no trace
+            raise self.billing_exc
         self._n += 1
         attempt = ctx.attempt_base + self._n
         self.last = {"stop_status": STOP_ERROR, "attempt": attempt, "tools_called": [], "model_calls": None}
@@ -263,6 +267,10 @@ class TracedAdapter(AgentAdapter):
         t0 = time.perf_counter()
         try:
             out = await RUNNERS[self.framework](prompt, self.cfg, model, kit, writer, trial)
+        except Exception as exc:
+            if is_billing(exception_message(exc), exception_meta(exc)):
+                self.billing_exc = exc
+            raise
         finally:
             writer.close()
             self.last["tools_called"] = [c["tool"] for c in kit.calls]

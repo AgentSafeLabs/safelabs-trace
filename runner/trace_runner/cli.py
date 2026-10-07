@@ -1,4 +1,4 @@
-"""python -m trace_runner --config configs/pilot.yaml [--estimate | --dry-run | --rerun-missing | --resume | --verify | --summarize --summary-out DIR | --select-items] [--confirm-real] [--out DIR]"""
+"""python -m trace_runner --config configs/pilot.yaml [--estimate | --dry-run | --rerun-missing | --resume | --verify | --reclassify-errors [--dry-run] | --summarize --summary-out DIR | --select-items] [--confirm-real] [--out DIR]"""
 
 from __future__ import annotations
 
@@ -35,8 +35,14 @@ def build_parser() -> argparse.ArgumentParser:
     g.add_argument("--resume", action="store_true", help="run only trials with no result row (after a budget stop or a crash)")
     g.add_argument("--verify", action="store_true", help="check that the trace manifest, the traces and the results file agree")
     g.add_argument("--summarize", action="store_true", help="rebuild divergence_summary.json/.md from an existing run folder (--out or the config's output_dir) into --summary-out; calls no model, never modifies the run folder")
+    g.add_argument("--reclassify-errors", action="store_true", help="REPAIR an existing run folder, offline: every row with status scored and a non-null error_class becomes missing_infrastructure "
+                   "(error fields kept, a `reclassified` record added; writes repair_log.jsonl, rewrites results.jsonl, fixes both manifests so --verify passes). Refuses while a run may still be writing the folder. "
+                   "With --dry-run it only prints the rows it would change and writes nothing.")
     g.add_argument("--select-items", action="store_true", help="print the seeded stratified item ids for the config's items section")
     ap.add_argument("--dry-run", action="store_true", help="fake models, fake scorer, fake prices; all three frameworks; no network, no keys (combine with --rerun-missing/--resume/--verify)")
+    ap.add_argument("--min-idle-seconds", type=float, default=600.0, help="--reclassify-errors: refuse a real repair if results.jsonl changed less than this many seconds ago (default 600)")
+    ap.add_argument("--reclassify-classes", default="other,infrastructure", help="--reclassify-errors: the error_class values to act on (default other,infrastructure; content_policy and no_output_text stay scored "
+                    "by the study's convention, add them here only on purpose)")
     ap.add_argument("--out", help="output folder (default: output_dir from the config; dryrun_out for --dry-run)")
     ap.add_argument("--summary-out", help="--summarize only: the folder to write the rebuilt summary into (must be outside the run folder)")
     ap.add_argument("--evidence-dir", help="LOCAL-ONLY evidence sidecar (decision D10): write evidence.jsonl (final answer text, raw tool arguments, stub results) into this folder; refused inside any git working tree "
@@ -58,13 +64,30 @@ def main(argv: list[str] | None = None) -> int:
                 cats.setdefault(e.category.value, []).append(e.id)
             print("\n".join(select_ids(cats, cfg.items.per_category, cfg.items.seed, cfg.items.categories)))
             return 0
-        if a.dry_run:
+        if a.dry_run and not a.reclassify_errors:
             cfg = cfg.model_copy(update={"frameworks": ["langchain", "adk", "openai_agents"], "scorer": "fake_marker"})
-        out = Path(a.out or ("dryrun_out" if a.dry_run else cfg.output_dir))
+        out = Path(a.out or ("dryrun_out" if a.dry_run and not a.reclassify_errors else cfg.output_dir))
         paths = Paths(out)
         if a.evidence_dir and (a.estimate or a.verify or a.summarize or a.select_items):
             print("refusing: --evidence-dir applies to a run (not to --estimate, --verify, --summarize or --select-items)", file=sys.stderr)
             return 2
+        if a.reclassify_errors:
+            from trace_runner import __version__ as runner_version
+            from trace_runner.repair import RepairRefusal, reclassify_errors
+
+            classes = tuple(x.strip() for x in a.reclassify_classes.split(",") if x.strip())
+            if not set(classes) <= {"infrastructure", "content_policy", "no_output_text", "other"}:
+                print("refusing: --reclassify-classes takes error_class names (infrastructure, content_policy, no_output_text, other)", file=sys.stderr)
+                return 2
+            if a.evidence_dir:
+                print("refusing: --evidence-dir does not apply to --reclassify-errors (it never touches traces or evidence)", file=sys.stderr)
+                return 2
+            try:
+                print("\n".join(reclassify_errors(out, runner_version, dry_run=a.dry_run, min_idle_s=a.min_idle_seconds, classes=classes)))
+            except (RepairRefusal, FileNotFoundError, ValueError) as exc:
+                print(f"refusing: {exc}", file=sys.stderr)
+                return 2
+            return 0
         if a.verify:
             probs = verify_manifest(paths)
             print("manifest OK" if not probs else "\n".join(probs))

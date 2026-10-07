@@ -14,4 +14,4 @@ os.environ.setdefault("LITELLM_LOCAL_MODEL_COST_MAP", "True")  # no download of 
 # LiteLlm built for a gemini/ route) that Gemini would be better used through ADK's native integration; we do not switch routes, so the warning is noise.
 os.environ.setdefault("ADK_SUPPRESS_GEMINI_LITELLM_WARNINGS", "true")  # read by google.adk.models.lite_llm; an explicit value set by the user is kept
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
