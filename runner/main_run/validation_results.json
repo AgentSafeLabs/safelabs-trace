@@ -1,0 +1,275 @@
+{
+ "smoke_openai_agents": {
+  "config_sha256": "dd2670c70cf546636b220b0a9c23d30ce6c81c1bc398d890dcabbc211ef028c4",
+  "items": 20,
+  "frameworks": [
+   "openai_agents"
+  ],
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "gpt-5.4-nano",
+   "gemini-3.1-flash-lite"
+  ],
+  "trials": 1,
+  "max_model_calls": 8,
+  "cap_usd": 2.0,
+  "output_dir": "../../runs/smoke_openai_agents",
+  "run_name": "smoke_openai_agents",
+  "retry_profile": "benchmark",
+  "n_trials": 60,
+  "verified_flags": [
+   false,
+   false,
+   false
+  ],
+  "tiers": [
+   "cheap"
+  ],
+  "estimate_rc": 0,
+  "estimate": {
+   "trials": 60,
+   "expected_usd": 0.19,
+   "worst_case_usd": 0.86,
+   "cap_usd": 2.0
+  },
+  "dry_run": {
+   "rc": 0,
+   "trials_run": 90,
+   "verify_rc": 0,
+   "verify": "manifest OK",
+   "evidence_lines": 90,
+   "note": "temporary copy: per_category 1 (10 items), 1 trial, fake prices, the runner forces 3 frameworks, fake models"
+  }
+ },
+ "smoke_frontier": {
+  "config_sha256": "b15843c5f2c8746737385fcdabc0ebcbebe0ba211294d0dab3d7a4b54d988532",
+  "items": 20,
+  "frameworks": [
+   "langchain",
+   "adk"
+  ],
+  "models": [
+   "claude-opus-4-8",
+   "gpt-5.5",
+   "gemini-3.5-flash"
+  ],
+  "trials": 1,
+  "max_model_calls": 8,
+  "cap_usd": 8.0,
+  "output_dir": "../../runs/smoke_frontier",
+  "run_name": "smoke_frontier",
+  "retry_profile": "benchmark",
+  "n_trials": 120,
+  "verified_flags": [
+   false,
+   false,
+   false
+  ],
+  "tiers": [
+   "frontier"
+  ],
+  "estimate_rc": 0,
+  "estimate": {
+   "trials": 120,
+   "expected_usd": 2.97,
+   "worst_case_usd": 13.34,
+   "cap_usd": 8.0
+  },
+  "dry_run": {
+   "rc": 0,
+   "trials_run": 90,
+   "verify_rc": 0,
+   "verify": "manifest OK",
+   "evidence_lines": 90,
+   "note": "temporary copy: per_category 1 (10 items), 1 trial, fake prices, the runner forces 3 frameworks, fake models"
+  }
+ },
+ "main_cheap": {
+  "config_sha256": "50e100f3488704d2ae096d331eb4c1f1becc382b2c05c99c1ac2334ccb332f0e",
+  "items": 300,
+  "frameworks": [
+   "langchain",
+   "adk"
+  ],
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "gpt-5.4-nano",
+   "gemini-3.1-flash-lite"
+  ],
+  "trials": 3,
+  "max_model_calls": 8,
+  "cap_usd": 30.0,
+  "output_dir": "../../runs/main_cheap",
+  "run_name": "main_cheap",
+  "retry_profile": "benchmark",
+  "n_trials": 5400,
+  "verified_flags": [
+   false,
+   false,
+   false
+  ],
+  "tiers": [
+   "cheap"
+  ],
+  "estimate_rc": 0,
+  "estimate": {
+   "trials": 5400,
+   "expected_usd": 16.94,
+   "worst_case_usd": 77.0,
+   "cap_usd": 30.0
+  },
+  "dry_run": {
+   "rc": 0,
+   "trials_run": 90,
+   "verify_rc": 0,
+   "verify": "manifest OK",
+   "evidence_lines": 90,
+   "note": "temporary copy: per_category 1 (10 items), 1 trial, fake prices, the runner forces 3 frameworks, fake models"
+  }
+ },
+ "main_cheap_with_oa": {
+  "config_sha256": "4843a8f0bb5db3690b727f5b5e6fc4908fc6bfe7a444f7f5109e0440d91ee91e",
+  "items": 300,
+  "frameworks": [
+   "langchain",
+   "adk",
+   "openai_agents"
+  ],
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "gpt-5.4-nano",
+   "gemini-3.1-flash-lite"
+  ],
+  "trials": 3,
+  "max_model_calls": 8,
+  "cap_usd": 30.0,
+  "output_dir": "../../runs/main_cheap",
+  "run_name": "main_cheap",
+  "retry_profile": "benchmark",
+  "n_trials": 8100,
+  "verified_flags": [
+   false,
+   false,
+   false
+  ],
+  "tiers": [
+   "cheap"
+  ],
+  "estimate_rc": 0,
+  "estimate": {
+   "trials": 8100,
+   "expected_usd": 25.4,
+   "worst_case_usd": 115.49,
+   "cap_usd": 30.0
+  },
+  "dry_run": {
+   "rc": 0,
+   "trials_run": 90,
+   "verify_rc": 0,
+   "verify": "manifest OK",
+   "evidence_lines": 90,
+   "note": "temporary copy: per_category 1 (10 items), 1 trial, fake prices, the runner forces 3 frameworks, fake models"
+  }
+ },
+ "main_frontier": {
+  "config_sha256": "754cc18fe7c247a3bf2b33b07304a0402229237b3f42618417430a43b4daf8f4",
+  "items": 300,
+  "frameworks": [
+   "langchain",
+   "adk"
+  ],
+  "models": [
+   "claude-opus-4-8",
+   "gpt-5.5",
+   "gemini-3.5-flash"
+  ],
+  "trials": 1,
+  "max_model_calls": 8,
+  "cap_usd": 60.0,
+  "output_dir": "../../runs/main_frontier",
+  "run_name": "main_frontier",
+  "retry_profile": "benchmark",
+  "n_trials": 1800,
+  "verified_flags": [
+   false,
+   false,
+   false
+  ],
+  "tiers": [
+   "frontier"
+  ],
+  "estimate_rc": 0,
+  "estimate": {
+   "trials": 1800,
+   "expected_usd": 44.49,
+   "worst_case_usd": 200.14,
+   "cap_usd": 60.0
+  },
+  "dry_run": {
+   "rc": 0,
+   "trials_run": 90,
+   "verify_rc": 0,
+   "verify": "manifest OK",
+   "evidence_lines": 90,
+   "note": "temporary copy: per_category 1 (10 items), 1 trial, fake prices, the runner forces 3 frameworks, fake models"
+  }
+ },
+ "main_frontier_with_oa": {
+  "config_sha256": "7ca605bcd03d7ee809c0d092b406dc4f1bd4965cd3a2a19490ad6ba82ddfa856",
+  "items": 300,
+  "frameworks": [
+   "langchain",
+   "adk",
+   "openai_agents"
+  ],
+  "models": [
+   "claude-opus-4-8",
+   "gpt-5.5",
+   "gemini-3.5-flash"
+  ],
+  "trials": 1,
+  "max_model_calls": 8,
+  "cap_usd": 60.0,
+  "output_dir": "../../runs/main_frontier",
+  "run_name": "main_frontier",
+  "retry_profile": "benchmark",
+  "n_trials": 2700,
+  "verified_flags": [
+   false,
+   false,
+   false
+  ],
+  "tiers": [
+   "frontier"
+  ],
+  "estimate_rc": 0,
+  "estimate": {
+   "trials": 2700,
+   "expected_usd": 66.74,
+   "worst_case_usd": 300.21,
+   "cap_usd": 60.0
+  },
+  "dry_run": {
+   "rc": 0,
+   "trials_run": 90,
+   "verify_rc": 0,
+   "verify": "manifest OK",
+   "evidence_lines": 90,
+   "note": "temporary copy: per_category 1 (10 items), 1 trial, fake prices, the runner forces 3 frameworks, fake models"
+  }
+ },
+ "_totals": {
+  "langchain+adk only": {
+   "trials": 7380,
+   "caps": 100.0,
+   "expected": 64.59,
+   "worst": 291.34
+  },
+  "with openai_agents in the main runs": {
+   "trials": 10980,
+   "caps": 100.0,
+   "expected": 95.3,
+   "worst": 429.9
+  }
+ }
+}

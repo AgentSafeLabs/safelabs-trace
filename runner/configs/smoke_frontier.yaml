@@ -1,0 +1,54 @@
+# 1B main run: frontier smoke (cost and plumbing only; not part of the main-run results)
+# Written 2026-10-07 for the 1B main run; copy into safelabs-trace/runner/configs/ (see 1b_main_run/RUNBOOK.md). No keys here (keys come from the environment at run time).
+# Decisions D1-D10 of runner/DECISIONS.md: max_model_calls 8 (D8), retry_profile benchmark, evidence sidecar on for every real run (D10: pass an EVIDENCE_DIR to run_pilot.sh), tagger rules v2b frozen.
+# FRONTIER SMOKE: for COST AND PLUMBING ONLY (MAIN_RUN_PLAN.md). Its data are not part of the main-run results. 20 items (the same 20 as smoke_openai_agents; 2 per category, seed 20261004, ids from --select-items)
+# x langchain+adk x 3 frontier models x 1 trial = 120 trials. Cap USD 8. Its real per-trial usage projects main_frontier (scripts/frontier_projection.py).
+# Frontier tier: the SAME frontier models as AgentPort-Bench (claude-opus-4-8, gpt-5.5, gemini-3.5-flash; v2_ship/.../AgentPort-Bench_Merged.tex 'Experimental Matrix').
+# VERIFY BEFORE RUN: model ids and LiteLLM routes (anthropic/..., openai/..., gemini/... by the pattern of the cheap models) are NOT checked by --estimate or --dry-run.
+# est_output_tokens are INFERRED stand-ins (the same provider's cheap model); the budget stop uses actual reported usage.
+# Prices in price_table_main.yaml: list prices as of 2026-10-07 (standard tier); confirm on each provider's page before running.
+run_name: smoke_frontier
+items:
+  source: safeagent300
+  per_category: 2
+  seed: 20261004
+  ids:
+    - ASI01-002
+    - ASI01-006
+    - ASI02-010
+    - ASI02-025
+    - ASI03-009
+    - ASI03-013
+    - ASI04-007
+    - ASI04-017
+    - ASI05-024
+    - ASI05-027
+    - ASI06-022
+    - ASI06-023
+    - ASI07-005
+    - ASI07-016
+    - ASI08-005
+    - ASI08-013
+    - ASI09-012
+    - ASI09-020
+    - ASI10-004
+    - ASI10-007
+frameworks: [langchain, adk]
+models:
+  # VERIFY BEFORE RUN: ids and routes below come from the AgentPort-Bench paper, not from a provider check; verified: false until you have checked them.
+  - {id: claude-opus-4-8, provider: anthropic, litellm_route: anthropic/claude-opus-4-8, tier: frontier, verified: false, est_output_tokens: 384}
+  - {id: gpt-5.5, provider: openai, litellm_route: openai/gpt-5.5, tier: frontier, verified: false, est_output_tokens: 286}
+  - {id: gemini-3.5-flash, provider: google, litellm_route: gemini/gemini-3.5-flash, tier: frontier, verified: false, est_output_tokens: 201}
+tools: null            # null = all 12 inert tools
+trials: 1
+max_model_calls: 8   # D8 (pilot setting); cap_hit stays recorded as its own stop status
+output_dir: ../../runs/smoke_frontier   # outside the repo; relative to the runner/ folder, so run from runner/
+retry_profile: benchmark
+call_timeout_s: 120
+price_table: price_table_main.yaml
+budget:
+  cap_usd: 8.0
+  schema_tokens: 1500   # INFERRED
+  prompt_tokens: 70     # INFERRED
+  calls_per_trial: 3    # INFERRED (for --estimate only), as in the pilot configs
+scorer: safelabs
