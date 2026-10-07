@@ -37,7 +37,9 @@ from trace_runner import metrics
 from trace_runner.agents import STOP_ERROR, TracedAdapter, TrialCtx, safe_name
 from trace_runner.evidence import build_record
 from trace_runner.config import ModelCfg, RunCfg
+from trace_runner.errors import reclassify_reason, to_missing_fields
 from trace_runner.pricing import BudgetTracker, PriceTable
+from trace_runner.repair import clear_running, mark_running
 
 SCHEMA = "1b-trace-manifest/1"
 
@@ -95,10 +97,29 @@ def write_json_atomic(path: Path, obj: Any) -> None:
     os.replace(tmp, path)
 
 
-def read_rows(path: Path) -> list[BenchTrialResult]:
+class RunnerRow(BenchTrialResult):
+    """An AgentPort-Bench row plus the optional ``reclassified`` record that ``--reclassify-errors`` adds ({from_status, from_verdict, reason, timestamp, runner_version}).
+    Without it the row is written exactly as safelabs-eval writes it (no extra key), so every other row stays a plain AgentPort-Bench row."""
+
+    reclassified: dict[str, Any] | None = None
+
+    def _drop(self, kw: dict[str, Any]) -> dict[str, Any]:
+        if self.reclassified is None:
+            ex = kw.get("exclude")
+            kw["exclude"] = {"reclassified"} if ex is None else ({*ex, "reclassified"} if not isinstance(ex, dict) else {**ex, "reclassified": True})
+        return kw
+
+    def model_dump(self, **kw: Any) -> dict[str, Any]:
+        return super().model_dump(**self._drop(kw))
+
+    def model_dump_json(self, **kw: Any) -> str:
+        return super().model_dump_json(**self._drop(kw))
+
+
+def read_rows(path: Path) -> list[RunnerRow]:
     if not path.exists():
         return []
-    return [BenchTrialResult(**json.loads(line)) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
+    return [RunnerRow(**json.loads(line)) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
 
 
 def trace_index(traces_dir: Path, trial_file: str) -> dict[str, Any]:
@@ -149,9 +170,20 @@ class Runner:
     async def _run_one(self, t: Trial, *, run_pass: int, attempt_base: int) -> tuple[BenchTrialResult, dict[str, Any]]:
         ad = self.adapter(t.framework, t.model)
         ad.set_context(TrialCtx(t.trial_id, t.item.id, t.seed, run_pass, attempt_base))
+        async def sleep(s: float) -> None:
+            if ad.billing_exc is None:  # no back-off wait after a billing error: the remaining attempts fail at once without a model call
+                await (self.sleep or asyncio.sleep)(s)
+
         row = await run_trial(ad, t.item, self.scorer, model=t.model.id, framework=t.framework, trial_seed=t.seed, provider=t.model.provider,
                               max_attempts=self.retry["max_attempts"], base_delay_s=self.retry["base_delay_s"], max_delay_s=self.retry["max_delay_s"],
-                              max_retry_after_s=self.retry["max_retry_after_s"], sleep=self.sleep, jitter_fn=self.jitter)
+                              max_retry_after_s=self.retry["max_retry_after_s"], sleep=sleep, jitter_fn=self.jitter)
+        # THE HOLE (see errors.py): run_trial scores every error class except "infrastructure" (an "other" error such as HTTP 400 "credit balance is too low" ends as a
+        # scored UNCERTAIN row with error_class set). A trial whose final attempt ended in an error before any agent response is missing_infrastructure, never scored.
+        billing = ad.billing_exc is not None
+        if billing or reclassify_reason(row):
+            row = RunnerRow(**to_missing_fields(row, billing=billing, attempts=max(ad._n, 1)))
+        else:
+            row = RunnerRow(**row.model_dump())
         n_text = None if row.is_missing else ad.last.get("final_text_len")  # goes to the trace manifest only: results.jsonl rows stay plain AgentPort-Bench rows
         if self.evidence is not None:
             ev = ad.last.get("_evidence") or {"text": "", "calls": []}
@@ -217,6 +249,13 @@ class Runner:
     # ---- the run ---------------------------------------------------------------------------------------------
     async def run(self, *, resume: bool = True) -> dict[str, Any]:
         self.prepare()
+        mark_running(self.paths.out, "run")
+        try:
+            return await self._run(resume=resume)
+        finally:
+            clear_running(self.paths.out)
+
+    async def _run(self, *, resume: bool) -> dict[str, Any]:
         started = now()
         tm = self._load_tm()
         done = existing_trial_keys(self.paths.results) if resume else set()
@@ -249,20 +288,27 @@ class Runner:
     # ---- rerun only the missing rows ---------------------------------------------------------------------------
     async def rerun_missing(self) -> RerunSummary:
         self.prepare()
+        mark_running(self.paths.out, "rerun_missing")
+        try:
+            return await self._rerun_missing()
+        finally:
+            clear_running(self.paths.out)
+
+    async def _rerun_missing(self) -> RerunSummary:
         if not self.paths.results.exists():
             raise FileNotFoundError(f"{self.paths.results} does not exist; nothing to rerun")
         tm = self._load_tm()
         lines = self.paths.results.read_text(encoding="utf-8").splitlines(keepends=True)
         summary = RerunSummary()
         by_key = {(t.model.id, t.framework, t.item.id, t.seed): t for t in plan_trials(self.cfg, self.items)}
-        targets: list[tuple[int, BenchTrialResult, Trial]] = []
+        targets: list[tuple[int, RunnerRow, Trial]] = []
         for i, line in enumerate(lines):
             if not line.strip():
                 continue
             obj = json.loads(line)
             if obj.get("status") != "missing_infrastructure":
                 continue
-            row = BenchTrialResult(**obj)
+            row = RunnerRow(**obj)
             t = by_key.get((row.model, row.framework, row.prompt_id, row.trial_seed))
             if t is None:
                 summary.skipped_not_selected += 1
@@ -279,7 +325,8 @@ class Runner:
             merged["attempts"] = (row.attempts or 1) + (fresh.attempts or 1)
             merged["attempt_errors"] = list(row.attempt_errors or []) + list(fresh.attempt_errors or [])
             merged["rerun_passes"] = row.rerun_passes + 1
-            new = type(fresh)(**merged)
+            merged["reclassified"] = row.reclassified  # kept after a recovery too, so the summaries can list how many rows were reclassified
+            new = RunnerRow(**merged)
             lines[i] = new.model_dump_json() + ("\n" if lines[i].endswith("\n") else "")
             summary.extra_attempts += fresh.attempts or 1
             cell = summary.by_cell.setdefault(f"{row.framework}|{row.model}", RerunCell())
@@ -337,15 +384,28 @@ def build_divergence(paths: Paths) -> dict[str, Any]:
     tm = json.loads(paths.trace_manifest.read_text(encoding="utf-8"))
     cells: dict[str, list[dict[str, Any]]] = {}
     excluded = {"missing_infrastructure": 0, "not_run_budget": 0, "no_trace": 0}
+    recl: dict[str, dict[str, int]] = {}  # per cell: rows marked reclassified by --reclassify-errors, how many are still missing, and scored rows with an error that no repair has fixed yet
+    for r in rows.values():
+        flagged = r.reclassified is not None
+        unfixed = (not flagged) and reclassify_reason(r) is not None
+        if flagged or unfixed:
+            c = recl.setdefault(f"{r.framework}|{r.model}", {"reclassified": 0, "still_missing": 0, "unrepaired_error_rows": 0})
+            c["reclassified"] += flagged
+            c["still_missing"] += flagged and r.is_missing
+            c["unrepaired_error_rows"] += unfixed
     cap_hit: dict[str, int] = {}
     ext: dict[str, list[dict[str, Any]]] = {}  # every scored trial, whatever its verdict or action (extended metrics)
     gaps = {"model_call_start_without_end": 0, "model_call_end_without_start": 0, "traces_checked": 0}
     for e in tm["trials"].values():
         cell = f"{e['framework']}|{e['model']}"
-        if e["status"] in ("not_run_budget", "missing_infrastructure"):
+        r = rows.get((e["model"], e["framework"], e["prompt_id"], e["seed"]))
+        if e["status"] == "not_run_budget":
             excluded[e["status"]] += 1
             continue
-        r = rows[(e["model"], e["framework"], e["prompt_id"], e["seed"])]
+        # a reclassified row counts as missing_infrastructure whatever the manifest entry says; so does a scored row that still carries an error (a folder not yet repaired)
+        if e["status"] == "missing_infrastructure" or r.is_missing or reclassify_reason(r) is not None:
+            excluded["missing_infrastructure"] += 1
+            continue
         events = []
         if e["final_trace_id"]:
             events = [ev for ev in read_trace(paths.out / e["trace_file"]) if ev.trace_id == e["final_trace_id"]]
@@ -370,7 +430,8 @@ def build_divergence(paths: Paths) -> dict[str, Any]:
     total_cap = sum(cap_hit.values())
     return {"basis": "text verdict from the scorer (PASS safe, FAIL/VULNERABLE unsafe, UNCERTAIN abstain, excluded from rates) against the highest tool-call severity in the final attempt's trace; "
                      "counts are trials; missing_infrastructure and not_run_budget trials are excluded",
-            "excluded": excluded, "overall": {**divergence_table(allrows), "cap_hit": total_cap}, "by_cell": out_cells,
+            "excluded": excluded, "reclassified": {"total": sum(c["reclassified"] for c in recl.values()), "still_missing": sum(c["still_missing"] for c in recl.values()),
+                                                   "unrepaired_error_rows": sum(c["unrepaired_error_rows"] for c in recl.values()), "by_cell": dict(sorted(recl.items()))}, "overall": {**divergence_table(allrows), "cap_hit": total_cap}, "by_cell": out_cells,
             "extended": {"definitions": metrics.DEFINITIONS, "overall": metrics.compute([x for rs in ext.values() for x in rs]),
                          "by_cell": {c: metrics.compute(rs) for c, rs in sorted(ext.items())}, "trace_integrity": gaps}}
 
@@ -400,7 +461,17 @@ def _pct(r: dict[str, Any]) -> str:
 
 def format_divergence_md(s: dict[str, Any]) -> str:
     lines = ["# Text-vs-action divergence", "", s["basis"], "",
-             f"Excluded trials: {s['excluded']}", "",
+             f"Excluded trials: {s['excluded']}", ""]
+    rc = s.get("reclassified")
+    if rc and (rc["total"] or rc["unrepaired_error_rows"]):
+        lines += [f"Reclassified rows (scored with an error, changed to missing_infrastructure by --reclassify-errors; counted as missing_infrastructure above while they are still missing): "
+                  f"{rc['total']} in total, {rc['still_missing']} still missing; scored rows with an error not yet repaired (also counted as missing above): {rc['unrepaired_error_rows']}.", "",
+                  "| framework | model | reclassified | still missing | unrepaired error rows |", "|---|---|---|---|---|"]
+        for name, c in rc["by_cell"].items():
+            fw, m = name.split("|", 1)
+            lines.append(f"| {fw} | {m} | {c['reclassified']} | {c['still_missing']} | {c['unrepaired_error_rows']} |")
+        lines.append("")
+    lines += [
              "| framework | model | trials | hidden-action rate | talk-only rate | ASR text-only | ASR action-aware | ASR lift (points) | cap hit |",
              "|---|---|---|---|---|---|---|---|---|"]
     for name, t in [*s["by_cell"].items(), ("ALL|ALL", s["overall"])]:

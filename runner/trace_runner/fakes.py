@@ -43,6 +43,48 @@ class RateLimitError(Exception):
     status_code = 429
 
 
+class BadRequestError(Exception):
+    """litellm.BadRequestError-like (HTTP 400): Anthropic reports an exhausted credit balance this way."""
+
+    status_code = 400
+
+
+class PaymentRequiredError(Exception):
+    status_code = 402
+
+
+class InsufficientQuotaError(Exception):
+    status_code = 429
+
+
+class ResourceExhausted(Exception):
+    status_code = 429
+
+
+class BudgetExceededError(Exception):
+    """litellm's name for an exceeded budget."""
+
+
+class ContentPolicyError(Exception):
+    status_code = 400
+
+
+class UnknownBoom(Exception):
+    """An exception class nobody has heard of."""
+
+
+FAKE_ERRORS = {  # the ``error`` key of a fake_plan entry: what every failing attempt raises (default: RateLimitError, a transient 429)
+    "anthropic_credit": lambda: BadRequestError("litellm.BadRequestError: AnthropicException - Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits."),
+    "openai_quota": lambda: InsufficientQuotaError("You exceeded your current quota, please check your plan and billing details. error code: insufficient_quota"),
+    "http402": lambda: PaymentRequiredError("payment required"),
+    "google_quota": lambda: ResourceExhausted("429 RESOURCE_EXHAUSTED: You exceeded your current quota, please check your plan and billing details."),
+    "litellm_budget": lambda: BudgetExceededError("Budget has been exceeded"),
+    "content_policy": lambda: ContentPolicyError("This request was flagged for possible cybersecurity risk"),
+    "unknown": lambda: UnknownBoom("kaboom: something nobody planned for"),
+    "rate_limit": lambda: RateLimitError("fake rate limit (429)"),
+}
+
+
 @dataclass
 class Behaviour:
     kind: str
@@ -52,6 +94,7 @@ class Behaviour:
     fail_passes: tuple[int, ...] = ()
     tokens_in: int = 800
     tokens_out: int = 60
+    error: str = "rate_limit"  # key of FAKE_ERRORS: what a failing attempt raises
     text: str | None = None  # overrides the final text of the behaviours that end in text (tests: canary strings)
 
 
@@ -86,11 +129,11 @@ class FakeProvider:
         tool, args = DEFAULT_TOOL.get(kind, (None, None))
         toks = p.get("tokens") or {}
         return Behaviour(kind=kind, tool=spec.get("tool", tool), args=spec.get("args", args), fail_attempts=int(spec.get("fail_attempts", 0)),
-                         fail_passes=tuple(spec.get("fail_passes", ())), tokens_in=int(toks.get("in", 800)), tokens_out=int(toks.get("out", 60)), text=spec.get("text"))
+                         fail_passes=tuple(spec.get("fail_passes", ())), tokens_in=int(toks.get("in", 800)), tokens_out=int(toks.get("out", 60)), error=spec.get("error", "rate_limit"), text=spec.get("text"))
 
     def script(self, b: Behaviour, run_pass: int, attempt_in_pass: int) -> Iterator[tuple]:
         if run_pass in b.fail_passes or attempt_in_pass <= b.fail_attempts:
-            return iter([("error", RateLimitError("fake rate limit (429)"))])
+            return iter([("error", FAKE_ERRORS[b.error]())])
         if b.kind == "refuse_no_tool":
             return iter([("text", b.text or REFUSE_TEXT)])
         if b.kind == "comply_no_tool":
