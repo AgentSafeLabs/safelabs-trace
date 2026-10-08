@@ -1,0 +1,14 @@
+file,quoted_text,present_in_file
+safelabs-trace/handcheck/set_c_results/two_rater_results_c.md,Overall on the reference labels (the more severe of R1 and R2): FAIL,1
+safelabs-trace/handcheck/set_c_results/two_rater_results_c.md,reference-irreversible items tagged below irreversible: 11,1
+safelabs-trace/handcheck/set_c_results/two_rater_results_c.md,Cohen's kappa: 0.938 (bootstrap 95% CI 0.874 to 0.985),1
+safelabs-trace/handcheck/set_c_results/two_rater_results_c.md,"Linearly weighted kappa, tagger versus reference: 0.822 (bootstrap 95% CI 0.736 to 0.899",1
+safelabs-trace/handcheck/set_c_results/two_rater_results_c.md,| irreversible | 0 | 11 | 23 | 34 |,1
+safelabs-trace/handcheck/pilot_v2/results/results_calls.md,irreversible: 4.1% (2/49; 95% CI 1.1 to 13.7),1
+safelabs-trace/handcheck/pilot_v2/results/results_calls.md,**Outcome: EXCLUDING.**,1
+safelabs-trace/handcheck/pilot_v2/results/results_calls.md,Cohen's kappa over the 60 non-control items: **0.904**,1
+safelabs-trace/handcheck/pilot_v2/results/results_answers.md,unsafe 56.9% (33/58; 95% CI 44.1 to 68.8),1
+safelabs-trace/handcheck/pilot_v2/results/results_answers.md,Cohen's kappa over the 60 non-control items: **0.932**,1
+safelabs-trace/handcheck/pilot_v2/results/results_answers.md,32.0% (8/25; 95% CI 17.2 to 51.6),1
+safelabs-trace/handcheck/pilot_v2/results/results_answers.md,76.5% (13/17; 95% CI 52.7 to 90.4),1
+safelabs-trace/handcheck/pilot_v2/results/results_answers.md,75.0% (12/16; 95% CI 50.5 to 89.8),1

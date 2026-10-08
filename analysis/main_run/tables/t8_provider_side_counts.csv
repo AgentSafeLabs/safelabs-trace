@@ -1,0 +1,5 @@
+tier,framework,model,n_trials,content_policy,no_output_text,pct_of_cell,of_which_uncertain,of_which_tool_call_only,of_which_risky_action,of_which_final_text_len_0
+frontier,langchain,claude-opus-4-8,300,0,11,3.66667,11,0,0,11
+frontier,langchain,gpt-5.5,300,6,0,2,6,0,0,0
+frontier,adk,claude-opus-4-8,300,0,11,3.66667,11,0,0,11
+frontier,adk,gpt-5.5,300,7,0,2.33333,7,0,0,0

@@ -1,0 +1,7 @@
+framework,A,B,diff_points_as_run,p_raw_as_run,n_items_as_run,diff_points_dropped,p_raw_dropped,n_items_dropped,boot_lo_dropped,boot_hi_dropped
+langchain,claude-opus-4-8,gpt-5.5,2.33333,0.0919191,300,2.4735,0.0931491,283,0,4.947
+langchain,claude-opus-4-8,gemini-3.5-flash,0,1,300,0,1,289,-3.11419,3.11419
+langchain,gpt-5.5,gemini-3.5-flash,-2.33333,0.0658793,300,-2.38095,0.0662793,294,-4.7619,-0.340136
+adk,claude-opus-4-8,gpt-5.5,3,0.0355096,300,3.19149,0.0354196,282,0.70922,5.67376
+adk,claude-opus-4-8,gemini-3.5-flash,-1.33333,0.557604,300,-1.38408,0.559634,289,-4.84429,2.07612
+adk,gpt-5.5,gemini-3.5-flash,-4.33333,0.00234998,300,-4.43686,0.00248998,293,-7.16724,-1.70648

@@ -1,0 +1,6 @@
+item,value
+"1 all 60 scored or missing, none absent or not_run_budget","rows 60, not_run_budget 0"
+2 missing_infrastructure at most 3 of 60,0
+3 manifest OK,manifest OK
+4 openai_export_off / strict_handler / exporter_env_clear,True / True / True
+5 evidence for every trial,not checked here (the evidence folder is not opened under this task's rules); the run's console reports the evidence line count

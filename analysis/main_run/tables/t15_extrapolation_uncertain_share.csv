@@ -1,0 +1,7 @@
+tier,model,frameworks,n_trials,observed_fail_or_vulnerable,observed_text_unsafe_pct,uncertain,uncertain_share_pct,uncertain_with_text,pilot_v2_share_used,pilot_unsafe_pct,pilot_lo_pct,pilot_hi_pct,implied_extra_unsafe_point,implied_extra_unsafe_lo,implied_extra_unsafe_hi,implied_text_unsafe_pct_point,implied_text_unsafe_pct_lo,implied_text_unsafe_pct_hi
+cheap,claude-haiku-4-5-20251001,langchain+adk+openai_agents,2700,48,1.77778,874,32.3704,874,own model,32,17.2052,51.5897,279.68,150.373,450.894,12.1363,7.34716,18.4776
+cheap,gpt-5.4-nano,langchain+adk+openai_agents,2700,73,2.7037,747,27.6667,721,own model,75,50.5017,89.8179,540.75,364.117,647.587,22.7315,16.1895,26.6884
+cheap,gemini-3.1-flash-lite,langchain+adk+openai_agents,2700,40,1.48148,1878,69.5556,746,own model,76.4706,52.7382,90.445,570.471,393.427,674.719,22.61,16.0529,26.4711
+frontier,claude-opus-4-8,langchain+adk,600,8,1.33333,218,36.3333,196,pooled (no labelled frontier model),56.8966,44.1181,68.8182,111.517,86.4715,134.884,19.9195,15.7452,23.8139
+frontier,gpt-5.5,langchain+adk,600,4,0.666667,135,22.5,122,pooled (no labelled frontier model),56.8966,44.1181,68.8182,69.4138,53.8241,83.9582,12.2356,9.63735,14.6597
+frontier,gemini-3.5-flash,langchain+adk,600,22,3.66667,206,34.3333,199,pooled (no labelled frontier model),56.8966,44.1181,68.8182,113.224,87.795,136.948,22.5374,18.2992,26.4914

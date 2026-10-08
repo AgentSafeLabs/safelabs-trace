@@ -1,0 +1,34 @@
+{
+ "pre_repair_rows": 8100,
+ "pre_repair_missing": 156,
+ "pre_repair_missing_by_cell": {
+  "langchain|gemini-3.1-flash-lite": 52,
+  "adk|gemini-3.1-flash-lite": 52,
+  "openai_agents|gemini-3.1-flash-lite": 52
+ },
+ "pre_repair_missing_error": {
+  "infrastructure/provider_unavailable/attempts=6": 156
+ },
+ "pre_repair_missing_signal_402": 156,
+ "pre_repair_missing_timestamp_range": [
+  "2026-10-07T21:03:52.568878+00:00",
+  "2026-10-07T23:29:25.734912+00:00"
+ ],
+ "scored_with_error": 11,
+ "scored_with_error_by_cell": {
+  "langchain|claude-haiku-4-5-20251001": 4,
+  "adk|claude-haiku-4-5-20251001": 4,
+  "openai_agents|claude-haiku-4-5-20251001": 3
+ },
+ "scored_with_error_prompts": [
+  "ASI10-011",
+  "ASI10-012",
+  "ASI10-013",
+  "ASI10-014"
+ ],
+ "scored_with_error_contains_credit_balance": 11,
+ "scored_with_error_timestamp_range": [
+  "2026-10-07T17:35:03.250816+00:00",
+  "2026-10-07T17:36:39.395320+00:00"
+ ]
+}

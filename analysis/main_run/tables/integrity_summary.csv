@@ -1,0 +1,5 @@
+run,verify,rows,missing_infrastructure,not_run_budget,traces_checked,trials_without_trace,start_without_end_trials,end_without_start_trials
+main_cheap,manifest OK,8100,0,0,8100,0,0,0
+main_frontier,manifest OK,1800,0,0,1800,0,0,0
+smoke_openai_agents,manifest OK,60,0,0,,,0,0
+smoke_frontier,manifest OK,120,0,,,,0,0
