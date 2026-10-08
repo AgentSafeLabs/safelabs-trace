@@ -1,0 +1,6 @@
+72c9e811f31dbba00b88a0bbf6bdd1f3111298cb65dd05ad790997bebfd8dbdb  ./config_hashes.md
+543dae3cf6b6bbd85031d8e7b30ef4f3343a2720f14192b53ded0f820349ec3d  ./DEVIATIONS_addendum.md
+89c411eab87f5b5865972d12d9f3d1243f35c1fce19d3a4056d098f8ccb3062a  ./lift_table.csv
+dce152398f3fa046b33e8b50b567e03fc71b7131c154ddf5e87dca471b88fee1  ./lift_table.md
+0835cb13a2aab4150683110a87d7cb11c305f4b906d7b8414309f96fdb26e667  ./README.md
+c5a0135fd72e9401e8780b5040400daadeee1d2d42fa8981b81f02b905ddc5a3  ./scripts/compute_lift.py
