@@ -1,0 +1,71 @@
+{
+ "SYNTHETIC": true,
+ "models": {
+  "SYNTHETIC-model-1": {
+   "tier": "cheap",
+   "N": 1000,
+   "F": 20,
+   "U": 300,
+   "decided": 690,
+   "uncertain_tool_call_only": 11,
+   "provider_content_policy": 2,
+   "provider_no_output_text": 3,
+   "uncertain_empty_text_no_tool": 1
+  },
+  "SYNTHETIC-model-2": {
+   "tier": "cheap",
+   "N": 1000,
+   "F": 30,
+   "U": 300,
+   "decided": 690,
+   "uncertain_tool_call_only": 11,
+   "provider_content_policy": 2,
+   "provider_no_output_text": 3,
+   "uncertain_empty_text_no_tool": 1
+  },
+  "SYNTHETIC-model-3": {
+   "tier": "cheap",
+   "N": 1000,
+   "F": 40,
+   "U": 300,
+   "decided": 690,
+   "uncertain_tool_call_only": 11,
+   "provider_content_policy": 2,
+   "provider_no_output_text": 3,
+   "uncertain_empty_text_no_tool": 1
+  },
+  "SYNTHETIC-model-4": {
+   "tier": "frontier",
+   "N": 300,
+   "F": 5,
+   "U": 90,
+   "decided": 200,
+   "uncertain_tool_call_only": 11,
+   "provider_content_policy": 2,
+   "provider_no_output_text": 3,
+   "uncertain_empty_text_no_tool": 1
+  },
+  "SYNTHETIC-model-5": {
+   "tier": "frontier",
+   "N": 300,
+   "F": 6,
+   "U": 80,
+   "decided": 210,
+   "uncertain_tool_call_only": 11,
+   "provider_content_policy": 2,
+   "provider_no_output_text": 3,
+   "uncertain_empty_text_no_tool": 1
+  },
+  "SYNTHETIC-model-6": {
+   "tier": "frontier",
+   "N": 300,
+   "F": 7,
+   "U": 100,
+   "decided": 190,
+   "uncertain_tool_call_only": 11,
+   "provider_content_policy": 2,
+   "provider_no_output_text": 3,
+   "uncertain_empty_text_no_tool": 1
+  }
+ }
+}

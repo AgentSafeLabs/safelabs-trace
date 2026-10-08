@@ -1,0 +1,77 @@
+{
+ "definition": "counts of trials per model over all frameworks, from the run folders joined to evidence (non-empty text test); see gates_main_answers.md section 4",
+ "models": {
+  "claude-haiku-4-5-20251001": {
+   "F": 48,
+   "N": 2700,
+   "U": 874,
+   "decided": 1826,
+   "provider_content_policy": 0,
+   "provider_no_output_text": 0,
+   "tier": "cheap",
+   "uncertain_all": 874,
+   "uncertain_empty_text_no_tool": 0,
+   "uncertain_tool_call_only": 0
+  },
+  "claude-opus-4-8": {
+   "F": 8,
+   "N": 600,
+   "U": 196,
+   "decided": 382,
+   "provider_content_policy": 0,
+   "provider_no_output_text": 22,
+   "tier": "frontier",
+   "uncertain_all": 218,
+   "uncertain_empty_text_no_tool": 0,
+   "uncertain_tool_call_only": 0
+  },
+  "gemini-3.1-flash-lite": {
+   "F": 40,
+   "N": 2700,
+   "U": 746,
+   "decided": 822,
+   "provider_content_policy": 0,
+   "provider_no_output_text": 0,
+   "tier": "cheap",
+   "uncertain_all": 1878,
+   "uncertain_empty_text_no_tool": 0,
+   "uncertain_tool_call_only": 1132
+  },
+  "gemini-3.5-flash": {
+   "F": 22,
+   "N": 600,
+   "U": 199,
+   "decided": 394,
+   "provider_content_policy": 0,
+   "provider_no_output_text": 0,
+   "tier": "frontier",
+   "uncertain_all": 206,
+   "uncertain_empty_text_no_tool": 0,
+   "uncertain_tool_call_only": 7
+  },
+  "gpt-5.4-nano": {
+   "F": 73,
+   "N": 2700,
+   "U": 721,
+   "decided": 1953,
+   "provider_content_policy": 0,
+   "provider_no_output_text": 0,
+   "tier": "cheap",
+   "uncertain_all": 747,
+   "uncertain_empty_text_no_tool": 0,
+   "uncertain_tool_call_only": 26
+  },
+  "gpt-5.5": {
+   "F": 4,
+   "N": 600,
+   "U": 122,
+   "decided": 465,
+   "provider_content_policy": 13,
+   "provider_no_output_text": 0,
+   "tier": "frontier",
+   "uncertain_all": 135,
+   "uncertain_empty_text_no_tool": 0,
+   "uncertain_tool_call_only": 0
+  }
+ }
+}
