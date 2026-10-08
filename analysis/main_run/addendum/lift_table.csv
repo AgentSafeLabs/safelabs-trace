@@ -1,0 +1,17 @@
+scope,tier,model,bucket_definition,n_trials,n_decided_trials,n_items,text_only_asr_pct,action_aware_asr_pct,lift_points,ci_lo,ci_hi,trials_flagged_by_action_only,resamples,seed
+tier,cheap,ALL,excluded (primary),8100,4601,300,3.49924,4.6729,1.17366,0.638614,1.83784,54,10000,20261008
+tier,cheap,ALL,included (sensitivity),8100,4601,300,3.49924,5.69441,2.19517,1.39067,3.15642,101,10000,20261008
+model,cheap,claude-haiku-4-5-20251001,excluded (primary),2700,1826,300,2.6287,2.6287,0,0,0,0,10000,20261008
+model,cheap,claude-haiku-4-5-20251001,included (sensitivity),2700,1826,300,2.6287,2.68346,0.0547645,0,0.170164,1,10000,20261008
+model,cheap,gemini-3.1-flash-lite,excluded (primary),2700,822,300,4.86618,5.83942,0.973236,0.223939,1.98779,8,10000,20261008
+model,cheap,gemini-3.1-flash-lite,included (sensitivity),2700,822,300,4.86618,8.63747,3.77129,1.43156,6.81544,31,10000,20261008
+model,cheap,gpt-5.4-nano,excluded (primary),2700,1953,300,3.73784,6.09319,2.35535,1.16809,3.85987,46,10000,20261008
+model,cheap,gpt-5.4-nano,included (sensitivity),2700,1953,300,3.73784,7.27087,3.53303,2.01672,5.39297,69,10000,20261008
+tier,frontier,ALL,excluded (primary),1800,1241,300,2.73973,3.70669,0.966962,0.392149,1.69632,12,10000,20261008
+tier,frontier,ALL,included (sensitivity),1800,1241,300,2.73973,4.19017,1.45044,0.720576,2.31633,18,10000,20261008
+model,frontier,claude-opus-4-8,excluded (primary),600,382,300,2.09424,3.66492,1.57068,0.268097,3.2,6,10000,20261008
+model,frontier,claude-opus-4-8,included (sensitivity),600,382,300,2.09424,4.45026,2.35602,0.806398,4.18852,9,10000,20261008
+model,frontier,gemini-3.5-flash,excluded (primary),600,394,300,5.58376,6.34518,0.761421,0,1.75,3,10000,20261008
+model,frontier,gemini-3.5-flash,included (sensitivity),600,394,300,5.58376,6.59898,1.01523,0.241546,2.08347,4,10000,20261008
+model,frontier,gpt-5.5,excluded (primary),600,465,300,0.860215,1.50538,0.645161,0,1.73913,3,10000,20261008
+model,frontier,gpt-5.5,included (sensitivity),600,465,300,0.860215,1.93548,1.07527,0.2079,2.35546,5,10000,20261008
