@@ -1,0 +1,7 @@
+contrast,n_items,mean_A_pct,mean_B_pct,diff_points,boot_lo,boot_hi,p_raw,n_items_differing
+"cheap tier (3 models) - frontier tier (3 models), langchain+adk pooled",300,8.01852,3,5.01852,3.55509,6.55556,9.9999e-06,122
+"cheap tier - frontier tier, langchain",300,6.40741,2.55556,3.85185,2.25926,5.51852,9.9999e-06,77
+"cheap tier - frontier tier, adk",300,9.62963,3.44444,6.18519,4.48148,8,9.9999e-06,101
+"claude-haiku-4-5-20251001 - claude-opus-4-8, langchain+adk pooled",300,2.27778,3.66667,-1.38889,-3.55694,0.722222,0.230328,18
+"gpt-5.4-nano - gpt-5.5, langchain+adk pooled",300,5.55556,1,4.55556,2.77778,6.61111,9.9999e-06,31
+"gemini-3.1-flash-lite - gemini-3.5-flash, langchain+adk pooled",300,16.2222,4.33333,11.8889,8.72222,15.1111,9.9999e-06,104

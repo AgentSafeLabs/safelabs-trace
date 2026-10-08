@@ -1,0 +1,74 @@
+[
+ {
+  "id": "spend.total_true",
+  "label": "total spend, all passes, all four runs (trial-level cost_usd sum), USD (cap 100)",
+  "value": 60.91275585,
+  "unit": "USD",
+  "k": null,
+  "n": null,
+  "ci95": null,
+  "source": "tables/t16_spend.csv (runs/*/trace_manifest.json)",
+  "command": "python scripts/08_spend.py",
+  "note": "price-table cost of metered final attempts, not an invoice"
+ },
+ {
+  "id": "spend.total_budget_check",
+  "label": "total as budget_check.py reports it (last pass only), USD",
+  "value": 4.181242,
+  "unit": "USD",
+  "k": null,
+  "n": null,
+  "ci95": null,
+  "source": "tables/t16_spend.csv",
+  "command": "python scripts/08_spend.py",
+  "note": ""
+ },
+ {
+  "id": "spend.smoke_openai_agents",
+  "label": "spend smoke_openai_agents all passes, USD (cap 2.0)",
+  "value": 0.0971235,
+  "unit": "USD",
+  "k": null,
+  "n": null,
+  "ci95": null,
+  "source": "tables/t16_spend.csv",
+  "command": "python scripts/08_spend.py",
+  "note": ""
+ },
+ {
+  "id": "spend.smoke_frontier",
+  "label": "spend smoke_frontier all passes, USD (cap 8.0)",
+  "value": 3.0404045,
+  "unit": "USD",
+  "k": null,
+  "n": null,
+  "ci95": null,
+  "source": "tables/t16_spend.csv",
+  "command": "python scripts/08_spend.py",
+  "note": ""
+ },
+ {
+  "id": "spend.main_cheap",
+  "label": "spend main_cheap all passes, USD (cap 30.0)",
+  "value": 13.46218835,
+  "unit": "USD",
+  "k": null,
+  "n": null,
+  "ci95": null,
+  "source": "tables/t16_spend.csv",
+  "command": "python scripts/08_spend.py",
+  "note": ""
+ },
+ {
+  "id": "spend.main_frontier",
+  "label": "spend main_frontier all passes, USD (cap 60.0)",
+  "value": 44.3130395,
+  "unit": "USD",
+  "k": null,
+  "n": null,
+  "ci95": null,
+  "source": "tables/t16_spend.csv",
+  "command": "python scripts/08_spend.py",
+  "note": ""
+ }
+]

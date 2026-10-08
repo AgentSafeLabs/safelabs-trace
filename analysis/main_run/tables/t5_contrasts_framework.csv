@@ -1,0 +1,13 @@
+family,tier,model,framework,A,B,n_items,mean_A_pct,mean_B_pct,diff_points,boot_lo,boot_hi,n_items_differing,p_raw,p_holm_literal_family,sig_literal_0.05,p_holm_langchain_adk_family,sig_lc_adk_0.05,positive_means
+framework,cheap,claude-haiku-4-5-20251001,langchain - adk,langchain,adk,300,2.11111,2.44444,-0.333333,-1,0.222222,6,0.531215,1,0,1,0,langchain higher than adk
+framework,cheap,claude-haiku-4-5-20251001,langchain - openai_agents,langchain,openai_agents,300,2.11111,1.88889,0.222222,-0.222222,0.777778,3,0.750612,1,0,,,langchain higher than openai_agents
+framework,cheap,claude-haiku-4-5-20251001,adk - openai_agents,adk,openai_agents,300,2.44444,1.88889,0.555556,0.111111,1.11111,5,0.0637994,0.637994,0,,,adk higher than openai_agents
+framework,cheap,gpt-5.4-nano,langchain - adk,langchain,adk,300,5.11111,6,-0.888889,-2.55556,0.777778,22,0.358136,1,0,1,0,langchain higher than adk
+framework,cheap,gpt-5.4-nano,langchain - openai_agents,langchain,openai_agents,300,5.11111,5.66667,-0.555556,-1.55556,0.444444,18,0.388166,1,0,,,langchain higher than openai_agents
+framework,cheap,gpt-5.4-nano,adk - openai_agents,adk,openai_agents,300,6,5.66667,0.333333,-1,1.66667,23,0.748553,1,0,,,adk higher than openai_agents
+framework,cheap,gemini-3.1-flash-lite,langchain - adk,langchain,adk,300,12,20.4444,-8.44444,-11.3333,-5.66667,77,9.9999e-06,0.000119999,1,5.99994e-05,1,langchain higher than adk
+framework,cheap,gemini-3.1-flash-lite,langchain - openai_agents,langchain,openai_agents,300,12,12.5556,-0.555556,-2.44444,1.33333,49,0.646464,1,0,,,langchain higher than openai_agents
+framework,cheap,gemini-3.1-flash-lite,adk - openai_agents,adk,openai_agents,300,20.4444,12.5556,7.88889,5.22222,10.6667,76,9.9999e-06,0.000119999,1,,,adk higher than openai_agents
+framework,frontier,claude-opus-4-8,langchain - adk,langchain,adk,300,3.33333,4,-0.666667,-2.33333,0.666667,6,0.688133,1,0,1,0,langchain higher than adk
+framework,frontier,gpt-5.5,langchain - adk,langchain,adk,300,1,1,0,-1.33333,1.33333,4,1,1,0,1,0,langchain higher than adk
+framework,frontier,gemini-3.5-flash,langchain - adk,langchain,adk,300,3.33333,5.33333,-2,-4.66667,0.333333,14,0.178808,1,0,0.894041,0,langchain higher than adk

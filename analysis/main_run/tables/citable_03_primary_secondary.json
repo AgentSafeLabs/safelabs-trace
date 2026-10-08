@@ -1,0 +1,1202 @@
+[
+ {
+  "id": "risky_excl.cell.cheap.claude-haiku-4-5-20251001.langchain",
+  "label": "risky-action rate bucket excluded, cell langchain x claude-haiku-4-5-20251001",
+  "value": 2.111111111111111,
+  "unit": "%",
+  "k": 19,
+  "n": 900,
+  "ci95": [
+   1.36,
+   3.27
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "risky_incl.cell.cheap.claude-haiku-4-5-20251001.langchain",
+  "label": "risky-action rate bucket included, cell langchain x claude-haiku-4-5-20251001",
+  "value": 2.5555555555555554,
+  "unit": "%",
+  "k": 23,
+  "n": 900,
+  "ci95": [
+   1.71,
+   3.81
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "risky_excl.cell.cheap.gpt-5.4-nano.langchain",
+  "label": "risky-action rate bucket excluded, cell langchain x gpt-5.4-nano",
+  "value": 5.111111111111111,
+  "unit": "%",
+  "k": 46,
+  "n": 900,
+  "ci95": [
+   3.85,
+   6.75
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "risky_incl.cell.cheap.gpt-5.4-nano.langchain",
+  "label": "risky-action rate bucket included, cell langchain x gpt-5.4-nano",
+  "value": 6.555555555555555,
+  "unit": "%",
+  "k": 59,
+  "n": 900,
+  "ci95": [
+   5.12,
+   8.36
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "risky_excl.cell.cheap.gemini-3.1-flash-lite.langchain",
+  "label": "risky-action rate bucket excluded, cell langchain x gemini-3.1-flash-lite",
+  "value": 12.0,
+  "unit": "%",
+  "k": 108,
+  "n": 900,
+  "ci95": [
+   10.04,
+   14.29
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "risky_incl.cell.cheap.gemini-3.1-flash-lite.langchain",
+  "label": "risky-action rate bucket included, cell langchain x gemini-3.1-flash-lite",
+  "value": 25.555555555555557,
+  "unit": "%",
+  "k": 230,
+  "n": 900,
+  "ci95": [
+   22.81,
+   28.5
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "risky_excl.cell.cheap.claude-haiku-4-5-20251001.adk",
+  "label": "risky-action rate bucket excluded, cell adk x claude-haiku-4-5-20251001",
+  "value": 2.4444444444444446,
+  "unit": "%",
+  "k": 22,
+  "n": 900,
+  "ci95": [
+   1.62,
+   3.67
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "risky_incl.cell.cheap.claude-haiku-4-5-20251001.adk",
+  "label": "risky-action rate bucket included, cell adk x claude-haiku-4-5-20251001",
+  "value": 2.888888888888889,
+  "unit": "%",
+  "k": 26,
+  "n": 900,
+  "ci95": [
+   1.98,
+   4.2
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "risky_excl.cell.cheap.gpt-5.4-nano.adk",
+  "label": "risky-action rate bucket excluded, cell adk x gpt-5.4-nano",
+  "value": 6.0,
+  "unit": "%",
+  "k": 54,
+  "n": 900,
+  "ci95": [
+   4.63,
+   7.75
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "risky_incl.cell.cheap.gpt-5.4-nano.adk",
+  "label": "risky-action rate bucket included, cell adk x gpt-5.4-nano",
+  "value": 8.444444444444445,
+  "unit": "%",
+  "k": 76,
+  "n": 900,
+  "ci95": [
+   6.8,
+   10.44
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "risky_excl.cell.cheap.gemini-3.1-flash-lite.adk",
+  "label": "risky-action rate bucket excluded, cell adk x gemini-3.1-flash-lite",
+  "value": 20.444444444444443,
+  "unit": "%",
+  "k": 184,
+  "n": 900,
+  "ci95": [
+   17.94,
+   23.2
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "risky_incl.cell.cheap.gemini-3.1-flash-lite.adk",
+  "label": "risky-action rate bucket included, cell adk x gemini-3.1-flash-lite",
+  "value": 35.77777777777778,
+  "unit": "%",
+  "k": 322,
+  "n": 900,
+  "ci95": [
+   32.71,
+   38.96
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "risky_excl.cell.cheap.claude-haiku-4-5-20251001.openai_agents",
+  "label": "risky-action rate bucket excluded, cell openai_agents x claude-haiku-4-5-20251001",
+  "value": 1.8888888888888888,
+  "unit": "%",
+  "k": 17,
+  "n": 900,
+  "ci95": [
+   1.18,
+   3.0
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "risky_incl.cell.cheap.claude-haiku-4-5-20251001.openai_agents",
+  "label": "risky-action rate bucket included, cell openai_agents x claude-haiku-4-5-20251001",
+  "value": 2.2222222222222223,
+  "unit": "%",
+  "k": 20,
+  "n": 900,
+  "ci95": [
+   1.44,
+   3.41
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "risky_excl.cell.cheap.gpt-5.4-nano.openai_agents",
+  "label": "risky-action rate bucket excluded, cell openai_agents x gpt-5.4-nano",
+  "value": 5.666666666666667,
+  "unit": "%",
+  "k": 51,
+  "n": 900,
+  "ci95": [
+   4.34,
+   7.37
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "risky_incl.cell.cheap.gpt-5.4-nano.openai_agents",
+  "label": "risky-action rate bucket included, cell openai_agents x gpt-5.4-nano",
+  "value": 7.333333333333333,
+  "unit": "%",
+  "k": 66,
+  "n": 900,
+  "ci95": [
+   5.81,
+   9.22
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "risky_excl.cell.cheap.gemini-3.1-flash-lite.openai_agents",
+  "label": "risky-action rate bucket excluded, cell openai_agents x gemini-3.1-flash-lite",
+  "value": 12.555555555555555,
+  "unit": "%",
+  "k": 113,
+  "n": 900,
+  "ci95": [
+   10.55,
+   14.88
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "risky_incl.cell.cheap.gemini-3.1-flash-lite.openai_agents",
+  "label": "risky-action rate bucket included, cell openai_agents x gemini-3.1-flash-lite",
+  "value": 26.77777777777778,
+  "unit": "%",
+  "k": 241,
+  "n": 900,
+  "ci95": [
+   23.99,
+   29.76
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "risky_excl.cheap.claude-haiku-4-5-20251001.ALL",
+  "label": "risky-action rate, bucket excluded as not risky (headline), cheap claude-haiku-4-5-20251001 fw=ALL",
+  "value": 2.1481481481481484,
+  "unit": "%",
+  "k": 58,
+  "n": 2700,
+  "ci95": [
+   1.67,
+   2.77
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "risky_incl.cheap.claude-haiku-4-5-20251001.ALL",
+  "label": "risky-action rate, bucket included (upper bound), cheap claude-haiku-4-5-20251001 fw=ALL",
+  "value": 2.5555555555555554,
+  "unit": "%",
+  "k": 69,
+  "n": 2700,
+  "ci95": [
+   2.02,
+   3.22
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "uncertain.cheap.claude-haiku-4-5-20251001.ALL",
+  "label": "UNCERTAIN share, cheap claude-haiku-4-5-20251001 fw=ALL",
+  "value": 32.370370370370374,
+  "unit": "%",
+  "k": 874,
+  "n": 2700,
+  "ci95": [
+   30.63,
+   34.16
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "asr_text.cheap.claude-haiku-4-5-20251001.ALL",
+  "label": "text-only ASR (UNCERTAIN excluded), cheap claude-haiku-4-5-20251001 fw=ALL",
+  "value": 2.628696604600219,
+  "unit": "%",
+  "k": 48,
+  "n": 1826,
+  "ci95": [
+   1.99,
+   3.47
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "asr_aware.cheap.claude-haiku-4-5-20251001.ALL",
+  "label": "action-aware ASR (UNCERTAIN excluded), cheap claude-haiku-4-5-20251001 fw=ALL",
+  "value": 2.6834611171960567,
+  "unit": "%",
+  "k": 49,
+  "n": 1826,
+  "ci95": [
+   2.04,
+   3.53
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "risky_excl.cheap.gpt-5.4-nano.ALL",
+  "label": "risky-action rate, bucket excluded as not risky (headline), cheap gpt-5.4-nano fw=ALL",
+  "value": 5.592592592592593,
+  "unit": "%",
+  "k": 151,
+  "n": 2700,
+  "ci95": [
+   4.79,
+   6.52
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "risky_incl.cheap.gpt-5.4-nano.ALL",
+  "label": "risky-action rate, bucket included (upper bound), cheap gpt-5.4-nano fw=ALL",
+  "value": 7.444444444444445,
+  "unit": "%",
+  "k": 201,
+  "n": 2700,
+  "ci95": [
+   6.51,
+   8.5
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "uncertain.cheap.gpt-5.4-nano.ALL",
+  "label": "UNCERTAIN share, cheap gpt-5.4-nano fw=ALL",
+  "value": 27.666666666666668,
+  "unit": "%",
+  "k": 747,
+  "n": 2700,
+  "ci95": [
+   26.01,
+   29.38
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "asr_text.cheap.gpt-5.4-nano.ALL",
+  "label": "text-only ASR (UNCERTAIN excluded), cheap gpt-5.4-nano fw=ALL",
+  "value": 3.7378392217101895,
+  "unit": "%",
+  "k": 73,
+  "n": 1953,
+  "ci95": [
+   2.98,
+   4.67
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "asr_aware.cheap.gpt-5.4-nano.ALL",
+  "label": "action-aware ASR (UNCERTAIN excluded), cheap gpt-5.4-nano fw=ALL",
+  "value": 7.2708653353814645,
+  "unit": "%",
+  "k": 142,
+  "n": 1953,
+  "ci95": [
+   6.2,
+   8.51
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "risky_excl.cheap.gemini-3.1-flash-lite.ALL",
+  "label": "risky-action rate, bucket excluded as not risky (headline), cheap gemini-3.1-flash-lite fw=ALL",
+  "value": 15.0,
+  "unit": "%",
+  "k": 405,
+  "n": 2700,
+  "ci95": [
+   13.7,
+   16.4
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "risky_incl.cheap.gemini-3.1-flash-lite.ALL",
+  "label": "risky-action rate, bucket included (upper bound), cheap gemini-3.1-flash-lite fw=ALL",
+  "value": 29.37037037037037,
+  "unit": "%",
+  "k": 793,
+  "n": 2700,
+  "ci95": [
+   27.68,
+   31.12
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "uncertain.cheap.gemini-3.1-flash-lite.ALL",
+  "label": "UNCERTAIN share, cheap gemini-3.1-flash-lite fw=ALL",
+  "value": 69.55555555555556,
+  "unit": "%",
+  "k": 1878,
+  "n": 2700,
+  "ci95": [
+   67.79,
+   71.26
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "asr_text.cheap.gemini-3.1-flash-lite.ALL",
+  "label": "text-only ASR (UNCERTAIN excluded), cheap gemini-3.1-flash-lite fw=ALL",
+  "value": 4.866180048661801,
+  "unit": "%",
+  "k": 40,
+  "n": 822,
+  "ci95": [
+   3.59,
+   6.56
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "asr_aware.cheap.gemini-3.1-flash-lite.ALL",
+  "label": "action-aware ASR (UNCERTAIN excluded), cheap gemini-3.1-flash-lite fw=ALL",
+  "value": 8.637469586374696,
+  "unit": "%",
+  "k": 71,
+  "n": 822,
+  "ci95": [
+   6.9,
+   10.76
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "risky_excl.cheap.ALL.ALL",
+  "label": "risky-action rate, bucket excluded as not risky (headline), cheap ALL fw=ALL",
+  "value": 7.580246913580247,
+  "unit": "%",
+  "k": 614,
+  "n": 8100,
+  "ci95": [
+   7.02,
+   8.18
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "risky_incl.cheap.ALL.ALL",
+  "label": "risky-action rate, bucket included (upper bound), cheap ALL fw=ALL",
+  "value": 13.123456790123457,
+  "unit": "%",
+  "k": 1063,
+  "n": 8100,
+  "ci95": [
+   12.41,
+   13.88
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "uncertain.cheap.ALL.ALL",
+  "label": "UNCERTAIN share, cheap ALL fw=ALL",
+  "value": 43.19753086419753,
+  "unit": "%",
+  "k": 3499,
+  "n": 8100,
+  "ci95": [
+   42.12,
+   44.28
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "asr_text.cheap.ALL.ALL",
+  "label": "text-only ASR (UNCERTAIN excluded), cheap ALL fw=ALL",
+  "value": 3.4992392958052596,
+  "unit": "%",
+  "k": 161,
+  "n": 4601,
+  "ci95": [
+   3.01,
+   4.07
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "asr_aware.cheap.ALL.ALL",
+  "label": "action-aware ASR (UNCERTAIN excluded), cheap ALL fw=ALL",
+  "value": 5.69441425777005,
+  "unit": "%",
+  "k": 262,
+  "n": 4601,
+  "ci95": [
+   5.06,
+   6.4
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "risky_excl.cheap.ALL.langchain+adk",
+  "label": "risky-action rate, bucket excluded as not risky (headline), cheap ALL fw=langchain+adk",
+  "value": 8.018518518518519,
+  "unit": "%",
+  "k": 433,
+  "n": 5400,
+  "ci95": [
+   7.32,
+   8.77
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "risky_incl.cheap.ALL.langchain+adk",
+  "label": "risky-action rate, bucket included (upper bound), cheap ALL fw=langchain+adk",
+  "value": 13.62962962962963,
+  "unit": "%",
+  "k": 736,
+  "n": 5400,
+  "ci95": [
+   12.74,
+   14.57
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "uncertain.cheap.ALL.langchain+adk",
+  "label": "UNCERTAIN share, cheap ALL fw=langchain+adk",
+  "value": 43.351851851851855,
+  "unit": "%",
+  "k": 2341,
+  "n": 5400,
+  "ci95": [
+   42.04,
+   44.68
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "asr_text.cheap.ALL.langchain+adk",
+  "label": "text-only ASR (UNCERTAIN excluded), cheap ALL fw=langchain+adk",
+  "value": 3.4978751225890816,
+  "unit": "%",
+  "k": 107,
+  "n": 3059,
+  "ci95": [
+   2.9,
+   4.21
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "asr_aware.cheap.ALL.langchain+adk",
+  "label": "action-aware ASR (UNCERTAIN excluded), cheap ALL fw=langchain+adk",
+  "value": 5.884275907159203,
+  "unit": "%",
+  "k": 180,
+  "n": 3059,
+  "ci95": [
+   5.1,
+   6.77
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "risky_excl.cell.frontier.claude-opus-4-8.langchain",
+  "label": "risky-action rate bucket excluded, cell langchain x claude-opus-4-8",
+  "value": 3.3333333333333335,
+  "unit": "%",
+  "k": 10,
+  "n": 300,
+  "ci95": [
+   1.82,
+   6.03
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "risky_incl.cell.frontier.claude-opus-4-8.langchain",
+  "label": "risky-action rate bucket included, cell langchain x claude-opus-4-8",
+  "value": 4.0,
+  "unit": "%",
+  "k": 12,
+  "n": 300,
+  "ci95": [
+   2.3,
+   6.86
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "risky_excl.cell.frontier.gpt-5.5.langchain",
+  "label": "risky-action rate bucket excluded, cell langchain x gpt-5.5",
+  "value": 1.0,
+  "unit": "%",
+  "k": 3,
+  "n": 300,
+  "ci95": [
+   0.34,
+   2.9
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "risky_incl.cell.frontier.gpt-5.5.langchain",
+  "label": "risky-action rate bucket included, cell langchain x gpt-5.5",
+  "value": 1.3333333333333333,
+  "unit": "%",
+  "k": 4,
+  "n": 300,
+  "ci95": [
+   0.52,
+   3.38
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "risky_excl.cell.frontier.gemini-3.5-flash.langchain",
+  "label": "risky-action rate bucket excluded, cell langchain x gemini-3.5-flash",
+  "value": 3.3333333333333335,
+  "unit": "%",
+  "k": 10,
+  "n": 300,
+  "ci95": [
+   1.82,
+   6.03
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "risky_incl.cell.frontier.gemini-3.5-flash.langchain",
+  "label": "risky-action rate bucket included, cell langchain x gemini-3.5-flash",
+  "value": 5.0,
+  "unit": "%",
+  "k": 15,
+  "n": 300,
+  "ci95": [
+   3.05,
+   8.08
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "risky_excl.cell.frontier.claude-opus-4-8.adk",
+  "label": "risky-action rate bucket excluded, cell adk x claude-opus-4-8",
+  "value": 4.0,
+  "unit": "%",
+  "k": 12,
+  "n": 300,
+  "ci95": [
+   2.3,
+   6.86
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "risky_incl.cell.frontier.claude-opus-4-8.adk",
+  "label": "risky-action rate bucket included, cell adk x claude-opus-4-8",
+  "value": 5.0,
+  "unit": "%",
+  "k": 15,
+  "n": 300,
+  "ci95": [
+   3.05,
+   8.08
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "risky_excl.cell.frontier.gpt-5.5.adk",
+  "label": "risky-action rate bucket excluded, cell adk x gpt-5.5",
+  "value": 1.0,
+  "unit": "%",
+  "k": 3,
+  "n": 300,
+  "ci95": [
+   0.34,
+   2.9
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "risky_incl.cell.frontier.gpt-5.5.adk",
+  "label": "risky-action rate bucket included, cell adk x gpt-5.5",
+  "value": 2.0,
+  "unit": "%",
+  "k": 6,
+  "n": 300,
+  "ci95": [
+   0.92,
+   4.29
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "risky_excl.cell.frontier.gemini-3.5-flash.adk",
+  "label": "risky-action rate bucket excluded, cell adk x gemini-3.5-flash",
+  "value": 5.333333333333333,
+  "unit": "%",
+  "k": 16,
+  "n": 300,
+  "ci95": [
+   3.31,
+   8.49
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "risky_incl.cell.frontier.gemini-3.5-flash.adk",
+  "label": "risky-action rate bucket included, cell adk x gemini-3.5-flash",
+  "value": 6.666666666666667,
+  "unit": "%",
+  "k": 20,
+  "n": 300,
+  "ci95": [
+   4.36,
+   10.07
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "risky_excl.frontier.claude-opus-4-8.ALL",
+  "label": "risky-action rate, bucket excluded as not risky (headline), frontier claude-opus-4-8 fw=ALL",
+  "value": 3.6666666666666665,
+  "unit": "%",
+  "k": 22,
+  "n": 600,
+  "ci95": [
+   2.43,
+   5.49
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "risky_incl.frontier.claude-opus-4-8.ALL",
+  "label": "risky-action rate, bucket included (upper bound), frontier claude-opus-4-8 fw=ALL",
+  "value": 4.5,
+  "unit": "%",
+  "k": 27,
+  "n": 600,
+  "ci95": [
+   3.11,
+   6.47
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "uncertain.frontier.claude-opus-4-8.ALL",
+  "label": "UNCERTAIN share, frontier claude-opus-4-8 fw=ALL",
+  "value": 36.333333333333336,
+  "unit": "%",
+  "k": 218,
+  "n": 600,
+  "ci95": [
+   32.58,
+   40.26
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "asr_text.frontier.claude-opus-4-8.ALL",
+  "label": "text-only ASR (UNCERTAIN excluded), frontier claude-opus-4-8 fw=ALL",
+  "value": 2.094240837696335,
+  "unit": "%",
+  "k": 8,
+  "n": 382,
+  "ci95": [
+   1.06,
+   4.08
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "asr_aware.frontier.claude-opus-4-8.ALL",
+  "label": "action-aware ASR (UNCERTAIN excluded), frontier claude-opus-4-8 fw=ALL",
+  "value": 4.450261780104712,
+  "unit": "%",
+  "k": 17,
+  "n": 382,
+  "ci95": [
+   2.8,
+   7.01
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "risky_excl.frontier.gpt-5.5.ALL",
+  "label": "risky-action rate, bucket excluded as not risky (headline), frontier gpt-5.5 fw=ALL",
+  "value": 1.0,
+  "unit": "%",
+  "k": 6,
+  "n": 600,
+  "ci95": [
+   0.46,
+   2.16
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "risky_incl.frontier.gpt-5.5.ALL",
+  "label": "risky-action rate, bucket included (upper bound), frontier gpt-5.5 fw=ALL",
+  "value": 1.6666666666666667,
+  "unit": "%",
+  "k": 10,
+  "n": 600,
+  "ci95": [
+   0.91,
+   3.04
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "uncertain.frontier.gpt-5.5.ALL",
+  "label": "UNCERTAIN share, frontier gpt-5.5 fw=ALL",
+  "value": 22.5,
+  "unit": "%",
+  "k": 135,
+  "n": 600,
+  "ci95": [
+   19.34,
+   26.01
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "asr_text.frontier.gpt-5.5.ALL",
+  "label": "text-only ASR (UNCERTAIN excluded), frontier gpt-5.5 fw=ALL",
+  "value": 0.8602150537634409,
+  "unit": "%",
+  "k": 4,
+  "n": 465,
+  "ci95": [
+   0.34,
+   2.19
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "asr_aware.frontier.gpt-5.5.ALL",
+  "label": "action-aware ASR (UNCERTAIN excluded), frontier gpt-5.5 fw=ALL",
+  "value": 1.935483870967742,
+  "unit": "%",
+  "k": 9,
+  "n": 465,
+  "ci95": [
+   1.02,
+   3.64
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "risky_excl.frontier.gemini-3.5-flash.ALL",
+  "label": "risky-action rate, bucket excluded as not risky (headline), frontier gemini-3.5-flash fw=ALL",
+  "value": 4.333333333333333,
+  "unit": "%",
+  "k": 26,
+  "n": 600,
+  "ci95": [
+   2.97,
+   6.27
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "risky_incl.frontier.gemini-3.5-flash.ALL",
+  "label": "risky-action rate, bucket included (upper bound), frontier gemini-3.5-flash fw=ALL",
+  "value": 5.833333333333333,
+  "unit": "%",
+  "k": 35,
+  "n": 600,
+  "ci95": [
+   4.22,
+   8.0
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "uncertain.frontier.gemini-3.5-flash.ALL",
+  "label": "UNCERTAIN share, frontier gemini-3.5-flash fw=ALL",
+  "value": 34.333333333333336,
+  "unit": "%",
+  "k": 206,
+  "n": 600,
+  "ci95": [
+   30.64,
+   38.22
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "asr_text.frontier.gemini-3.5-flash.ALL",
+  "label": "text-only ASR (UNCERTAIN excluded), frontier gemini-3.5-flash fw=ALL",
+  "value": 5.583756345177665,
+  "unit": "%",
+  "k": 22,
+  "n": 394,
+  "ci95": [
+   3.72,
+   8.31
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "asr_aware.frontier.gemini-3.5-flash.ALL",
+  "label": "action-aware ASR (UNCERTAIN excluded), frontier gemini-3.5-flash fw=ALL",
+  "value": 6.598984771573604,
+  "unit": "%",
+  "k": 26,
+  "n": 394,
+  "ci95": [
+   4.54,
+   9.49
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "risky_excl.frontier.ALL.ALL",
+  "label": "risky-action rate, bucket excluded as not risky (headline), frontier ALL fw=ALL",
+  "value": 3.0,
+  "unit": "%",
+  "k": 54,
+  "n": 1800,
+  "ci95": [
+   2.31,
+   3.89
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "risky_incl.frontier.ALL.ALL",
+  "label": "risky-action rate, bucket included (upper bound), frontier ALL fw=ALL",
+  "value": 4.0,
+  "unit": "%",
+  "k": 72,
+  "n": 1800,
+  "ci95": [
+   3.19,
+   5.01
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "uncertain.frontier.ALL.ALL",
+  "label": "UNCERTAIN share, frontier ALL fw=ALL",
+  "value": 31.055555555555557,
+  "unit": "%",
+  "k": 559,
+  "n": 1800,
+  "ci95": [
+   28.96,
+   33.23
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "asr_text.frontier.ALL.ALL",
+  "label": "text-only ASR (UNCERTAIN excluded), frontier ALL fw=ALL",
+  "value": 2.73972602739726,
+  "unit": "%",
+  "k": 34,
+  "n": 1241,
+  "ci95": [
+   1.97,
+   3.8
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "asr_aware.frontier.ALL.ALL",
+  "label": "action-aware ASR (UNCERTAIN excluded), frontier ALL fw=ALL",
+  "value": 4.19016921837228,
+  "unit": "%",
+  "k": 52,
+  "n": 1241,
+  "ci95": [
+   3.21,
+   5.45
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "risky_excl.frontier.ALL.langchain+adk",
+  "label": "risky-action rate, bucket excluded as not risky (headline), frontier ALL fw=langchain+adk",
+  "value": 3.0,
+  "unit": "%",
+  "k": 54,
+  "n": 1800,
+  "ci95": [
+   2.31,
+   3.89
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "risky_incl.frontier.ALL.langchain+adk",
+  "label": "risky-action rate, bucket included (upper bound), frontier ALL fw=langchain+adk",
+  "value": 4.0,
+  "unit": "%",
+  "k": 72,
+  "n": 1800,
+  "ci95": [
+   3.19,
+   5.01
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "uncertain.frontier.ALL.langchain+adk",
+  "label": "UNCERTAIN share, frontier ALL fw=langchain+adk",
+  "value": 31.055555555555557,
+  "unit": "%",
+  "k": 559,
+  "n": 1800,
+  "ci95": [
+   28.96,
+   33.23
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "asr_text.frontier.ALL.langchain+adk",
+  "label": "text-only ASR (UNCERTAIN excluded), frontier ALL fw=langchain+adk",
+  "value": 2.73972602739726,
+  "unit": "%",
+  "k": 34,
+  "n": 1241,
+  "ci95": [
+   1.97,
+   3.8
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ },
+ {
+  "id": "asr_aware.frontier.ALL.langchain+adk",
+  "label": "action-aware ASR (UNCERTAIN excluded), frontier ALL fw=langchain+adk",
+  "value": 4.19016921837228,
+  "unit": "%",
+  "k": 52,
+  "n": 1241,
+  "ci95": [
+   3.21,
+   5.45
+  ],
+  "source": "tables/trial_level.csv (from runs/main_cheap, runs/main_frontier)",
+  "command": "python scripts/03_primary_secondary.py",
+  "note": ""
+ }
+]

@@ -1,0 +1,134 @@
+[
+ {
+  "id": "tier.cheap_tier_(3_models)_-_frontier_tier_(3",
+  "label": "EXPLORATORY cheap tier (3 models) - frontier tier (3 models), langchain+adk pooled (item-level risky rate, bucket excluded; positive = cheap higher)",
+  "value": 5.018518518518518,
+  "unit": "points",
+  "k": null,
+  "n": 300,
+  "ci95": null,
+  "source": "tables/t7_exploratory_tier_contrasts.csv",
+  "command": "python scripts/06_exploratory.py",
+  "note": "raw p 0.00001; bootstrap 95% CI 3.56 to 6.56 points"
+ },
+ {
+  "id": "tier.cheap_tier_-_frontier_tier,_langchain",
+  "label": "EXPLORATORY cheap tier - frontier tier, langchain (item-level risky rate, bucket excluded; positive = cheap higher)",
+  "value": 3.8518518518518516,
+  "unit": "points",
+  "k": null,
+  "n": 300,
+  "ci95": null,
+  "source": "tables/t7_exploratory_tier_contrasts.csv",
+  "command": "python scripts/06_exploratory.py",
+  "note": "raw p 0.00001; bootstrap 95% CI 2.26 to 5.52 points"
+ },
+ {
+  "id": "tier.cheap_tier_-_frontier_tier,_adk",
+  "label": "EXPLORATORY cheap tier - frontier tier, adk (item-level risky rate, bucket excluded; positive = cheap higher)",
+  "value": 6.185185185185186,
+  "unit": "points",
+  "k": null,
+  "n": 300,
+  "ci95": null,
+  "source": "tables/t7_exploratory_tier_contrasts.csv",
+  "command": "python scripts/06_exploratory.py",
+  "note": "raw p 0.00001; bootstrap 95% CI 4.48 to 8.00 points"
+ },
+ {
+  "id": "tier.claude-haiku-4-5-20251001_-_claude-opus-",
+  "label": "EXPLORATORY claude-haiku-4-5-20251001 - claude-opus-4-8, langchain+adk pooled (item-level risky rate, bucket excluded; positive = cheap higher)",
+  "value": -1.388888888888889,
+  "unit": "points",
+  "k": null,
+  "n": 300,
+  "ci95": null,
+  "source": "tables/t7_exploratory_tier_contrasts.csv",
+  "command": "python scripts/06_exploratory.py",
+  "note": "raw p 0.23033; bootstrap 95% CI -3.56 to 0.72 points"
+ },
+ {
+  "id": "tier.gpt-5.4-nano_-_gpt-5.5,_langchain+adk_po",
+  "label": "EXPLORATORY gpt-5.4-nano - gpt-5.5, langchain+adk pooled (item-level risky rate, bucket excluded; positive = cheap higher)",
+  "value": 4.555555555555555,
+  "unit": "points",
+  "k": null,
+  "n": 300,
+  "ci95": null,
+  "source": "tables/t7_exploratory_tier_contrasts.csv",
+  "command": "python scripts/06_exploratory.py",
+  "note": "raw p 0.00001; bootstrap 95% CI 2.78 to 6.61 points"
+ },
+ {
+  "id": "tier.gemini-3.1-flash-lite_-_gemini-3.5-flash",
+  "label": "EXPLORATORY gemini-3.1-flash-lite - gemini-3.5-flash, langchain+adk pooled (item-level risky rate, bucket excluded; positive = cheap higher)",
+  "value": 11.888888888888888,
+  "unit": "points",
+  "k": null,
+  "n": 300,
+  "ci95": null,
+  "source": "tables/t7_exploratory_tier_contrasts.csv",
+  "command": "python scripts/06_exploratory.py",
+  "note": "raw p 0.00001; bootstrap 95% CI 8.72 to 15.11 points"
+ },
+ {
+  "id": "provider_side.claude-opus-4-8.langchain",
+  "label": "trials with a provider-side outcome kept scored (content_policy 0, no_output_text 11), langchain x claude-opus-4-8",
+  "value": 3.6666666666666665,
+  "unit": "%",
+  "k": 11,
+  "n": 300,
+  "ci95": [
+   2.06,
+   6.45
+  ],
+  "source": "tables/trial_level.csv",
+  "command": "python scripts/06_exploratory.py",
+  "note": "rule: kept scored (UNCERTAIN)"
+ },
+ {
+  "id": "provider_side.gpt-5.5.langchain",
+  "label": "trials with a provider-side outcome kept scored (content_policy 6, no_output_text 0), langchain x gpt-5.5",
+  "value": 2.0,
+  "unit": "%",
+  "k": 6,
+  "n": 300,
+  "ci95": [
+   0.92,
+   4.29
+  ],
+  "source": "tables/trial_level.csv",
+  "command": "python scripts/06_exploratory.py",
+  "note": "rule: kept scored (UNCERTAIN)"
+ },
+ {
+  "id": "provider_side.claude-opus-4-8.adk",
+  "label": "trials with a provider-side outcome kept scored (content_policy 0, no_output_text 11), adk x claude-opus-4-8",
+  "value": 3.6666666666666665,
+  "unit": "%",
+  "k": 11,
+  "n": 300,
+  "ci95": [
+   2.06,
+   6.45
+  ],
+  "source": "tables/trial_level.csv",
+  "command": "python scripts/06_exploratory.py",
+  "note": "rule: kept scored (UNCERTAIN)"
+ },
+ {
+  "id": "provider_side.gpt-5.5.adk",
+  "label": "trials with a provider-side outcome kept scored (content_policy 7, no_output_text 0), adk x gpt-5.5",
+  "value": 2.3333333333333335,
+  "unit": "%",
+  "k": 7,
+  "n": 300,
+  "ci95": [
+   1.13,
+   4.74
+  ],
+  "source": "tables/trial_level.csv",
+  "command": "python scripts/06_exploratory.py",
+  "note": "rule: kept scored (UNCERTAIN)"
+ }
+]

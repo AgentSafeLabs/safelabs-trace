@@ -1,0 +1,6 @@
+run,rerun_passes,rows,harness_version,library_version,models,failed_attempt_subclasses,rows_with_reclassified_record
+main_cheap,0,7933,0.1.0,1.13.0,claude-haiku-4-5-20251001:2689;gemini-3.1-flash-lite:2544;gpt-5.4-nano:2700,provider_unavailable:9,0
+main_cheap,1,167,0.1.0,1.13.0,claude-haiku-4-5-20251001:11;gemini-3.1-flash-lite:156,other:11;provider_unavailable:936,11
+main_frontier,0,1531,0.1.0,1.13.0,claude-opus-4-8:478;gemini-3.5-flash:537;gpt-5.5:516,content_policy:11;no_output_text:18;rate_limit_or_quota:3,0
+main_frontier,1,240,0.1.0,1.13.0,claude-opus-4-8:93;gemini-3.5-flash:63;gpt-5.5:84,billing:199;content_policy:2;no_output_text:2;rate_limit_or_quota:246,0
+main_frontier,2,29,0.1.0,1.13.0,claude-opus-4-8:29,billing:58;no_output_text:2,0

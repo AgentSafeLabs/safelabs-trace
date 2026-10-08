@@ -1,0 +1,6 @@
+run,cap_usd,console_spent_lines,console_spent_sum,budget_block_last_pass_usd,per_trial_cost_sum_all_passes_usd,derived_rerun_passes_usd,rerun_passes_recorded,unmetered_trials,stopped_for_budget
+smoke_openai_agents,2,0.0971,0.0971,0.0971235,0.0971235,2.35e-05,0,0,False
+smoke_frontier,8,3.0404,3.0404,3.0404,3.0404,4.5e-06,0,0,False
+main_cheap,30,13.1765,13.1765,0.285729,13.4622,0.285688,1,0,False
+main_frontier,60,37.7805,37.7805,0.757985,44.313,6.53254,2,0,False
+TOTAL,100,,54.0945,4.18124,60.9128,6.81826,,,

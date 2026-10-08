@@ -1,0 +1,121 @@
+{
+ "main_cheap": {
+  "verify": "manifest OK",
+  "rows": 8100,
+  "status": {
+   "scored": 8100
+  },
+  "missing_infrastructure": 0,
+  "not_run_budget": 0,
+  "traces_checked": 8100,
+  "trials_without_trace": 0,
+  "start_without_end": [],
+  "end_without_start": [],
+  "config_sha256": "4843a8f0bb5db3690b727f5b5e6fc4908fc6bfe7a444f7f5109e0440d91ee91e",
+  "safety": {
+   "adk_span_content": "false",
+   "exporter_env_clear": true,
+   "notes": [],
+   "openai_export_off": true,
+   "safe_run_config": true,
+   "strict_handler": true
+  },
+  "budget_block_last_pass_only": {
+   "cap_usd": 30.0,
+   "price_table_fake": false,
+   "spent_usd": 0.285729,
+   "stopped": false,
+   "unmetered_trials": 0
+  },
+  "rerun_history": [
+   [
+    "initial",
+    "2026-10-08T00:49:39.641411+00:00",
+    8100,
+    0,
+    156
+   ],
+   [
+    "rerun",
+    "2026-10-08T01:28:24.186963+00:00",
+    167,
+    167,
+    0
+   ]
+  ]
+ },
+ "main_frontier": {
+  "verify": "manifest OK",
+  "rows": 1800,
+  "status": {
+   "scored": 1800
+  },
+  "missing_infrastructure": 0,
+  "not_run_budget": 0,
+  "traces_checked": 1800,
+  "trials_without_trace": 0,
+  "start_without_end": [],
+  "end_without_start": [],
+  "config_sha256": "754cc18fe7c247a3bf2b33b07304a0402229237b3f42618417430a43b4daf8f4",
+  "safety": {
+   "adk_span_content": "false",
+   "exporter_env_clear": true,
+   "notes": [],
+   "openai_export_off": null,
+   "safe_run_config": true,
+   "strict_handler": true
+  },
+  "budget_block_last_pass_only": {
+   "cap_usd": 60.0,
+   "price_table_fake": false,
+   "spent_usd": 0.757985,
+   "stopped": false,
+   "unmetered_trials": 0
+  },
+  "rerun_history": [
+   [
+    "initial",
+    "2026-10-08T07:46:58.756880+00:00",
+    1800,
+    0,
+    269
+   ],
+   [
+    "rerun",
+    "2026-10-08T16:34:59.517236+00:00",
+    269,
+    240,
+    29
+   ],
+   [
+    "rerun",
+    "2026-10-08T16:42:57.244431+00:00",
+    29,
+    29,
+    0
+   ]
+  ]
+ },
+ "smoke_openai_agents": {
+  "verify": "manifest OK",
+  "rows": 60,
+  "missing_infrastructure": 0,
+  "not_run_budget": 0,
+  "safety": {
+   "adk_span_content": "false",
+   "exporter_env_clear": true,
+   "notes": [],
+   "openai_export_off": true,
+   "safe_run_config": true,
+   "strict_handler": true
+  },
+  "frameworks": [
+   "openai_agents"
+  ]
+ },
+ "smoke_frontier": {
+  "verify": "manifest OK",
+  "rows": 120,
+  "missing_infrastructure": 0
+ }
+}
