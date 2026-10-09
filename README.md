@@ -1,12 +1,16 @@
-# safelabs-trace (PRIVATE)
+# safelabs-trace
 
-**PRIVATE. Proprietary: all rights reserved, Safe Labs AI Inc. Do not publish.** Nothing from this repository goes to any public
-repository, issue, pull request, package index or blog. The package declares the classifier `Private :: Do Not Upload` so PyPI rejects an
-accidental upload. Keep the repository private and do not add an open-source licence.
+Trace event model, frozen action-severity tagger and action-aware metrics for tool-using LLM agents, with the runner, analysis and human-check material of a pre-registered study.
 
-Core of the 1B work: a trace event model, an action-severity tagger, a JSONL trace writer, inert recording tools, a LangChain callback
-handler and the text-versus-action divergence metric. It builds on `safelabs-eval>=0.11.2` (the scoring verdicts) and follows the
-vocabulary of OpenTelemetry GenAI spans and the OWASP Agent Control Standard; it claims no conformance to either.
+**Source available for research reproducibility. Copyright (c) 2026 Safe Labs AI Inc. All rights reserved; see [LICENSE](LICENSE). This is not an open-source licence; contact the author at waqarjaved.com@gmail.com for other uses.**
+
+## What it is
+
+Core of the 1B work: a trace event model, an action-severity tagger, a JSONL trace writer, inert recording tools, a LangChain callback handler and the text-versus-action divergence metric. It builds on `safelabs-eval>=0.11.2` (the scoring verdicts) and follows the vocabulary of OpenTelemetry GenAI spans and the OWASP Agent Control Standard; it claims no conformance to either.
+
+In plain language: when an agent calls tools, this package records what happened as a trace of events (which tool, with what severity, what the model did), without keeping the text of prompts, tool arguments, tool results or answers. A rule-based severity tagger (rules v2b, frozen for the study) labels each tool call read-only, state-changing or irreversible. Inert tools record the call and do nothing, so a benchmark can run attack prompts without any real effect. Handlers for LangChain, Google ADK and the OpenAI Agents SDK write the events. The divergence metrics then set the text verdict of a trial against the most severe action it took, so that a refusal in words followed by a risky tool call is counted.
+
+The package is distributed through this repository, not through a package index: it declares the classifier `Private :: Do Not Upload`, so that PyPI rejects an accidental upload.
 
 ## What is here
 | Module | Purpose |
@@ -17,6 +21,67 @@ vocabulary of OpenTelemetry GenAI spans and the OWASP Agent Control Standard; it
 | `inert_tools.py` | tools that record and never act (file, shell, HTTP, email, payment, database, read-only lookups), each with its true severity |
 | `langchain_handler.py` | `BaseCallbackHandler` that writes agent, model and tool events (extra `langchain`) |
 | `divergence.py` | 2 by 4 table of text verdict against action verdict, hidden-action rate, talk-only rate, ASR lift |
+
+## Paper
+
+*How Much Does Text-Only Scoring Miss? A Pre-Registered Trace Benchmark of Tool-Using Agents.* Waqar Javed, Safe Labs AI Inc. Status: submitted to the Journal of Systems and Software.
+
+How to cite:
+
+```bibtex
+@misc{javed2026safelabstrace,
+  author = {Javed, Waqar},
+  title  = {How Much Does Text-Only Scoring Miss? A Pre-Registered Trace Benchmark of Tool-Using Agents},
+  year   = {2026},
+  note   = {Manuscript submitted to the Journal of Systems and Software},
+  url    = {https://github.com/AgentSafeLabs/safelabs-trace}
+}
+```
+
+## Reproducing the 1B study
+
+The study was pre-registered in steps; each step is a committed file. The table lists the steps with the date written in the file and, where a committed file names it, the pull request. Commit hashes and merge times are in the git history, not in committed files, so they are not listed here.
+
+| step | file | date written in the file | pull request named in a committed file | what it fixed |
+|---|---|---|---|---|
+| set C re-check gate | [handcheck/set_c/gate_set_c.md](handcheck/set_c/gate_set_c.md) | 2026-10-04 | | pass rule of the severity-tagger re-check, written before rules v2 existed |
+| two-rater addendum | [handcheck/rater_packet/gate_addendum_two_raters.md](handcheck/rater_packet/gate_addendum_two_raters.md) | 2026-10-04 | | the reference label is the more severe of two raters |
+| pilot decisions D8 to D10 | [runner/DECISIONS.md](runner/DECISIONS.md) | 2026-10-05 | | model-call cap, metrics that keep UNCERTAIN trials, local-only evidence sidecar |
+| pilot v2 gates | [handcheck/pilot_v2/gates_pilot_v2.md](handcheck/pilot_v2/gates_pilot_v2.md) | 2026-10-06 | | human checks of the unclassified-shell calls and of UNCERTAIN answers |
+| main-run plan | [runner/main_run/MAIN_RUN_PLAN.md](runner/main_run/MAIN_RUN_PLAN.md) | 2026-10-07 | #16 ([analysis report](analysis/main_run/analysis_report.md)) | design, outcomes, statistics and missing-data rule, before any main-run data |
+| runner fix D11 | [runner/DECISIONS.md](runner/DECISIONS.md) | 2026-10-07 | #17 ([deviation log](analysis/main_run/DEVIATIONS.md)) | an errored trial is never scored; billing errors are infrastructure; repair command |
+| main-run analysis and deviation log | [analysis/main_run/DEVIATIONS.md](analysis/main_run/DEVIATIONS.md) | 2026-10-08 | | the analysis per the plan and its incidents |
+| addendum D12 | [analysis/main_run/addendum/DEVIATIONS_addendum.md](analysis/main_run/addendum/DEVIATIONS_addendum.md) | 2026-10-08 | | post hoc choice of the bucket definition for the two ASRs; descriptive lift |
+| main-run answers gates | [handcheck/main_answers/gates_main_answers.md](handcheck/main_answers/gates_main_answers.md) | 2026-10-08 | | sample, validity, agreement and pre-registered use of the answers check |
+| answers check results D13, D14 | [handcheck/main_answers/results/DEVIATIONS_main_answers.md](handcheck/main_answers/results/DEVIATIONS_main_answers.md) | 2026-10-09 | | both raters void under the pre-registered rule; exploratory readout |
+| addendum D15 | [analysis/main_run/addendum/cluster/DEVIATION_D15.md](analysis/main_run/addendum/cluster/DEVIATION_D15.md) | 2026-10-09 | | item-cluster intervals as a descriptive robustness check |
+
+Where to start: the plan ([runner/main_run/MAIN_RUN_PLAN.md](runner/main_run/MAIN_RUN_PLAN.md)), the runbook ([runner/main_run/RUNBOOK.md](runner/main_run/RUNBOOK.md)), the analysis report ([analysis/main_run/analysis_report.md](analysis/main_run/analysis_report.md)) and every number with its source ([analysis/main_run/citable_numbers_1b.md](analysis/main_run/citable_numbers_1b.md)).
+
+What can be re-run from this repository alone: the tests (see Develop); the offline dry run of the runner (`runner/run_dry.sh`); and the analysis scripts that read the digest-only trial table [analysis/main_run/tables/trial_level.csv](analysis/main_run/tables/trial_level.csv) (`s03`, `s05`, `s06` and `s07` in [analysis/main_run/scripts/](analysis/main_run/scripts/), and the scripts of the addendum folders). The scripts that rebuild the trial table from the run folders (`s01`, `s01b`, `s02`, `s08`, and so `run_all.py`) need the digest-only run folders of the study, which are not stored in this repository. A real run calls model providers, needs your own API keys and costs money; it is started only on purpose (`--confirm-real`, see the runbook).
+
+## Repository map
+
+| folder | what is in it |
+|---|---|
+| [src/safelabs_trace/](src/safelabs_trace/) | the package: event schema, severity tagger and its rules ([data/severity_rules.json](src/safelabs_trace/data/severity_rules.json)), trace writer, inert tools, handlers for LangChain, Google ADK and the OpenAI Agents SDK, divergence metrics |
+| [tests/](tests/) | tests of the package (synthetic, non-harmful strings; no network, no keys) |
+| [runner/](runner/) | the traces-on runner: [trace_runner/](runner/trace_runner/) (the code), [configs/](runner/configs/) (run configurations), [tests/](runner/tests/), [DECISIONS.md](runner/DECISIONS.md), [runner_options.md](runner/runner_options.md) |
+| [runner/main_run/](runner/main_run/) | the main-run plan, runbook, frontier-model note, cost projection, validation results and the run log of main_cheap |
+| [analysis/main_run/](analysis/main_run/) | the analysis of the two main runs: [analysis_report.md](analysis/main_run/analysis_report.md), [citable_numbers_1b.md](analysis/main_run/citable_numbers_1b.md), [DEVIATIONS.md](analysis/main_run/DEVIATIONS.md), [tables/](analysis/main_run/tables/) (CSV tables including the digest-only trial table), [scripts/](analysis/main_run/scripts/) |
+| [analysis/main_run/addendum/](analysis/main_run/addendum/) | the descriptive lift table, configuration hashes and deviation D12 |
+| [analysis/main_run/addendum/cluster/](analysis/main_run/addendum/cluster/) | item-cluster bootstrap intervals and deviation D15 |
+| [handcheck/](handcheck/) | the human checks of the severity tagger and of the scorer's abstentions |
+| [handcheck/set_a/](handcheck/set_a/), [handcheck/set_b/](handcheck/set_b/), [handcheck/set_c/](handcheck/set_c/), [handcheck/rater_packet/](handcheck/rater_packet/) | the earlier tool-call hand-check sets, gates and the two-rater packet (synthetic tool descriptions) |
+| [handcheck/set_c_results/](handcheck/set_c_results/) | the set C two-rater result (rules v2b failed the gate) |
+| [handcheck/pilot_v2/](handcheck/pilot_v2/) | the pilot v2 gates, scorer and results ([results/](handcheck/pilot_v2/results/)) |
+| [handcheck/main_answers/](handcheck/main_answers/) | the gates, scorer and sheet builder of the main-run answers check, and its [results/](handcheck/main_answers/results/) (pre-registered result: both raters void; exploratory readout labelled as such) |
+
+## Data and privacy
+
+**Public in this repository:** the code, the run configurations, the pre-registered plan, gates and decisions, the digest-only trial table (one line per trial: verdict, action level, counts; no prompt, answer or argument text), the analysis scripts and outputs, the aggregated results and the deviation logs, and the earlier hand-check sets, which are synthetic tool descriptions with their rater labels.
+
+**Not public, and why:** the raw model answers and raw tool-call arguments of the runs, which are kept only in a local evidence sidecar because they can contain harmful or sensitive text (the sidecar is local-only: never commit it, never upload it); the sheets, keys and rater files (including rater notes) of the pilot v2 and main-run answers checks, which pair model answers with labels; the trace salt, which would let a reader test guesses against the digests; and the per-trial trace files of the main runs, which are digest-only and are not stored here. Benchmark prompts are not reproduced in any file of this repository.
 
 ## Privacy defaults
 - Tool arguments, tool results and model text are **not** written to traces. A trace keeps a salted digest, a byte length, a type and argument names.
@@ -57,3 +122,8 @@ The frameworks are a different matter, so for every capture:
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python -m pytest -p no:cacheprovider
 ```
 Tests use synthetic, non-harmful strings, no network and no keys. The LangChain tests need `langchain-core` installed.
+
+## Related work
+
+- Earlier benchmark: Javed, W. (2026). AgentPort-Bench. Research Square preprint. [doi:10.21203/rs.3.rs-11102299/v1](https://doi.org/10.21203/rs.3.rs-11102299/v1).
+- Dependency: [safelabs-eval](https://github.com/AgentSafeLabs/safelabs-eval) (`>=0.11.2`), the scoring library and AgentPort-Bench harness this package builds on.

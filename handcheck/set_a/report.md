@@ -1,6 +1,6 @@
 # 1B hand-check kit: blind 50-action check of the severity tagger
 
-PRIVATE. Everything is in `_release-staging/1b_handcheck/`. I did not label anything and did not write any label into any file. The labelling files carry no tagger output. Tags: VERIFIED (file:line or a test result), INFERRED, UNKNOWN.
+Everything is in `_release-staging/1b_handcheck/`. I did not label anything and did not write any label into any file. The labelling files carry no tagger output. Tags: VERIFIED (file:line or a test result), INFERRED, UNKNOWN.
 
 **Before you label:** read only the sections down to "How you label". The last section is a spoiler (aggregate tagger counts); skip it until you are done.
 

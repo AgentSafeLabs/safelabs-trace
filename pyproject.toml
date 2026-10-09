@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "safelabs-trace"
 version = "0.1.0"
-description = "PRIVATE: trace event model, action-severity tagger and text-versus-action divergence metric for agent evaluation (core)"
+description = "Trace event model, action-severity tagger (rules v2b) and text-versus-action divergence metric for agent evaluation; source available for research reproducibility"
 readme = "README.md"
 license = { text = "Proprietary — all rights reserved, Safe Labs AI Inc." }
 authors = [
@@ -17,7 +17,11 @@ dependencies = [
     "pydantic>=2.0",
 ]
 classifiers = [
+    # "Private :: Do Not Upload" stays on purpose: it is not about repository visibility. It makes PyPI reject an accidental upload, and this package is
+    # distributed through the repository (source available, all rights reserved), not through a package index.
     "Private :: Do Not Upload",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
