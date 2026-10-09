@@ -38,6 +38,11 @@ How to cite:
 }
 ```
 
+## Blog post
+
+A plain-language summary of the benchmark design, results and reported failures:
+[What text-only scoring misses in tool-using agents](https://agentsafelabs.com/blog/your-ai-agent-said-no-but-what-did-its-tools-do/) (Agent Safe Labs blog, 9 October 2026).
+
 ## Reproducing the 1B study
 
 The study was pre-registered in steps; each step is a committed file. The table lists the steps with the date written in the file and, where a committed file names it, the pull request. Commit hashes and merge times are in the git history, not in committed files, so they are not listed here.
