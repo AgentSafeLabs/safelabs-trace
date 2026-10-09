@@ -1,6 +1,6 @@
 # 1B independent-rater packet
 
-PRIVATE. Everything is in `_release-staging/1b_rater_packet/`. I labelled nothing. I did not open `handcheck_key.csv`, `handcheck_b_key.csv`, any results file, any `*_void*` file or any labelled file; the two keys are referenced only by path in `score_two_raters.py`, and none of the tests reads them.
+Everything is in `_release-staging/1b_rater_packet/`. I labelled nothing. I did not open `handcheck_key.csv`, `handcheck_b_key.csv`, any results file, any `*_void*` file or any labelled file; the two keys are referenced only by path in `score_two_raters.py`, and none of the tests reads them.
 
 ## What was built
 | file | purpose |

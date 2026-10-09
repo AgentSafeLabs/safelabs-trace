@@ -29,12 +29,12 @@ def test_gitignore_excludes_captures_salts_and_secrets():
     assert ".venv/" in lines or ".venv" in lines
 
 
-def test_readme_is_marked_private_and_carries_the_exporter_warning():
+def test_readme_is_source_available_and_carries_the_exporter_warning():
     text = (ROOT / "README.md").read_text()
-    assert "PRIVATE" in text.splitlines()[0] and "Do not publish" in text and "Proprietary" in text
+    assert text.splitlines()[0] == "# safelabs-trace" and "Source available for research reproducibility" in text and "not an open-source licence" in text
     assert "default trace exporter" in text and "OpenAI Agents SDK" in text and "set_trace_processors" in text
     lic = (ROOT / "LICENSE").read_text()
-    assert lic.startswith("Proprietary — all rights reserved, Safe Labs AI Inc.")
+    assert lic.startswith("Copyright (c) 2026 Safe Labs AI Inc. All rights reserved.") and "NOT an open-source licence" in lic
 
 
 def test_data_file_ships_with_the_package():

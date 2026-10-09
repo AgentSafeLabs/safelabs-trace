@@ -1,5 +1,9 @@
-Proprietary — all rights reserved, Safe Labs AI Inc.
+Copyright (c) 2026 Safe Labs AI Inc. All rights reserved.
 
-This software and its documentation are confidential and proprietary to Safe Labs AI Inc. No licence
-is granted. Do not copy, publish, distribute, upload to any package index or public repository, or
-disclose any part of it without written permission from Safe Labs AI Inc.
+This is a SOURCE-AVAILABLE notice. It is NOT an open-source licence.
+
+Permitted: you may view this repository, and you may run the code solely to reproduce or verify the results of the accompanying paper ("How Much Does Text-Only Scoring Miss? A Pre-Registered Trace Benchmark of Tool-Using Agents").
+
+Not permitted without written permission from Safe Labs AI Inc.: any other use, any modification, any redistribution of the code or of copies of it, and any commercial use.
+
+The software and the data are provided "as is", without warranty of any kind, express or implied. Safe Labs AI Inc. is not liable for any claim or damage arising from their use.

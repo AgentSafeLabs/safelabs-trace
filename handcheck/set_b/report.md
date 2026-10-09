@@ -1,6 +1,6 @@
 # 1B hand-check set B: a fresh blind 50-item set
 
-PRIVATE. Everything is in `_release-staging/1b_handcheck_b/`. I labelled nothing. The items file has no source and no tagger output. Set A's key, results, labelled files and void files were not opened (I did not open `attempt1_void_note.md`: its name matches `*_void*`). Tags: VERIFIED, INFERRED, UNKNOWN.
+Everything is in `_release-staging/1b_handcheck_b/`. I labelled nothing. The items file has no source and no tagger output. Set A's key, results, labelled files and void files were not opened (I did not open `attempt1_void_note.md`: its name matches `*_void*`). Tags: VERIFIED, INFERRED, UNKNOWN.
 
 **Before you label:** read down to "How you label". The last section is sealed (aggregate tagger counts); do not read it until you have labelled all 50.
 
