@@ -45,21 +45,63 @@ A plain-language summary of the benchmark design, results and reported failures:
 
 ## Reproducing the 1B study
 
-The study was pre-registered in steps; each step is a committed file. The table lists the steps with the date written in the file and, where a committed file names it, the pull request. Commit hashes and merge times are in the git history, not in committed files, so they are not listed here.
+The study was pre-registered in steps; each step is a committed file. The list below gives the steps with the date written in the file and, where a committed file names it, the pull request. Commit hashes and merge times are in the git history, not in committed files, so they are not listed here.
 
-| step | file | date written in the file | pull request named in a committed file | what it fixed |
-|---|---|---|---|---|
-| set C re-check gate | [handcheck/set_c/gate_set_c.md](handcheck/set_c/gate_set_c.md) | 2026-10-04 | | pass rule of the severity-tagger re-check, written before rules v2 existed |
-| two-rater addendum | [handcheck/rater_packet/gate_addendum_two_raters.md](handcheck/rater_packet/gate_addendum_two_raters.md) | 2026-10-04 | | the reference label is the more severe of two raters |
-| pilot decisions D8 to D10 | [runner/DECISIONS.md](runner/DECISIONS.md) | 2026-10-05 | | model-call cap, metrics that keep UNCERTAIN trials, local-only evidence sidecar |
-| pilot v2 gates | [handcheck/pilot_v2/gates_pilot_v2.md](handcheck/pilot_v2/gates_pilot_v2.md) | 2026-10-06 | | human checks of the unclassified-shell calls and of UNCERTAIN answers |
-| main-run plan | [runner/main_run/MAIN_RUN_PLAN.md](runner/main_run/MAIN_RUN_PLAN.md) | 2026-10-07 | #16 ([analysis report](analysis/main_run/analysis_report.md)) | design, outcomes, statistics and missing-data rule, before any main-run data |
-| runner fix D11 | [runner/DECISIONS.md](runner/DECISIONS.md) | 2026-10-07 | #17 ([deviation log](analysis/main_run/DEVIATIONS.md)) | an errored trial is never scored; billing errors are infrastructure; repair command |
-| main-run analysis and deviation log | [analysis/main_run/DEVIATIONS.md](analysis/main_run/DEVIATIONS.md) | 2026-10-08 | | the analysis per the plan and its incidents |
-| addendum D12 | [analysis/main_run/addendum/DEVIATIONS_addendum.md](analysis/main_run/addendum/DEVIATIONS_addendum.md) | 2026-10-08 | | post hoc choice of the bucket definition for the two ASRs; descriptive lift |
-| main-run answers gates | [handcheck/main_answers/gates_main_answers.md](handcheck/main_answers/gates_main_answers.md) | 2026-10-08 | | sample, validity, agreement and pre-registered use of the answers check |
-| answers check results D13, D14 | [handcheck/main_answers/results/DEVIATIONS_main_answers.md](handcheck/main_answers/results/DEVIATIONS_main_answers.md) | 2026-10-09 | | both raters void under the pre-registered rule; exploratory readout |
-| addendum D15 | [analysis/main_run/addendum/cluster/DEVIATION_D15.md](analysis/main_run/addendum/cluster/DEVIATION_D15.md) | 2026-10-09 | | item-cluster intervals as a descriptive robustness check |
+1. **set C re-check gate**: [handcheck/set_c/gate_set_c.md](handcheck/set_c/gate_set_c.md)
+
+   Written 2026-10-04.
+
+   pass rule of the severity-tagger re-check, written before rules v2 existed
+2. **two-rater addendum**: [handcheck/rater_packet/gate_addendum_two_raters.md](handcheck/rater_packet/gate_addendum_two_raters.md)
+
+   Written 2026-10-04.
+
+   the reference label is the more severe of two raters
+3. **pilot decisions D8 to D10**: [runner/DECISIONS.md](runner/DECISIONS.md)
+
+   Written 2026-10-05.
+
+   model-call cap, metrics that keep UNCERTAIN trials, local-only evidence sidecar
+4. **pilot v2 gates**: [handcheck/pilot_v2/gates_pilot_v2.md](handcheck/pilot_v2/gates_pilot_v2.md)
+
+   Written 2026-10-06.
+
+   human checks of the unclassified-shell calls and of UNCERTAIN answers
+5. **main-run plan**: [runner/main_run/MAIN_RUN_PLAN.md](runner/main_run/MAIN_RUN_PLAN.md)
+
+   Written 2026-10-07. Pull request: #16 ([analysis report](analysis/main_run/analysis_report.md)).
+
+   design, outcomes, statistics and missing-data rule, before any main-run data
+6. **runner fix D11**: [runner/DECISIONS.md](runner/DECISIONS.md)
+
+   Written 2026-10-07. Pull request: #17 ([deviation log](analysis/main_run/DEVIATIONS.md)).
+
+   an errored trial is never scored; billing errors are infrastructure; repair command
+7. **main-run analysis and deviation log**: [analysis/main_run/DEVIATIONS.md](analysis/main_run/DEVIATIONS.md)
+
+   Written 2026-10-08.
+
+   the analysis per the plan and its incidents
+8. **addendum D12**: [analysis/main_run/addendum/DEVIATIONS_addendum.md](analysis/main_run/addendum/DEVIATIONS_addendum.md)
+
+   Written 2026-10-08.
+
+   post hoc choice of the bucket definition for the two ASRs; descriptive lift
+9. **main-run answers gates**: [handcheck/main_answers/gates_main_answers.md](handcheck/main_answers/gates_main_answers.md)
+
+   Written 2026-10-08.
+
+   sample, validity, agreement and pre-registered use of the answers check
+10. **answers check results D13, D14**: [handcheck/main_answers/results/DEVIATIONS_main_answers.md](handcheck/main_answers/results/DEVIATIONS_main_answers.md)
+
+   Written 2026-10-09.
+
+   both raters void under the pre-registered rule; exploratory readout
+11. **addendum D15**: [analysis/main_run/addendum/cluster/DEVIATION_D15.md](analysis/main_run/addendum/cluster/DEVIATION_D15.md)
+
+   Written 2026-10-09.
+
+   item-cluster intervals as a descriptive robustness check
 
 Where to start: the plan ([runner/main_run/MAIN_RUN_PLAN.md](runner/main_run/MAIN_RUN_PLAN.md)), the runbook ([runner/main_run/RUNBOOK.md](runner/main_run/RUNBOOK.md)), the analysis report ([analysis/main_run/analysis_report.md](analysis/main_run/analysis_report.md)) and every number with its source ([analysis/main_run/citable_numbers_1b.md](analysis/main_run/citable_numbers_1b.md)).
 
